@@ -17,31 +17,38 @@ import java.util.Arrays;
 
 import static util.ZkConfig.getHostPostOfServer;
 
-/** @author "IdoGlanzMatanWeks" 01/01/21 */
+/**
+ * @author "IdoGlanzMatanWeks" 01/01/21
+ */
 //@Component
 //public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 @Component
 public class OnStartUpApplication implements ApplicationListener<ContextRefreshedEvent> {
 
     private RestTemplate restTemplate = new RestTemplate();
-    @Autowired private ZkService zkService;
+    @Autowired
+    private ZkService zkService;
 
-    @Autowired private CityRepository citiesRepository = new CityRepository();
+    @Autowired
+    private CityRepository citiesRepository = new CityRepository();
 
-    @Autowired private IZkChildListener allNodesChangeListener;
+    @Autowired
+    private IZkChildListener allNodesChangeListener;
 
-    @Autowired private IZkChildListener liveNodeChangeListener;
+    @Autowired
+    private IZkChildListener liveNodeChangeListener;
 
-    @Autowired private IZkChildListener masterChangeListener;
+    @Autowired
+    private IZkChildListener masterChangeListener;
 
-    @Autowired private IZkStateListener connectStateChangeListener;
+    @Autowired
+    private IZkStateListener connectStateChangeListener;
 
     private ApplicationArguments appArgs;
 
-    @Value("${my_city}")
-    public static String myCityName;
+    @Value("${city}")
+    private String myCityName;
 
-    private City myCity = citiesRepository.getCity(myCityName);
 
     public OnStartUpApplication(ApplicationArguments appArgs) {
         this.appArgs = appArgs;
@@ -49,6 +56,8 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        City myCity = citiesRepository.getCity(myCityName);
+
         try {
             // Create my_city
             System.out.println("App Args: " + Arrays.asList(appArgs.getSourceArgs()));

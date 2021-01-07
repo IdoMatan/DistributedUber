@@ -11,6 +11,7 @@ public class City {
         this.x = x;
         this.y = y;
         this.shard = shard;
+        this.name = name;
     }
 //    private final String city_name;
 //    JSONObject location = new JSONObject();

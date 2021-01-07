@@ -1,20 +1,18 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DestinationRide {
-    public Map<String, List<Ride>> ridesByDate = Map.of();
+    public Map<String, List<Ride>> ridesByDate = new HashMap<>();
 
     public void addNewRide(Ride ride) {
-        List<Ride> ridesResult = (exists(ride.departureDate.toString())) ?
-                this.ridesByDate.get(ride.departureDate.toString()) :
+        List<Ride> ridesResult = (exists(ride.departureDate)) ?
+                this.ridesByDate.get(ride.departureDate) :
                 new ArrayList<>();
 
         ridesResult.add(ride);
 
-        this.ridesByDate.put(ride.departureDate.toString(), ridesResult);
+        this.ridesByDate.put(ride.departureDate, ridesResult);
     }
 
     private boolean exists(String dateStr) {

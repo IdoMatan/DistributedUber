@@ -1,9 +1,10 @@
 package model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CityRides {
-    public Map<String, DestinationRide> ridesByDestination = Map.of();
+    public Map<String, DestinationRide> ridesByDestination = new HashMap<>();
 
 
     public void addNewRide(Ride ride) {

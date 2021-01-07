@@ -2,10 +2,9 @@ package repository;
 
 import host.dto.RideDto;
 import model.CityRides;
-import model.Ride;
 import model.LiveMapsDatabase;
+import model.Ride;
 import org.springframework.stereotype.Repository;
-
 
 @Repository
 public class LiveMapRepository {

@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Date;
-
 
 public class Ride {
     public final String firstName;
@@ -9,11 +7,11 @@ public class Ride {
     public final String phoneNumber;
     public final String origin;
     public final String destination;
-    public final Date departureDate;
+    public final String departureDate;
     public int vacancies;
     public final float pd;
 
-    public Ride(String first, String last, String phone, String origin, String dest, Date departureDate, int seats, float pd) {
+    public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd) {
         this.firstName = first;
         this.lastName = last;
         this.phoneNumber = phone;

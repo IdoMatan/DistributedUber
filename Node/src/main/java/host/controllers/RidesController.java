@@ -4,6 +4,7 @@ import api.ZkService;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import model.LiveMapsDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.CityRepository;
+import repository.DepartureRepository;
 import repository.LiveMapRepository;
 
 /**
@@ -25,31 +26,36 @@ public class RidesController {
     @Autowired
     private ZkService zkService;
     @Autowired
-    private CityRepository citiesRepository = new CityRepository();
+    private CityRepository citiesRepository;
     @Autowired
     LiveMapRepository liveMapRepository;
-    @Value("${my_city}")
-    public String my_city;
+    @Autowired
+    DepartureRepository departureRepository;
+    @Value("${city}")
+    public String city;
 
     @Value(("$server.port"))
-    public int port;
+    public String port;
 
     @PostMapping(value = "/new_ride")
-    public ResponseEntity<String> newRide(@RequestBody RideDto rideDto, RedirectAttributes attributes) {
-        // create city object from the origin of the ride posted
-        var originCity = citiesRepository.getCity(rideDto.origin);
-        // get the leader node of the relevant city
-        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
+    public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
+        System.out.println(rideDto.toString());
+        departureRepository.addNew(rideDto);
 
-        if (!leaderNodeData.equals("localhost:" + port)) {
-            // todo redirect to the leader server
-        } else {
-            // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
-            // and also to all leaders of relevant cities (that ride is able to pick up from
-            liveMapRepository.addNew(rideDto);
-            // todo gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
-            // todo
-        }
+        // create city object from the origin of the ride posted
+//        var originCity = citiesRepository.getCity(rideDto.origin);
+//        // get the leader node of the relevant city
+//        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
+//
+//        if (!leaderNodeData.equals("localhost:" + port)) {
+//            // todo redirect to the leader server
+//        } else {
+//            // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
+//            // and also to all leaders of relevant cities (that ride is able to pick up from
+//            liveMapRepository.addNew(rideDto);
+//            // todo gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
+//            // todo
+//        }
         // ============================================================================================================
 
 //        ridesRepository.addNew(rideDto);
@@ -80,7 +86,7 @@ public class RidesController {
 //            // todo send to leader to update (by gRPC? or Redirect?)
 //            return ResponseEntity.ok("Not the leader but its handled");
 //        }
-        return ResponseEntity.ok("Not the leader but its handled");
+        return ResponseEntity.ok(LiveMapsDatabase.cityARides.toString());
     }
 //
 //    private boolean amILeader() {
