@@ -1,0 +1,4 @@
+rootProject.name = 'ZooKeeperPlayground'
+include 'Node'
+include 'test2'
+
