@@ -3,6 +3,7 @@ package host;
 import api.ZkService;
 import model.City;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -30,9 +31,9 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 //
 //    @Autowired private IZkStateListener connectStateChangeListener;
 
-    public City my_city;
-
     private ApplicationArguments appArgs;
+    @Value("${my_city}")
+    public static String myCity;
 
     public OnStartUpApplication(ApplicationArguments appArgs) {
         this.appArgs = appArgs;
@@ -43,7 +44,8 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
         try {
             // Create my_city
             System.out.println("App Args: " + Arrays.asList(appArgs.getSourceArgs()));
-            my_city = new City("AA", 0, 0);
+            // todo extract my city
+            my_city = new City("","AA", 0, 0);
 
             // create all parent nodes /cities /election, /all_nodes, /live_nodes
             zkService.createAllParentNodes();
