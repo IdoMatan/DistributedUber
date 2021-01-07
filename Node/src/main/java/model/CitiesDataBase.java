@@ -1,33 +1,19 @@
 package model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CitiesDataBase {
-    public static Map<String, City> cities = getAllCities();
+    public static Map<String, City> cities = setup();
 
-    private static Map<String, City> getAllCities() {
-        return List<City>(
-                new City(0,0, "A"),
-                )
-//        { "cityA": {"x": 0,"y": 0, "shard": "A"},
-//            "cityB": {"x": 10,"y": 20, "shard": "A"},
-//            "cityC": {"x": 30,"y": 30, "shard": "A"},
-//            "cityD": {"x": 100,"y": 60, "shard": "B"},
-//            "cityE": {"x": 300,"y": 300, "shard": "B"},
-//            "cityF": {"x": 100,"y": 100, "shard": "B"}
-//        }
-//        File file;
-//        {
-//            try {
-//                file = ResourceUtils.getFile("resources/json/CitiesMap");
-//                Object temp = JSONValue.parse(file.toString());
-//                JSONObject CitiesMap = (JSONObject) temp;
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        return new HashMap<>();
+    private static Map<String, City> setup() {
+        var em = new HashMap<String, City>();
+        em.put("cityA", new City("cityA", "A", 0, 0));
+        em.put("cityB", new City("cityB", "A", 10, 20));
+        em.put("cityC", new City("cityC", "A", 30, 30));
+        em.put("cityD", new City("cityD", "B", 100, 60));
+        em.put("cityE", new City("cityE", "B", 300, 300));
+        em.put("cityF", new City("cityF", "B", 100, 100));
+        return em;
     }
 }

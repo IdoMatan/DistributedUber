@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 public class CityRepository {
     public City getCity(String name) {
         return CitiesDataBase.cities.get(name);
-
     }
 }

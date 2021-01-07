@@ -4,14 +4,14 @@ import java.util.Date;
 
 
 public class Ride {
-    private final String firstName;
-    private final String lastName;
-    private final String phoneNumber;
-    private final String origin;
-    private final String destination;
-    private final Date departureDate;
-    private int vacancies;
-    private final float pd;
+    public final String firstName;
+    public final String lastName;
+    public final String phoneNumber;
+    public final String origin;
+    public final String destination;
+    public final Date departureDate;
+    public int vacancies;
+    public final float pd;
 
     public Ride(String first, String last, String phone, String origin, String dest, Date departureDate, int seats, float pd) {
         this.firstName = first;
@@ -22,6 +22,10 @@ public class Ride {
         this.departureDate = departureDate;
         this.vacancies = seats;
         this.pd = pd;
+    }
+
+    public String buildUniqueKey() {
+        return origin + "_" + departureDate.toString() + "_" + firstName + "_" + lastName;
     }
 
     @Override

@@ -1,16 +1,38 @@
 package repository;
 
 import host.dto.RideDto;
+import model.CityRides;
 import model.Ride;
+import model.LiveMapsDatabase;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class RidesRepository {
+public class LiveMapRepository {
     public Ride addNew(RideDto rideDto) {
-        return new Ride(
-                rideDto.firstName, rideDto.lastName, rideDto.phoneNumber, rideDto.origin, rideDto.destination, rideDto.departureDate, rideDto.vacancies, rideDto.pd
+        var ride = new Ride(
+                rideDto.firstName,
+                rideDto.lastName,
+                rideDto.phoneNumber,
+                rideDto.origin,
+                rideDto.destination,
+                rideDto.departureDate,
+                rideDto.vacancies,
+                rideDto.pd
         );
+
+        getCollection(rideDto.origin).addNewRide(ride);
+
+        return ride;
+    }
+
+
+    private CityRides getCollection(String origin) {
+        return switch (origin) {
+            case "cityA" -> LiveMapsDatabase.cityARides;
+            case "cityB" -> LiveMapsDatabase.cityBRides;
+            default -> throw new IllegalArgumentException("Missing " + origin);
+        };
     }
 //
 //

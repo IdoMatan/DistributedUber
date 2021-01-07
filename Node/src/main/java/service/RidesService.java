@@ -3,15 +3,15 @@ package service;
 import host.dto.RideDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.RidesRepository;
+import repository.LiveMapRepository;
 
 @Service
 public class RidesService {
     @Autowired
-    RidesRepository ridesRepository;
+    LiveMapRepository liveMapRepository;
 
     void addNewRide(RideDto rideDto) {
-        ridesRepository.addNew(rideDto);
+        liveMapRepository.addNew(rideDto);
     }
 
 }

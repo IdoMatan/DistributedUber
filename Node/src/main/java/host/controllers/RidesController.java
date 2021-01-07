@@ -1,9 +1,9 @@
 package host.controllers;
 
+import api.ZkService;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import model.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.CityRepository;
-import repository.RidesRepository;
+import repository.LiveMapRepository;
 
 /**
  * @author "IdoGlanzMatanWeks" 01/01/21
@@ -20,32 +21,41 @@ import repository.RidesRepository;
 @RestController
 public class RidesController {
 
-//    private RestTemplate restTemplate = new RestTemplate();
-//    @Autowired
-//    private ZkService zkService;
+    //    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private ZkService zkService;
     @Autowired
     private CityRepository citiesRepository = new CityRepository();
     @Autowired
-    RidesRepository ridesRepository;
+    LiveMapRepository liveMapRepository;
     @Value("${my_city}")
-    public static String my_city;
+    public String my_city;
 
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.ok("Not the leader but its handled");
-    }
+    @Value(("$server.port"))
+    public int port;
 
-    @PostMapping(value ="/new_ride")
-    public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
-        var myCity = citiesRepository.getCity(my_city);
-        if myCity.
-        rideDto.origin
+    @PostMapping(value = "/new_ride")
+    public ResponseEntity<String> newRide(@RequestBody RideDto rideDto, RedirectAttributes attributes) {
+        // create city object from the origin of the ride posted
+        var originCity = citiesRepository.getCity(rideDto.origin);
+        // get the leader node of the relevant city
+        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
+
+        if (!leaderNodeData.equals("localhost:" + port)) {
+            // todo redirect to the leader server
+        } else {
+            // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
+            // and also to all leaders of relevant cities (that ride is able to pick up from
+            liveMapRepository.addNew(rideDto);
+            // todo gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
+            // todo
+        }
+        // ============================================================================================================
+
 //        ridesRepository.addNew(rideDto);
-        // todo parse request body json
         // if I am the leader of the shard of the relevant city - handle it, otherwise:
         // find port or leader of relevant shard of city:
         // forward to him
-        // todo h
 
 //        String requestFrom = request.getHeader("request_from");
 //        // todo decompose message and pass to next line origin city not host
@@ -53,10 +63,10 @@ public class RidesController {
 //        // todo add here redirection if needed
 //
 //        if (!isEmpty(requestFrom) && requestFrom.equalsIgnoreCase(leader)) {
-//            // TODO add ride to data structure and broadcast to all relevant
+//            // TODO add ride to leaderNodeData structure and broadcast to all relevant
 //            return ResponseEntity.ok("SUCCESS");
 //        }
-//        // If I am leader I will broadcast data to all live node, else forward request to leader
+//        // If I am leader I will broadcast leaderNodeData to all live node, else forward request to leader
 //        if (amILeader()) {
 //            List<String> shard_nodes = zkService.getShardNodes(my_city.getShard());
 //            int successCount = 0;
