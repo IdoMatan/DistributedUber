@@ -1,48 +1,27 @@
 package impl;
 
 import api.ZkService;
-//import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.springframework.util.ResourceUtils;
 import util.StringSerializer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
 import static util.ZkConfig.*;
 
+//import lombok.extern.slf4j.Slf4j;
+
 /** @author "Ido Glanz, Matan Weks" 01/01/21 */
 //@Slf4j
 public class ZkServiceImpl implements ZkService {
-    File file;
-    {
-        try {
-            file = ResourceUtils.getFile("resources/json/CitiesMap");
-            Object temp = JSONValue.parse(file.toString());
-            JSONObject CitiesMap = (JSONObject) temp;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    {
-        try {
-            file = ResourceUtils.getFile("resources/json/CitiesMap");
-            Object temp = JSONValue.parse(file.toString());
-            JSONObject CitiesMap = (JSONObject) temp;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+
     private ZkClient zkClient;
+
 //    private static final Logger log = Logger.getLogger("zooLog");
 
     public ZkServiceImpl(String hostPort) {
@@ -156,7 +135,7 @@ public class ZkServiceImpl implements ZkService {
             zkClient.create(city, "city_node_".concat(city_name), CreateMode.PERSISTENT);
 
         }
-        String my_node = city.concat("/").concat((String)getHostPostOfServer());
+        String my_node = city.concat("/").concat(getHostPostOfServer());
         // Check if city already shows up in the cities being served list
         if (!zkClient.exists(CITIES.concat("/").concat(city_name)))
             zkClient.create(CITIES.concat("/").concat(city_name),"SHARD".concat(shard), CreateMode.EPHEMERAL);

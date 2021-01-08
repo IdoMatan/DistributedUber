@@ -1,6 +1,10 @@
 package model;
 
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ride {
     public final String firstName;
     public final String lastName;
@@ -10,6 +14,7 @@ public class Ride {
     public final String departureDate;
     public int vacancies;
     public final float pd;
+    public List<Passenger> passengerList = new ArrayList<>();
 
     public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd) {
         this.firstName = first;
@@ -23,7 +28,16 @@ public class Ride {
     }
 
     public String buildUniqueKey() {
-        return origin + "_" + departureDate.toString() + "_" + firstName + "_" + lastName;
+        return origin + "_" + departureDate + "_" + firstName + "_" + lastName;
+    }
+
+    public boolean available() {
+        return vacancies > 0;
+    }
+
+    public void book(Passenger ps) {
+        passengerList.add(ps);
+        vacancies--;
     }
 
     @Override
@@ -37,6 +51,7 @@ public class Ride {
                 ", Departure_date=" + departureDate +
                 ", Vacancies=" + vacancies +
                 ", PD=" + pd +
+                ", Passenger_list=" + passengerList.toString()+
                 '}';
     }
 }

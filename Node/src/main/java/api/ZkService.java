@@ -9,7 +9,6 @@ import java.util.List;
 public interface ZkService {
 
     String getLeaderNodeData(String shard);
-
     void electForMaster(String shard);
 
     boolean masterExists(String shard);

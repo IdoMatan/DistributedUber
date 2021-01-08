@@ -1,6 +1,7 @@
 package host.controllers;
 
 import api.ZkService;
+import host.dto.PassengerDto;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -34,28 +35,27 @@ public class RidesController {
     @Value("${city}")
     public String city;
 
-    @Value(("$server.port"))
+    @Value(("${server.port}"))
     public String port;
 
     @PostMapping(value = "/new_ride")
     public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
         System.out.println(rideDto.toString());
-        departureRepository.addNew(rideDto);
+        //  create city object from the origin of the ride posted
+        var originCity = citiesRepository.getCity(rideDto.origin);
+        // get the leader node of the relevant city
+        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
 
-        // create city object from the origin of the ride posted
-//        var originCity = citiesRepository.getCity(rideDto.origin);
-//        // get the leader node of the relevant city
-//        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
-//
-//        if (!leaderNodeData.equals("localhost:" + port)) {
-//            // todo redirect to the leader server
-//        } else {
-//            // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
-//            // and also to all leaders of relevant cities (that ride is able to pick up from
-//            liveMapRepository.addNew(rideDto);
-//            // todo gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
-//            // todo
-//        }
+        if (!leaderNodeData.equals(System.getProperty("server.ip") + ":" + port)) {
+            // todo redirect to the leader server
+        } else {
+            // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
+            // and also to all leaders of relevant cities (that ride is able to pick up from
+            departureRepository.addNew(rideDto);
+            liveMapRepository.addNew(rideDto);
+            // todo gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
+            // todo
+        }
         // ============================================================================================================
 
 //        ridesRepository.addNew(rideDto);
@@ -99,6 +99,35 @@ public class RidesController {
 //
 //        return ResponseEntity.ok(zkService.getCities());
 //    }
+
+    @PostMapping("/ride/book/single")
+    public ResponseEntity<String> newPassenger(@RequestBody PassengerDto passengerDto) {
+        //  create city object from the origin of the ride posted
+        var originCity = citiesRepository.getCity(passengerDto.origin);
+        // get the leader node of the relevant city
+        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
+
+        if (!leaderNodeData.equals(System.getProperty("server.ip") + ":" + port)) {
+            // todo redirect to the leader server
+        } else {
+            // I am the leader, look for relevant ride in LiveMapDatabase
+            var possibleRide = liveMapRepository.rideExists(passengerDto.origin, passengerDto.destination, passengerDto.departureDate);
+            if (!possibleRide.isEmpty()) {
+                // book first available ride
+                for (String rideId : possibleRide) {
+                    var bookedRide = departureRepository.book(passengerDto, rideId);
+                    if (bookedRide != null) {
+                        // todo gRPC method to update shard
+                        return ResponseEntity.ok("Ride booked: " + bookedRide.toString());
+                    }
+                    ;
+                }
+
+            }
+        }
+
+        return ResponseEntity.ok("No available rides, try again later");
+    }
 
     @GetMapping("/test")
     public String testing() {

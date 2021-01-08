@@ -6,6 +6,8 @@ import model.LiveMapsDatabase;
 import model.Ride;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class LiveMapRepository {
     public Ride addNew(RideDto rideDto) {
@@ -20,9 +22,13 @@ public class LiveMapRepository {
                 rideDto.pd
         );
 
-        getCollection(rideDto.origin).addNewRide(ride);
+        getCollection(rideDto.origin).addNewRideId(ride);
 
         return ride;
+    }
+
+    public List<String> rideExists(String origin, String destination, String departureDate) {
+        return getCollection(origin).getRideIds(destination, departureDate);
     }
 
 
@@ -33,6 +39,7 @@ public class LiveMapRepository {
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }
+
 //
 //
 //    public LinkedList<String> relevant_for(List<Integer> origin, List<Integer> destination) {

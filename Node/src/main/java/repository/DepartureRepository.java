@@ -1,7 +1,9 @@
 package repository;
 
+import host.dto.PassengerDto;
 import host.dto.RideDto;
 import model.DeparturesDataBase;
+import model.Passenger;
 import model.Ride;
 
 import java.util.Map;
@@ -24,6 +26,15 @@ public class DepartureRepository {
         return ride;
     }
 
+    public Ride book(PassengerDto passengerDto, String ridId) {
+        var ps = new Passenger(passengerDto);
+        Ride ride = getCollection(passengerDto.origin).get(ridId);
+        if (ride.available()) {
+            ride.book(ps);
+            return ride;
+        } else return null;
+
+    }
 
     private Map<String, Ride> getCollection(String origin) {
         return switch (origin) {

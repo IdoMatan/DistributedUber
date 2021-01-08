@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import repository.CityRepository;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import static util.ZkConfig.getHostPostOfServer;
@@ -48,7 +50,8 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 
     @Value("${city}")
     private String myCityName;
-
+    @Value(("${server.port}"))
+    public String port;
 
     public OnStartUpApplication(ApplicationArguments appArgs) {
         this.appArgs = appArgs;
@@ -57,7 +60,14 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         City myCity = citiesRepository.getCity(myCityName);
-
+        System.setProperty("server.port", port);
+        String ip;
+        try {
+            ip = InetAddress.getLocalHost().getHostAddress();
+            System.setProperty("server.ip", ip);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException("failed to fetch Ip!", e);
+        }
         try {
             // Create my_city
             System.out.println("App Args: " + Arrays.asList(appArgs.getSourceArgs()));
