@@ -23,8 +23,10 @@ package routeguide;
 service RouteGuide {
 
   rpc SenderTest1(Msg1) returns (Msg2) {}
-
+  rpc UpdateFollower(NewRideDto) returns(Id){}
+  rpc UpdateRelevantCities(NewRideDto) returns (Id){}
 }
+
 
 message Msg1 {
   int32 a = 1;
@@ -33,4 +35,11 @@ message Msg1 {
 
 message Msg2 {
   int32 c = 1;
+}
+
+message NewRideDto{
+  NewRideDto ride = 1;
+}
+message Id{
+  string rideId = 1;
 }

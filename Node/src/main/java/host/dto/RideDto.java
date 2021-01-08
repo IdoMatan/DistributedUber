@@ -2,8 +2,7 @@ package host.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-import java.util.List;
+import generated.NewRideDto;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class RideDto {
@@ -15,5 +14,8 @@ public class RideDto {
     public String departureDate;
     public int vacancies;
     public float pd;
-    public List<PassengerDto> passengerDtoList = List.of();
+
+    public NewRideDto toProto() {
+        return
+    }
 }

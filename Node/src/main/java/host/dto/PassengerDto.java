@@ -10,5 +10,4 @@ public class PassengerDto {
     public  String origin;
     public  String destination;
     public  String departureDate;
-
 }
