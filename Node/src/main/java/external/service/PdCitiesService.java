@@ -1,7 +1,6 @@
 package external.service;
 
 import api.ZkService;
-import host.ReceiverService;
 import host.controllers.Sender;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
@@ -14,8 +13,8 @@ import java.util.List;
 public class PdCitiesService {
     @Autowired
     public ZkService zkService;
-    @Autowired
-    public ReceiverService receiverService;
+//    @Autowired
+//    public ReceiverService receiverService;
 
     public void distributeNewRide(List<City> pdCities, RideDto ride){
         for(City city: pdCities){
