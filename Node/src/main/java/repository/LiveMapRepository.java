@@ -22,15 +22,17 @@ public class LiveMapRepository {
                 rideDto.pd
         );
 
-        getCollection(cityToAddTo).addNewRideId(ride);
-
+        getCollection(cityToAddTo).addNewRideId( ride.buildUniqueKey(), ride.destination,ride.departureDate);
         return ride;
+    }
+
+    public void addPDRide(String rideId, String myCity, String dest, String date){
+        getCollection(myCity).addNewRideId( rideId, dest,date);
     }
 
     public List<String> rideExists(String origin, String destination, String departureDate) {
         return getCollection(origin).getRideIds(destination, departureDate);
     }
-
 
     private CityRides getCollection(String origin) {
         return switch (origin) {
@@ -41,6 +43,7 @@ public class LiveMapRepository {
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }
+
 
 //
 //

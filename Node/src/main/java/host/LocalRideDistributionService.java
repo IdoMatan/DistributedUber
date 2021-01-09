@@ -6,29 +6,25 @@ import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
 
 import java.util.List;
 
-public class LocalDistribution {
+@Service
+public class LocalRideDistributionService {
     @Autowired
     private ZkService zkService;
-
-    private final int input;
-
-    public LocalDistribution() {
-        this.input = 5;
-    }
-
-    private DepartureRepository departureRepository = new DepartureRepository();
-    private LiveMapRepository liveMapRepository = new LiveMapRepository();
-
+    @Autowired
+    private DepartureRepository departureRepository;
+    @Autowired
+    private LiveMapRepository liveMapRepository;
 
     public void updatePDRide(RideDto dto, String addressedTo){
         var ride = liveMapRepository.addNew(dto, addressedTo);
-
         String shard = System.getProperty("shard");
+
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
         for (String target : followers) {

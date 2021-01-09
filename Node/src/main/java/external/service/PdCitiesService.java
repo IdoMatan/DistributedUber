@@ -1,37 +1,36 @@
 package external.service;
 
 import api.ZkService;
-import host.ReceiverService;
+import host.LocalRideDistributionService;
 import host.controllers.Sender;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import model.City;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PdCitiesService {
     @Autowired
-    public ZkService zkService;
+    private ZkService zkService;
     @Autowired
-    public ReceiverService receiverService;
+    private LocalRideDistributionService localRideDistributionService;
 
+//    @PostConstruct
     public void distributeNewRide(List<City> pdCities, RideDto ride){
         for(City city: pdCities){
             var pdCityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
             var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("grpc.port");
             if (myFullURI.equals(pdCityLeaderIp)) {
-//                var proto = ride.toProto();
-//                UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(city.name).build();
-//                ReceiverService.updatePDRide(send_msg);
+                localRideDistributionService.updatePDRide(ride, city.name);
                 continue;
                 }
-
             ManagedChannel channel = ManagedChannelBuilder.forTarget(pdCityLeaderIp).usePlaintext().build();
             Sender client = new Sender(channel);
             // Call server streaming call
-
             client.updatePDCities(ride, city.name);
         }
     }

@@ -21,13 +21,13 @@ public class CityRides {
 
     }
 
-    public void addNewRideId(Ride ride) {
-        DestinationRide destinationsRidesResult = (exists(ride.destination)) ?
-                this.ridesByDestination.get(ride.destination) :
+    public void addNewRideId(String rideId, String destination, String departureDate){
+        DestinationRide destinationsRidesResult = (exists(destination)) ?
+                this.ridesByDestination.get(destination) :
                 new DestinationRide();
 
-        destinationsRidesResult.addNewRideId(ride);
-        this.ridesByDestination.put(ride.destination, destinationsRidesResult);
+        destinationsRidesResult.addNewRideId(rideId, departureDate);
+        this.ridesByDestination.put(destination, destinationsRidesResult);
     }
 
     private boolean exists(String destination) {

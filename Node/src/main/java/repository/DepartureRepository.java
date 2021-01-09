@@ -26,6 +26,21 @@ public class DepartureRepository {
         return ride;
     }
 
+    public Boolean exists(RideDto rideDto) {
+        var ride = new Ride(
+                rideDto.firstName,
+                rideDto.lastName,
+                rideDto.phoneNumber,
+                rideDto.origin,
+                rideDto.destination,
+                rideDto.departureDate,
+                rideDto.vacancies,
+                rideDto.pd
+        );
+
+        return getCollection(ride.origin).containsKey(ride.buildUniqueKey());
+    }
+
     public Ride book(PassengerDto passengerDto, String ridId) {
         var ps = new Passenger(passengerDto);
         Ride ride = getCollection(passengerDto.origin).get(ridId);
