@@ -92,6 +92,10 @@ public class RidesController {
     @PostMapping("/redirected_new_passenger/single")
     public ResponseEntity<String> newPassenger(@RequestBody PassengerDto passengerDto) {
         var optionalRides = liveMapRepository.rideExists(passengerDto.origin, passengerDto.destination, passengerDto.departureDate);
+        if (optionalRides.isEmpty()) {
+            return ResponseEntity.ok("No available rides, try again later\nthanks,\nAvishag");
+        }
+
         Ride bookedRide = null;
         for (String rideId : optionalRides) {
             var rideOriginCity = parseOrigin(rideId);
@@ -106,7 +110,9 @@ public class RidesController {
         // booked ride by local driver.
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
-//            updateCurrentCityFollowers();
+            updateCurrentCityFollowers(dto);
+        } else {
+            // avishag todo: handle if no rides with origin = current city.
         }
 
         return ResponseEntity.ok("No available rides, try again later");
@@ -117,7 +123,7 @@ public class RidesController {
         return rideId.split("_")[0];
     }
 
-    private void updateCurrentCityFollowers(RideDto rideDto, Boolean isNewRide) {
+    private void updateCurrentCityFollowers(RideDto rideDto) {
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
@@ -148,7 +154,15 @@ public class RidesController {
         return redirectRequest(request, "new_passenger/single");
     }
 
-    private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws IOException
+    private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws IOException {
+        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        RideDto rideDto = new Gson().fromJson(request.getReader(), RideDto.class);
 
+        var originCity = citiesRepository.getCity(rideDto.origin);  // transform to city object
+        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
 
+        String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+
+        return new ModelAndView(redirect);
+    }
 }
