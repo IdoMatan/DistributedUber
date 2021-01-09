@@ -53,7 +53,10 @@ public class RidesController {
 
     @PostMapping(value = "/redirected_new_ride")
     public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
-//        System.out.println(rideDto.toString());
+//    public ResponseEntity<String> newRide(HttpServletRequest request) throws IOException {
+//        RideDto rideDto = new Gson().fromJson(request.getReader(), RideDto.class);
+
+        System.out.println(rideDto.toString());
 //        //  create city object from the origin of the ride posted
 //        var originCity = citiesRepository.getCity(rideDto.origin);
 //        // get the leader node of the relevant city
@@ -73,12 +76,16 @@ public class RidesController {
 
         // todo grab all address of all followers/city servers (from ZK active list)
         List<String> followers = zkService.getFollowers(shard);
+        var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+
         for (String target : followers) {
-            String target_grpc = zkService.getZNodeData("/" + shard + "/" + target);
-            ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
-            Sender client = new Sender(channel);
-            // Call server streaming call
-            client.updateFollower(rideDto);
+            if (!myFullURI.equals(target)) {
+                String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                Sender client = new Sender(channel);
+                // Call server streaming call
+                client.updateFollower(rideDto);
+            }
         }
         System.out.println("Waiting");
 //        return "ok";
@@ -141,7 +148,7 @@ public class RidesController {
         //  create city object from the origin of the ride posted
         var originCity = citiesRepository.getCity(passengerDto.origin);
         // get the leader node of the relevant city
-        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name);
+        var leaderNodeData = zkService.getLeaderNodeGRPChost(originCity.shard, originCity.name);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
         if (!leaderNodeData.equals(myFullURI)) {
             // todo redirect to the leader server
@@ -171,11 +178,13 @@ public class RidesController {
         request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
         RideDto rideDto = new Gson().fromJson(request.getReader(), RideDto.class);
 
-        var originCity = citiesRepository.getCity(rideDto.origin);  // transform to city object
-        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the leader node of the relevant city
-        var leaderFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+//        var originCity = citiesRepository.getCity(rideDto.origin);  // transform to city object
+//        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the leader node of the relevant city
+        var leaderFullURI = "localhost" + ":" + System.getProperty("rest.port");
 
         String redirect =  "redirect:http://" + leaderFullURI + "/redirected_new_ride"; // redirect to leader
+//        String redirect =  "redirect:localhost:8083" + "/redirected_new_ride"; // redirect to leader
+
         return new ModelAndView(redirect);
     }
 

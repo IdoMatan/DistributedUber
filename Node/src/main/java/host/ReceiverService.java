@@ -30,10 +30,14 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     }
 
     @Override
-    public void updateFollower(UpdateNewRideMessage ride, StreamObserver<Id> id) {
-        RideProto rideToAdd = ride.getRide();
+    public void updateFollower(UpdateNewRideMessage rideMessage, StreamObserver<Id> id) {
+        RideProto rideToAdd = rideMessage.getRide();
         var dto = new RideDto(rideToAdd);
-        departureRepository.addNew(dto);
+        var ride = departureRepository.addNew(dto);
         liveMapRepository.addNew(dto);
+
+        Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
+        id.onNext(rideId);
+        id.onCompleted();
     }
 }

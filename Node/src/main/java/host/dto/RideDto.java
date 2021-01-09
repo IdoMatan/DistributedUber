@@ -15,17 +15,26 @@ public class RideDto {
     public int vacancies;
     public float pd;
 
+
+    public RideDto() {}
+
     public RideDto(RideProto rideProto) {
         this.firstName = rideProto.getFirstName();
         this.lastName = rideProto.getLastName();
         this.phoneNumber = rideProto.getPhoneNumber();
-        this.origin = rideProto.getDestination();
-        this.destination = rideProto.getDepartureDate();
+        this.origin = rideProto.getOrigin();
+        this.destination = rideProto.getDestination();
+        this.departureDate = rideProto.getDepartureDate();
         this.vacancies = rideProto.getVacancies();
         this.pd = rideProto.getPd();
     }
 
     public RideProto toProto() {
-        return RideProto.newBuilder().setFirstName(firstName).setLastName(lastName).setPhoneNumber(phoneNumber).setOrigin(origin).setDepartureDate(departureDate).setDestination(destination).setVacancies(vacancies).setPd(pd).build();
+        return RideProto.newBuilder()
+                                     .setFirstName(firstName).setLastName(lastName)
+                                     .setPhoneNumber(phoneNumber).setOrigin(origin)
+                                     .setDepartureDate(departureDate).setDestination(destination)
+                                     .setVacancies(vacancies).setPd(pd)
+                                     .build();
     }
 }

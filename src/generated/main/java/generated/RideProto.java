@@ -322,10 +322,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int DEPARTUREDATE_FIELD_NUMBER = 6;
+  public static final int DEPARTURE_DATE_FIELD_NUMBER = 6;
   private volatile java.lang.Object departureDate_;
   /**
-   * <code>string departureDate = 6;</code>
+   * <code>string departure_date = 6;</code>
    * @return The departureDate.
    */
   @java.lang.Override
@@ -342,7 +342,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string departureDate = 6;</code>
+   * <code>string departure_date = 6;</code>
    * @return The bytes for departureDate.
    */
   @java.lang.Override
@@ -508,7 +508,7 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getOrigin().hashCode();
     hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
     hash = (53 * hash) + getDestination().hashCode();
-    hash = (37 * hash) + DEPARTUREDATE_FIELD_NUMBER;
+    hash = (37 * hash) + DEPARTURE_DATE_FIELD_NUMBER;
     hash = (53 * hash) + getDepartureDate().hashCode();
     hash = (37 * hash) + VACANCIES_FIELD_NUMBER;
     hash = (53 * hash) + getVacancies();
@@ -1187,7 +1187,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object departureDate_ = "";
     /**
-     * <code>string departureDate = 6;</code>
+     * <code>string departure_date = 6;</code>
      * @return The departureDate.
      */
     public java.lang.String getDepartureDate() {
@@ -1203,7 +1203,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string departureDate = 6;</code>
+     * <code>string departure_date = 6;</code>
      * @return The bytes for departureDate.
      */
     public com.google.protobuf.ByteString
@@ -1220,7 +1220,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string departureDate = 6;</code>
+     * <code>string departure_date = 6;</code>
      * @param value The departureDate to set.
      * @return This builder for chaining.
      */
@@ -1235,7 +1235,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string departureDate = 6;</code>
+     * <code>string departure_date = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearDepartureDate() {
@@ -1245,7 +1245,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string departureDate = 6;</code>
+     * <code>string departure_date = 6;</code>
      * @param value The bytes for departureDate to set.
      * @return This builder for chaining.
      */

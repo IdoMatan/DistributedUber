@@ -68,12 +68,12 @@ public interface RideProtoOrBuilder extends
       getDestinationBytes();
 
   /**
-   * <code>string departureDate = 6;</code>
+   * <code>string departure_date = 6;</code>
    * @return The departureDate.
    */
   java.lang.String getDepartureDate();
   /**
-   * <code>string departureDate = 6;</code>
+   * <code>string departure_date = 6;</code>
    * @return The bytes for departureDate.
    */
   com.google.protobuf.ByteString

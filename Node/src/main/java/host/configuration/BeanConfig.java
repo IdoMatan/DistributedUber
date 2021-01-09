@@ -4,14 +4,16 @@ import api.ZkService;
 import impl.ZkServiceImpl;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
-import zkwatchers.*;
+import zkwatchers.AllNodesChangeListener;
+import zkwatchers.ConnectStateChangeListener;
+import zkwatchers.LiveNodeChangeListener;
+import zkwatchers.MasterChangeListener;
 
 @Configuration
 public class BeanConfig {
@@ -49,7 +51,7 @@ public class BeanConfig {
   }
 
   @Bean(name = "masterChangeListener")
-  @ConditionalOnProperty(name = "leader.algo", havingValue = "1")
+//  @ConditionalOnProperty(name = "leader.algo", havingValue = "1")
   @Scope("singleton")
   public IZkChildListener masterChangeListener() {
     MasterChangeListener masterChangeListener = new MasterChangeListener();
@@ -57,14 +59,14 @@ public class BeanConfig {
     return masterChangeListener;
   }
 
-  @Bean(name = "masterChangeListener")
-  @ConditionalOnProperty(name = "leader.algo", havingValue = "2", matchIfMissing = true)
-  @Scope("singleton")
-  public IZkChildListener masterChangeListener2() {
-    MasterChangeListenerApproach2 masterChangeListener = new MasterChangeListenerApproach2();
-    masterChangeListener.setZkService(zkService());
-    return masterChangeListener;
-  }
+//  @Bean(name = "masterChangeListener")
+//  @ConditionalOnProperty(name = "leader.algo", havingValue = "2", matchIfMissing = true)
+//  @Scope("singleton")
+//  public IZkChildListener masterChangeListener2() {
+//    MasterChangeListenerApproach2 masterChangeListener = new MasterChangeListenerApproach2();
+//    masterChangeListener.setZkService(zkService());
+//    return masterChangeListener;
+//  }
 
   @Bean(name = "connectStateChangeListener")
   @Scope("singleton")

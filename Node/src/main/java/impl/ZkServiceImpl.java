@@ -90,7 +90,7 @@ public class ZkServiceImpl implements ZkService {
         if (!shard.startsWith("/")){ shard = "/".concat(shard);}
         List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
         for (String c : cities) {
-            if (zkClient.exists(SHARD_DIR.concat(shard).concat(c).concat(ELECTION_MASTER))) {
+            if (zkClient.exists(SHARD_DIR.concat(shard).concat("/").concat(c).concat(ELECTION_MASTER))) {
                 System.out.println("I shouldn't be here....");
 
             }
@@ -228,10 +228,13 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public void registerChildrenChangeWatcher(String shard, IZkChildListener iZkChildListener) {
+
         if (!shard.startsWith("/")){ shard = "/".concat(shard);}
         List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
         for (String c : cities) {
-            zkClient.subscribeChildChanges(SHARD_DIR+shard+c+ELECTION_NODE, iZkChildListener);
+            if (c.startsWith("city")){
+                zkClient.subscribeChildChanges(SHARD_DIR+shard+"/"+c+ELECTION_NODE, iZkChildListener);
+            }
         }
     }
 

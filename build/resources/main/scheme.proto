@@ -32,7 +32,7 @@ message RideProto {
   string phoneNumber = 3;
   string origin = 4;
   string destination = 5;
-  string departureDate = 6;
+  string departure_date = 6;
   int32 vacancies = 7;
   float pd = 8;
 }

@@ -8,6 +8,10 @@ import java.util.Map;
 public class CityRides {
     public Map<String, DestinationRide> ridesByDestination = new HashMap<>();
 
+//    @Override
+//    public String toString() {
+//
+//    }
     public List<String> getRideIds(String destination, String date) {
         if (!ridesByDestination.containsKey(destination)) {
             return Collections.emptyList();

@@ -48,21 +48,21 @@ public final class RouteGuideProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014scheme.proto\022\nrouteguide\"\240\001\n\tRideProto" +
+      "\n\014scheme.proto\022\nrouteguide\"\241\001\n\tRideProto" +
       "\022\021\n\tfirstName\030\001 \001(\t\022\020\n\010lastName\030\002 \001(\t\022\023\n" +
       "\013phoneNumber\030\003 \001(\t\022\016\n\006origin\030\004 \001(\t\022\023\n\013de" +
-      "stination\030\005 \001(\t\022\025\n\rdepartureDate\030\006 \001(\t\022\021" +
-      "\n\tvacancies\030\007 \001(\005\022\n\n\002pd\030\010 \001(\002\";\n\024UpdateN" +
-      "ewRideMessage\022#\n\004ride\030\001 \001(\0132\025.routeguide" +
-      ".RideProto\"\024\n\002Id\022\016\n\006rideId\030\001 \001(\t\"\034\n\004Msg1" +
-      "\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030\001 \001(" +
-      "\0052\323\001\n\nRouteGuide\0223\n\013SenderTest1\022\020.routeg" +
-      "uide.Msg1\032\020.routeguide.Msg2\"\000\022D\n\016UpdateF" +
-      "ollower\022 .routeguide.UpdateNewRideMessag" +
-      "e\032\016.routeguide.Id\"\000\022J\n\024UpdateRelevantCit" +
-      "ies\022 .routeguide.UpdateNewRideMessage\032\016." +
-      "routeguide.Id\"\000B$\n\tgeneratedB\017RouteGuide" +
-      "ProtoP\001\242\002\003RTGb\006proto3"
+      "stination\030\005 \001(\t\022\026\n\016departure_date\030\006 \001(\t\022" +
+      "\021\n\tvacancies\030\007 \001(\005\022\n\n\002pd\030\010 \001(\002\";\n\024Update" +
+      "NewRideMessage\022#\n\004ride\030\001 \001(\0132\025.routeguid" +
+      "e.RideProto\"\024\n\002Id\022\016\n\006rideId\030\001 \001(\t\"\034\n\004Msg" +
+      "1\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030\001 \001" +
+      "(\0052\323\001\n\nRouteGuide\0223\n\013SenderTest1\022\020.route" +
+      "guide.Msg1\032\020.routeguide.Msg2\"\000\022D\n\016Update" +
+      "Follower\022 .routeguide.UpdateNewRideMessa" +
+      "ge\032\016.routeguide.Id\"\000\022J\n\024UpdateRelevantCi" +
+      "ties\022 .routeguide.UpdateNewRideMessage\032\016" +
+      ".routeguide.Id\"\000B$\n\tgeneratedB\017RouteGuid" +
+      "eProtoP\001\242\002\003RTGb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
