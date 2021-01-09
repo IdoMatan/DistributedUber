@@ -61,7 +61,7 @@ public class RidesController {
     @PostMapping(value = "/redirected_new_ride")
     public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
         System.out.println(rideDto.toString());
-        var ride = departureRepository.addNew(rideDto);
+        var ride = departureRepository.upsertRide(rideDto);
         liveMapRepository.addNew(rideDto, rideDto.origin);
 
         List<String> followers = zkService.getFollowers(shard);

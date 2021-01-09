@@ -49,7 +49,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         var isNewRide = false;
         if (addressedTo.equals(dto.origin)) {
             isNewRide = departureRepository.exists(dto);
-            departureRepository.addNew(dto);
+            departureRepository.upsertRide(dto);
         }
         var ride = liveMapRepository.addNew(dto, addressedTo);
         if (!isNewRide){

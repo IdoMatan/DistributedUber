@@ -3,10 +3,12 @@ package repository;
 import host.dto.RideDto;
 import model.CityRides;
 import model.LiveMapsDatabase;
+import model.Passenger;
 import model.Ride;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class LiveMapRepository {
@@ -19,7 +21,8 @@ public class LiveMapRepository {
                 rideDto.destination,
                 rideDto.departureDate,
                 rideDto.vacancies,
-                rideDto.pd
+                rideDto.pd,
+                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         getCollection(cityToAddTo).addNewRideId( ride.buildUniqueKey(), ride.destination,ride.departureDate);
@@ -30,7 +33,7 @@ public class LiveMapRepository {
         getCollection(myCity).addNewRideId( rideId, dest,date);
     }
 
-    public List<String> rideExists(String origin, String destination, String departureDate) {
+    public Set<String> rideExists(String origin, String destination, String departureDate) {
         return getCollection(origin).getRideIds(destination, departureDate);
     }
 

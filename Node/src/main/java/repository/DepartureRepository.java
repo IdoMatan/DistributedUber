@@ -37,7 +37,8 @@ public class DepartureRepository {
                 rideDto.destination,
                 rideDto.departureDate,
                 rideDto.vacancies,
-                rideDto.pd
+                rideDto.pd,
+                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         return getCollection(ride.origin).containsKey(ride.buildUniqueKey());
