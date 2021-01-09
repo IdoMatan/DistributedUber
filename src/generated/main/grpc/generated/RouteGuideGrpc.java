@@ -1,18 +1,10 @@
 package generated;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -90,34 +82,34 @@ public final class RouteGuideGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<generated.UpdateNewRideMessage,
-      generated.Id> getUpdateRelevantCitiesMethod;
+      generated.Id> getUpdatePDRideMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "UpdateRelevantCities",
+      fullMethodName = SERVICE_NAME + '/' + "updatePDRide",
       requestType = generated.UpdateNewRideMessage.class,
       responseType = generated.Id.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<generated.UpdateNewRideMessage,
-      generated.Id> getUpdateRelevantCitiesMethod() {
-    io.grpc.MethodDescriptor<generated.UpdateNewRideMessage, generated.Id> getUpdateRelevantCitiesMethod;
-    if ((getUpdateRelevantCitiesMethod = RouteGuideGrpc.getUpdateRelevantCitiesMethod) == null) {
+      generated.Id> getUpdatePDRideMethod() {
+    io.grpc.MethodDescriptor<generated.UpdateNewRideMessage, generated.Id> getUpdatePDRideMethod;
+    if ((getUpdatePDRideMethod = RouteGuideGrpc.getUpdatePDRideMethod) == null) {
       synchronized (RouteGuideGrpc.class) {
-        if ((getUpdateRelevantCitiesMethod = RouteGuideGrpc.getUpdateRelevantCitiesMethod) == null) {
-          RouteGuideGrpc.getUpdateRelevantCitiesMethod = getUpdateRelevantCitiesMethod =
+        if ((getUpdatePDRideMethod = RouteGuideGrpc.getUpdatePDRideMethod) == null) {
+          RouteGuideGrpc.getUpdatePDRideMethod = getUpdatePDRideMethod =
               io.grpc.MethodDescriptor.<generated.UpdateNewRideMessage, generated.Id>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UpdateRelevantCities"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "updatePDRide"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   generated.UpdateNewRideMessage.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   generated.Id.getDefaultInstance()))
-              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("UpdateRelevantCities"))
+              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("updatePDRide"))
               .build();
         }
       }
     }
-    return getUpdateRelevantCitiesMethod;
+    return getUpdatePDRideMethod;
   }
 
   /**
@@ -184,9 +176,9 @@ public final class RouteGuideGrpc {
 
     /**
      */
-    public void updateRelevantCities(generated.UpdateNewRideMessage request,
+    public void updatePDRide(generated.UpdateNewRideMessage request,
         io.grpc.stub.StreamObserver<generated.Id> responseObserver) {
-      asyncUnimplementedUnaryCall(getUpdateRelevantCitiesMethod(), responseObserver);
+      asyncUnimplementedUnaryCall(getUpdatePDRideMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
@@ -206,12 +198,12 @@ public final class RouteGuideGrpc {
                 generated.Id>(
                   this, METHODID_UPDATE_FOLLOWER)))
           .addMethod(
-            getUpdateRelevantCitiesMethod(),
+            getUpdatePDRideMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 generated.UpdateNewRideMessage,
                 generated.Id>(
-                  this, METHODID_UPDATE_RELEVANT_CITIES)))
+                  this, METHODID_UPDATE_PDRIDE)))
           .build();
     }
   }
@@ -248,10 +240,10 @@ public final class RouteGuideGrpc {
 
     /**
      */
-    public void updateRelevantCities(generated.UpdateNewRideMessage request,
+    public void updatePDRide(generated.UpdateNewRideMessage request,
         io.grpc.stub.StreamObserver<generated.Id> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(getUpdateRelevantCitiesMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getUpdatePDRideMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -285,9 +277,9 @@ public final class RouteGuideGrpc {
 
     /**
      */
-    public generated.Id updateRelevantCities(generated.UpdateNewRideMessage request) {
+    public generated.Id updatePDRide(generated.UpdateNewRideMessage request) {
       return blockingUnaryCall(
-          getChannel(), getUpdateRelevantCitiesMethod(), getCallOptions(), request);
+          getChannel(), getUpdatePDRideMethod(), getCallOptions(), request);
     }
   }
 
@@ -323,16 +315,16 @@ public final class RouteGuideGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<generated.Id> updateRelevantCities(
+    public com.google.common.util.concurrent.ListenableFuture<generated.Id> updatePDRide(
         generated.UpdateNewRideMessage request) {
       return futureUnaryCall(
-          getChannel().newCall(getUpdateRelevantCitiesMethod(), getCallOptions()), request);
+          getChannel().newCall(getUpdatePDRideMethod(), getCallOptions()), request);
     }
   }
 
   private static final int METHODID_SENDER_TEST1 = 0;
   private static final int METHODID_UPDATE_FOLLOWER = 1;
-  private static final int METHODID_UPDATE_RELEVANT_CITIES = 2;
+  private static final int METHODID_UPDATE_PDRIDE = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -359,8 +351,8 @@ public final class RouteGuideGrpc {
           serviceImpl.updateFollower((generated.UpdateNewRideMessage) request,
               (io.grpc.stub.StreamObserver<generated.Id>) responseObserver);
           break;
-        case METHODID_UPDATE_RELEVANT_CITIES:
-          serviceImpl.updateRelevantCities((generated.UpdateNewRideMessage) request,
+        case METHODID_UPDATE_PDRIDE:
+          serviceImpl.updatePDRide((generated.UpdateNewRideMessage) request,
               (io.grpc.stub.StreamObserver<generated.Id>) responseObserver);
           break;
         default:
@@ -426,7 +418,7 @@ public final class RouteGuideGrpc {
               .setSchemaDescriptor(new RouteGuideFileDescriptorSupplier())
               .addMethod(getSenderTest1Method())
               .addMethod(getUpdateFollowerMethod())
-              .addMethod(getUpdateRelevantCitiesMethod())
+              .addMethod(getUpdatePDRideMethod())
               .build();
         }
       }

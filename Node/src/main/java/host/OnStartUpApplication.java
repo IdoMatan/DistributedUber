@@ -65,6 +65,7 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 //        City myCity = citiesRepository.getCity(myCityName);
         System.setProperty("rest.port", restPort);
         System.setProperty("grpc.port", grpcPort);
+        System.setProperty("shard", myShard);
 
         String ip;
         try {

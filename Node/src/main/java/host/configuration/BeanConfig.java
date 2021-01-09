@@ -1,6 +1,7 @@
 package host.configuration;
 
 import api.ZkService;
+import external.service.PdCitiesService;
 import impl.ZkServiceImpl;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
@@ -30,6 +31,12 @@ public class BeanConfig {
   @Scope("singleton")
   public DepartureRepository departureRepository() { return new DepartureRepository(); }
 
+
+  @Bean(name = "pdCitiesService")
+  @Scope("singleton")
+  public PdCitiesService pdCities() {
+    return new PdCitiesService();
+  }
 
   @Bean(name = "zkService")
   @Scope("singleton")

@@ -37,15 +37,17 @@ public class ZkServiceImpl implements ZkService {
     @Override
     public String getLeaderNodeGRPChost(String shard, String city) {
         if (!shard.startsWith("/")){ shard = "/".concat(shard);}
-        return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
+
+        // get host of REST (the data of the master node)
+        String leaderRESThost = zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
+       // get host of gRPC (the data of the server node in live_nodes (i.e. node name is RESThost, data is gRPC IP)
+        return zkClient.readData(SHARD_DIR.concat(shard).concat(LIVE_NODES).concat("/").concat(leaderRESThost), true);
     }
 
     @Override
     public String getLeaderNodeRESThost(String shard, String city) {
         if (!shard.startsWith("/")){ shard = "/".concat(shard);}
-        List<String> leader = zkClient.getChildren(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_NODE));
-        return leader.get(0);
-        // todo: what if there is no leader? or more than one?
+        return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
     }
 
     @Override
@@ -177,15 +179,6 @@ public class ZkServiceImpl implements ZkService {
         if (!zkClient.exists(CITIES)) {
             zkClient.create(CITIES, "live list of cities being served", CreateMode.PERSISTENT);
         }
-//        if (!zkClient.exists(ALL_NODES)) {
-//            zkClient.create(ALL_NODES, "all live nodes are displayed here", CreateMode.PERSISTENT);
-//        }
-//        if (!zkClient.exists(LIVE_NODES)) {
-//            zkClient.create(LIVE_NODES, "all live nodes are displayed here", CreateMode.PERSISTENT);
-//        }
-//        if (!zkClient.exists(ELECTION_NODE)) {
-//            zkClient.create(ELECTION_NODE, "election node", CreateMode.PERSISTENT);
-//        }
     }
 
     @Override

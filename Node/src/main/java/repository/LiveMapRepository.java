@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public class LiveMapRepository {
-    public Ride addNew(RideDto rideDto) {
+    public Ride addNew(RideDto rideDto, String cityToAddTo) {
         var ride = new Ride(
                 rideDto.firstName,
                 rideDto.lastName,
@@ -22,7 +22,7 @@ public class LiveMapRepository {
                 rideDto.pd
         );
 
-        getCollection(rideDto.origin).addNewRideId(ride);
+        getCollection(cityToAddTo).addNewRideId(ride);
 
         return ride;
     }
@@ -36,6 +36,8 @@ public class LiveMapRepository {
         return switch (origin) {
             case "cityA" -> LiveMapsDatabase.cityARides;
             case "cityB" -> LiveMapsDatabase.cityBRides;
+            case "cityC" -> LiveMapsDatabase.cityCRides;
+            case "cityD" -> LiveMapsDatabase.cityDRides;
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }
