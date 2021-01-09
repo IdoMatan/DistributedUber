@@ -45,7 +45,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
 
         var dto = new RideDto(rideToAdd);
         if (addressedTo.equals(dto.origin)) {
-            departureRepository.addNew(dto);
+            departureRepository.upsertRide(dto);
         }
         var ride = liveMapRepository.addNew(dto, addressedTo);
 

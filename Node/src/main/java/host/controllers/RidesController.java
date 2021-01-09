@@ -71,7 +71,7 @@ public class RidesController {
         // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
         // and also to all leaders of relevant cities (that ride is able to pick up from
         // If I got here I am the leader of the origin city of the ride
-        var ride = departureRepository.addNew(rideDto);
+        var ride = departureRepository.upsertRide(rideDto);
         liveMapRepository.addNew(rideDto, rideDto.origin);
 
         // gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
@@ -139,6 +139,10 @@ public class RidesController {
     @PostMapping("/redirected_new_passenger/single")
     public ResponseEntity<String> newPassenger(@RequestBody PassengerDto passengerDto) {
         var optionalRides = liveMapRepository.rideExists(passengerDto.origin, passengerDto.destination, passengerDto.departureDate);
+        if (optionalRides.isEmpty()) {
+            return ResponseEntity.ok("No available rides, try again later\nthanks,\nAvishag");
+        }
+        
         Ride bookedRide = null;
         for (String rideId : optionalRides) {
             var rideOriginCity = parseOrigin(rideId);
@@ -153,7 +157,9 @@ public class RidesController {
         // booked ride by local driver.
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
-//            updateCurrentCityFollowers();
+            updateCurrentCityFollowers(dto);
+        } else {
+            // avishag todo: handle if no rides with origin = current city.
         }
 
 
@@ -186,7 +192,7 @@ public class RidesController {
         return rideId.split("_")[0];
     }
 
-    private void updateCurrentCityFollowers(RideDto rideDto, Boolean isNewRide) {
+    private void updateCurrentCityFollowers(RideDto rideDto) {
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 

@@ -7,9 +7,10 @@ import model.Passenger;
 import model.Ride;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DepartureRepository {
-    public Ride addNew(RideDto rideDto) {
+    public Ride upsertRide(RideDto rideDto) {
         var ride = new Ride(
                 rideDto.firstName,
                 rideDto.lastName,
@@ -18,7 +19,8 @@ public class DepartureRepository {
                 rideDto.destination,
                 rideDto.departureDate,
                 rideDto.vacancies,
-                rideDto.pd
+                rideDto.pd,
+                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         getCollection(ride.origin).put(ride.buildUniqueKey(), ride);
