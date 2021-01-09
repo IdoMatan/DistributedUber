@@ -1,48 +1,29 @@
 package impl;
 
 import api.ZkService;
-//import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.springframework.util.ResourceUtils;
 import util.StringSerializer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
 import static util.ZkConfig.*;
 
-/** @author "Ido Glanz, Matan Weks" 01/01/21 */
+//import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author "Ido Glanz, Matan Weks" 01/01/21
+ */
 //@Slf4j
 public class ZkServiceImpl implements ZkService {
-    File file;
-    {
-        try {
-            file = ResourceUtils.getFile("resources/json/CitiesMap");
-            Object temp = JSONValue.parse(file.toString());
-            JSONObject CitiesMap = (JSONObject) temp;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    {
-        try {
-            file = ResourceUtils.getFile("resources/json/CitiesMap");
-            Object temp = JSONValue.parse(file.toString());
-            JSONObject CitiesMap = (JSONObject) temp;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+
     private ZkClient zkClient;
+
 //    private static final Logger log = Logger.getLogger("zooLog");
 
     public ZkServiceImpl(String hostPort) {
@@ -54,30 +35,66 @@ public class ZkServiceImpl implements ZkService {
     }
 
     @Override
-    public String getLeaderNodeData(String shard) {
+    public String getLeaderNodeGRPChost(String shard, String city) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
+    }
 
-        return zkClient.readData(SHARD_DIR.concat(shard).concat(ELECTION_MASTER), true);
+    @Override
+    public String getLeaderNodeRESThost(String shard, String city) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        List<String> leader = zkClient.getChildren(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_NODE));
+        return leader.get(0);
+        // todo: what if there is no leader? or more than one?
     }
 
     @Override
     public void electForMaster(String shard) {
-        if (!zkClient.exists(SHARD_DIR.concat(shard).concat(ELECTION_NODE))) {
-            zkClient.create(SHARD_DIR.concat(shard).concat(ELECTION_NODE), "election_node", CreateMode.PERSISTENT);
-        }
-        try {
-            zkClient.create(
-                    SHARD_DIR.concat(shard).concat(ELECTION_MASTER),
-                    getHostPostOfServer(),
-                    ZooDefs.Ids.OPEN_ACL_UNSAFE,
-                    CreateMode.EPHEMERAL);
-        } catch (ZkNodeExistsException e) {
-            System.out.println("Master already elected! ".concat(e.toString()));
-//            log.info("Master already elected! ".concat(e.toString()));
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
+        for (String c : cities) {
+            if (c.startsWith("city")) {
+                if (!zkClient.exists(SHARD_DIR.concat(shard).concat("/").concat(c).concat(ELECTION_MASTER))) {
+                    // a master doesn't exist --> propose myself
+                    try {
+                        zkClient.create(
+                                SHARD_DIR.concat(shard).concat("/").concat(c).concat(ELECTION_MASTER),
+                                getHostPostOfRESTServer(),
+                                ZooDefs.Ids.OPEN_ACL_UNSAFE,
+                                CreateMode.EPHEMERAL);
+                    } catch (ZkNodeExistsException e) {
+                        System.out.println("Master already elected! ".concat(e.toString()));
+                    }
+                }
+            }
         }
     }
 
     @Override
+    public void singleReElect(String parentPath){
+        if (!zkClient.exists(parentPath.concat("/master"))) {
+            // a master doesn't exist --> propose myself
+            try {
+                zkClient.create(
+                        parentPath.concat("/master"),
+                        getHostPostOfRESTServer(),
+                        ZooDefs.Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.EPHEMERAL);
+            } catch (ZkNodeExistsException e) {
+                System.out.println("Master already elected! ".concat(e.toString()));
+            }
+        }
+    }
+    @Override
     public boolean masterExists(String shard) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
+        for (String c : cities) {
+            if (zkClient.exists(SHARD_DIR.concat(shard).concat("/").concat(c).concat(ELECTION_MASTER))) {
+                System.out.println("I shouldn't be here....");
+
+            }
+        }
         return zkClient.exists(SHARD_DIR.concat(shard).concat(ELECTION_MASTER));
     }
 
@@ -128,6 +145,28 @@ public class ZkServiceImpl implements ZkService {
     }
 
     @Override
+    public void createZkTree(String shard) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+
+        if (!zkClient.exists(SHARD_DIR)) {
+            zkClient.create(SHARD_DIR, "all shards are listed here", CreateMode.PERSISTENT);
+        }
+        for (String shard_name : SHARDS) {
+            if (!zkClient.exists(SHARD_DIR.concat(shard_name))) {
+                zkClient.create(SHARD_DIR.concat(shard_name), "in charge of cities [A,B,C..]", CreateMode.PERSISTENT);
+            }
+        }
+        if (!zkClient.exists(SHARD_DIR.concat(shard).concat(LIVE_NODES))) {
+            zkClient.create(SHARD_DIR.concat(shard).concat(LIVE_NODES), "List of active servers", CreateMode.PERSISTENT);
+        }
+        zkClient.create(SHARD_DIR.concat(shard).concat(LIVE_NODES).concat("/").concat(getHostPostOfRESTServer()), getHostPostOfgRPCServer(), CreateMode.EPHEMERAL);
+
+        if (!zkClient.exists(CITIES)) {
+            zkClient.create(CITIES, "live list of cities being served", CreateMode.PERSISTENT);
+        }
+    }
+
+    @Override
     public void createAllParentNodes() {
         if (!zkClient.exists("/SHARDS")) {
             zkClient.create("/SHARDS", "all shards are listed here", CreateMode.PERSISTENT);
@@ -150,22 +189,17 @@ public class ZkServiceImpl implements ZkService {
     }
 
     @Override
-    public void createCityNode(String shard, String city_name){
-        var city = SHARD_DIR.concat(shard).concat("/").concat(city_name);
-        if (!zkClient.exists(city)) {
-            zkClient.create(city, "city_node_".concat(city_name), CreateMode.PERSISTENT);
-
+    public void createCityNodes(String shard, List<String> cities) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        for (String c : cities) {
+            var city = SHARD_DIR.concat(shard).concat("/").concat(c);
+            if (!zkClient.exists(city)) {
+                zkClient.create(city, c.concat("_node"), CreateMode.PERSISTENT);
+            }
+            if (!zkClient.exists(city.concat(ELECTION_NODE))) {
+                zkClient.create(city.concat(ELECTION_NODE), "election_node", CreateMode.PERSISTENT);
+            }
         }
-        String my_node = city.concat("/").concat((String)getHostPostOfServer());
-        // Check if city already shows up in the cities being served list
-        if (!zkClient.exists(CITIES.concat("/").concat(city_name)))
-            zkClient.create(CITIES.concat("/").concat(city_name),"SHARD".concat(shard), CreateMode.EPHEMERAL);
-
-        // check if my my node is by any chance already in shard active servers
-        if (zkClient.exists(my_node)) {
-            return;
-        }
-        zkClient.create(my_node,"localhost:".concat(getHostPostOfServer()), CreateMode.EPHEMERAL);
     }
 
     @Override
@@ -193,21 +227,36 @@ public class ZkServiceImpl implements ZkService {
     }
 
     @Override
-    public void registerChildrenChangeWatcher(String path, IZkChildListener iZkChildListener) {
-        zkClient.subscribeChildChanges(path, iZkChildListener);
+    public void registerChildrenChangeWatcher(String shard, IZkChildListener iZkChildListener) {
+
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
+        for (String c : cities) {
+            if (c.startsWith("city")){
+                zkClient.subscribeChildChanges(SHARD_DIR+shard+"/"+c+ELECTION_NODE, iZkChildListener);
+            }
+        }
     }
 
     @Override
     public void registerZkSessionStateListener(IZkStateListener iZkStateListener) {
         zkClient.subscribeStateChanges(iZkStateListener);
     }
+
     @Override
     public List<String> getCities() {
         return zkClient.getChildren(CITIES);
     }
 
     @Override
-    public List<String> getShardNodes(String shard){
+    public List<String> getFollowers(String shard) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        return zkClient.getChildren(SHARD_DIR + shard + LIVE_NODES);
+    }
+
+    @Override
+    public List<String> getShardNodes(String shard) {
+        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
         return zkClient.getChildren(SHARD_DIR.concat(shard));
     }
 

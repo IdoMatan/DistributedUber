@@ -8,9 +8,13 @@ import java.util.List;
 /** @author "IdoGlanzMatanWeks" 01/01/21 */
 public interface ZkService {
 
-    String getLeaderNodeData(String shard);
+    String getLeaderNodeGRPChost(String shard, String city);
+
+    String getLeaderNodeRESThost(String shard, String city);
+
 
     void electForMaster(String shard);
+    public void singleReElect(String parentPath);
 
     boolean masterExists(String shard);
 
@@ -25,7 +29,10 @@ public interface ZkService {
     void deleteNodeFromCluster(String node);
 
     void createAllParentNodes();
-    void createCityNode(String shard, String city_name);
+
+    void createZkTree(String shard);
+
+    void createCityNodes(String shard, List<String> cities);
 
     String getLeaderNodeData2();
 
@@ -33,10 +40,13 @@ public interface ZkService {
 
     void createNodeInElectionZnode(String data);
 
-    void registerChildrenChangeWatcher(String path, IZkChildListener iZkChildListener);
+    void registerChildrenChangeWatcher(String shard, IZkChildListener iZkChildListener);
 
     void registerZkSessionStateListener(IZkStateListener iZkStateListener);
 
     List<String> getCities();
+
+    List<String> getFollowers(String shard);
+
     List<String> getShardNodes(String shard);
 }

@@ -1,8 +1,7 @@
 package host.controllers;
 
-import generated.Msg1;
-import generated.Msg2;
-import generated.RouteGuideGrpc;
+import generated.*;
+import host.dto.RideDto;
 import io.grpc.Channel;
 
 public class Sender {
@@ -22,5 +21,12 @@ public class Sender {
         Msg2 back = blockingStub.senderTest1(send_msg);
         System.out.println("you received - ");
         System.out.println(back.getC());
+    }
+
+    public void updateFollower(RideDto rideDto){
+        var proto = rideDto.toProto();
+        UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).build();
+        Id back = blockingStub.updateFollower(send_msg);
+
     }
 }

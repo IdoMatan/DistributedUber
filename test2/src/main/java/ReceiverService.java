@@ -14,7 +14,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     @Override
     public void senderTest1(Msg1 inputs, StreamObserver<Msg2> responseObserver){
         Msg2 out = Msg2.newBuilder()
-                .setC(10)
+                .setC(inputs.getA()+inputs.getB())
                 .build();
         out.newBuilderForType().setC(9);
         if (inputs.getA() >= 10){System.out.println("bigger than 10");}
