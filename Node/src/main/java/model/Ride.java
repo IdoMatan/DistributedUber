@@ -1,7 +1,6 @@
 package model;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +13,9 @@ public class Ride {
     public final String departureDate;
     public int vacancies;
     public final float pd;
-    public List<Passenger> passengerList = new ArrayList<>();
+    public List<Passenger> passengerList;
 
-    public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd) {
+    public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd, List<Passenger> passengerList) {
         this.firstName = first;
         this.lastName = last;
         this.phoneNumber = phone;
@@ -25,6 +24,7 @@ public class Ride {
         this.departureDate = departureDate;
         this.vacancies = seats;
         this.pd = pd;
+        this.passengerList = passengerList == null ? new ArrayList<>() : passengerList;
     }
 
     public String buildUniqueKey() {
@@ -51,7 +51,7 @@ public class Ride {
                 ", Departure_date=" + departureDate +
                 ", Vacancies=" + vacancies +
                 ", PD=" + pd +
-                ", Passenger_list=" + passengerList.toString()+
+                ", Passenger_list=" + passengerList.toString() +
                 '}';
     }
 }
