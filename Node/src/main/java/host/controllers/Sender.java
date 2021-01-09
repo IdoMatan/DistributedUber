@@ -23,10 +23,15 @@ public class Sender {
         System.out.println(back.getC());
     }
 
-    public void updateFollower(RideDto rideDto){
+    public void updateFollower(RideDto rideDto, String addressedTo){
         var proto = rideDto.toProto();
-        UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).build();
+        UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo).build();
         Id back = blockingStub.updateFollower(send_msg);
+    }
 
+    public Id updatePDCities(RideDto rideDto, String addressedTo){
+        var proto = rideDto.toProto();
+        UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo).build();
+        return blockingStub.updatePDRide(send_msg);
     }
 }

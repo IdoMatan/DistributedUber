@@ -1,12 +1,21 @@
 package host;
 
+import api.ZkService;
 import generated.*;
+import host.controllers.Sender;
 import host.dto.RideDto;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
 
+import java.util.List;
+
 public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
+    @Autowired
+    private ZkService zkService;
 
     private final int input;
 
@@ -32,11 +41,41 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     @Override
     public void updateFollower(UpdateNewRideMessage rideMessage, StreamObserver<Id> id) {
         RideProto rideToAdd = rideMessage.getRide();
+        String addressedTo = rideMessage.getAddressedTo();
+
         var dto = new RideDto(rideToAdd);
-        var ride = departureRepository.addNew(dto);
-        liveMapRepository.addNew(dto);
+        if (addressedTo.equals(dto.origin)) {
+            departureRepository.addNew(dto);
+        }
+        var ride = liveMapRepository.addNew(dto, addressedTo);
 
         Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
+        id.onNext(rideId);
+        id.onCompleted();
+    }
+
+
+    @Override
+    public void updatePDRide(UpdateNewRideMessage rideMessage, StreamObserver<Id> id){
+        RideProto pdRideToAdd = rideMessage.getRide();
+        var dto = new RideDto(pdRideToAdd);
+        String addressedTo = rideMessage.getAddressedTo();
+        var ride = liveMapRepository.addNew(dto, addressedTo);
+        Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
+
+        String shard = System.getProperty("shard");
+        List<String> followers = zkService.getFollowers(shard);
+        var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+        for (String target : followers) {
+            if (!myFullURI.equals(target)) {
+                String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                Sender client = new Sender(channel);
+                // Call server streaming call
+                client.updateFollower(dto, addressedTo);
+            }
+        }
+
         id.onNext(rideId);
         id.onCompleted();
     }

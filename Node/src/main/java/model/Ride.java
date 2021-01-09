@@ -28,7 +28,7 @@ public class Ride {
     }
 
     public String buildUniqueKey() {
-        return origin + "_" + departureDate + "_" + firstName + "_" + lastName;
+        return origin + "_" + destination + "_" + departureDate + "_" + firstName + "_" + lastName;
     }
 
     public boolean available() {

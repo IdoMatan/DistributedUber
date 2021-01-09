@@ -21,4 +21,16 @@ public interface UpdateNewRideMessageOrBuilder extends
    * <code>.routeguide.RideProto ride = 1;</code>
    */
   generated.RideProtoOrBuilder getRideOrBuilder();
+
+  /**
+   * <code>string AddressedTo = 2;</code>
+   * @return The addressedTo.
+   */
+  java.lang.String getAddressedTo();
+  /**
+   * <code>string AddressedTo = 2;</code>
+   * @return The bytes for addressedTo.
+   */
+  com.google.protobuf.ByteString
+      getAddressedToBytes();
 }

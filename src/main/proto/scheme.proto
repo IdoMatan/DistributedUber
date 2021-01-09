@@ -23,7 +23,7 @@ package routeguide;
 service RouteGuide {
   rpc SenderTest1(Msg1) returns (Msg2) {}
   rpc UpdateFollower(UpdateNewRideMessage) returns(Id){}
-  rpc UpdateRelevantCities(UpdateNewRideMessage) returns (Id){}
+  rpc updatePDRide(UpdateNewRideMessage) returns (Id){}
 }
 
 message RideProto {
@@ -39,6 +39,7 @@ message RideProto {
 
 message UpdateNewRideMessage{
   RideProto ride = 1;
+  string AddressedTo = 2;
 }
 message Id{
   string rideId = 1;
