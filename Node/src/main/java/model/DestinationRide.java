@@ -13,14 +13,14 @@ public class DestinationRide {
         return ridesByDate.get(date);
     }
 
-    public void addNewRideId(Ride ride) {
-        List<String> ridesResult = (exists(ride.departureDate)) ?
-                this.ridesByDate.get(ride.departureDate) :
+    public void addNewRideId(String rideId, String departureDate){
+        List<String> ridesResult = (exists(departureDate)) ?
+                this.ridesByDate.get(departureDate) :
                 new ArrayList<>();
 
-        ridesResult.add(ride.buildUniqueKey());
+        ridesResult.add(rideId);
 
-        this.ridesByDate.put(ride.departureDate, ridesResult);
+        this.ridesByDate.put(departureDate, ridesResult);
     }
 
     private boolean exists(String dateStr) {

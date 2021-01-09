@@ -7,9 +7,11 @@ import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import model.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
+import service.PdCalculation;
 
 import java.util.List;
 
@@ -44,10 +46,18 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         String addressedTo = rideMessage.getAddressedTo();
 
         var dto = new RideDto(rideToAdd);
+        var isNewRide = false;
         if (addressedTo.equals(dto.origin)) {
+            isNewRide = departureRepository.exists(dto);
             departureRepository.addNew(dto);
         }
         var ride = liveMapRepository.addNew(dto, addressedTo);
+        if (!isNewRide){
+            var pdCities = (new PdCalculation(ride)).calculate();
+            for(City c: pdCities){
+                liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
+            }
+        }
 
         Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
         id.onNext(rideId);

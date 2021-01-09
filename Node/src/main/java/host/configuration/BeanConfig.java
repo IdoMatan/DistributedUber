@@ -2,6 +2,7 @@ package host.configuration;
 
 import api.ZkService;
 import external.service.PdCitiesService;
+import host.LocalRideDistributionService;
 import impl.ZkServiceImpl;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
@@ -31,6 +32,9 @@ public class BeanConfig {
   @Scope("singleton")
   public DepartureRepository departureRepository() { return new DepartureRepository(); }
 
+  @Bean(name = "localRideDistribution")
+  @Scope("singleton")
+  public LocalRideDistributionService localRideDistribution() { return new LocalRideDistributionService(); }
 
   @Bean(name = "pdCitiesService")
   @Scope("singleton")
