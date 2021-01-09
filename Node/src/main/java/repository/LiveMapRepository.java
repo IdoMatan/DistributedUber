@@ -7,6 +7,7 @@ import model.Passenger;
 import model.Ride;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class LiveMapRepository {
                 rideDto.departureDate,
                 rideDto.vacancies,
                 rideDto.pd,
-                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
+                rideDto.passengers == null ? new ArrayList<>() : rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         getCollection(cityToAddTo).addNewRideId( ride.buildUniqueKey(), ride.destination,ride.departureDate);

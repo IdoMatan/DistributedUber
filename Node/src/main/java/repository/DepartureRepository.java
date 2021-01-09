@@ -6,6 +6,7 @@ import model.DeparturesDataBase;
 import model.Passenger;
 import model.Ride;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class DepartureRepository {
                 rideDto.departureDate,
                 rideDto.vacancies,
                 rideDto.pd,
-                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
+                rideDto.passengers == null ? new ArrayList<>() : rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         getCollection(ride.origin).put(ride.buildUniqueKey(), ride);
@@ -38,7 +39,7 @@ public class DepartureRepository {
                 rideDto.departureDate,
                 rideDto.vacancies,
                 rideDto.pd,
-                rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
+                rideDto.passengers == null ? new ArrayList<>() : rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
         return getCollection(ride.origin).containsKey(ride.buildUniqueKey());
