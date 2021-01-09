@@ -4,25 +4,25 @@
 package generated;
 
 /**
- * Protobuf type {@code routeguide.NewRideDto}
+ * Protobuf type {@code routeguide.UpdateNewRideMessage}
  */
-public final class NewRideDto extends
+public final class UpdateNewRideMessage extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:routeguide.NewRideDto)
-    NewRideDtoOrBuilder {
+    // @@protoc_insertion_point(message_implements:routeguide.UpdateNewRideMessage)
+    UpdateNewRideMessageOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use NewRideDto.newBuilder() to construct.
-  private NewRideDto(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use UpdateNewRideMessage.newBuilder() to construct.
+  private UpdateNewRideMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private NewRideDto() {
+  private UpdateNewRideMessage() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new NewRideDto();
+    return new UpdateNewRideMessage();
   }
 
   @java.lang.Override
@@ -30,7 +30,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private NewRideDto(
+  private UpdateNewRideMessage(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -49,11 +49,11 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            generated.NewRideDto.Builder subBuilder = null;
+            generated.RideProto.Builder subBuilder = null;
             if (ride_ != null) {
               subBuilder = ride_.toBuilder();
             }
-            ride_ = input.readMessage(generated.NewRideDto.parser(), extensionRegistry);
+            ride_ = input.readMessage(generated.RideProto.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(ride_);
               ride_ = subBuilder.buildPartial();
@@ -82,21 +82,21 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return generated.RouteGuideProto.internal_static_routeguide_NewRideDto_descriptor;
+    return generated.RouteGuideProto.internal_static_routeguide_UpdateNewRideMessage_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return generated.RouteGuideProto.internal_static_routeguide_NewRideDto_fieldAccessorTable
+    return generated.RouteGuideProto.internal_static_routeguide_UpdateNewRideMessage_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            generated.NewRideDto.class, generated.NewRideDto.Builder.class);
+            generated.UpdateNewRideMessage.class, generated.UpdateNewRideMessage.Builder.class);
   }
 
   public static final int RIDE_FIELD_NUMBER = 1;
-  private generated.NewRideDto ride_;
+  private generated.RideProto ride_;
   /**
-   * <code>.routeguide.NewRideDto ride = 1;</code>
+   * <code>.routeguide.RideProto ride = 1;</code>
    * @return Whether the ride field is set.
    */
   @java.lang.Override
@@ -104,18 +104,18 @@ private static final long serialVersionUID = 0L;
     return ride_ != null;
   }
   /**
-   * <code>.routeguide.NewRideDto ride = 1;</code>
+   * <code>.routeguide.RideProto ride = 1;</code>
    * @return The ride.
    */
   @java.lang.Override
-  public generated.NewRideDto getRide() {
-    return ride_ == null ? generated.NewRideDto.getDefaultInstance() : ride_;
+  public generated.RideProto getRide() {
+    return ride_ == null ? generated.RideProto.getDefaultInstance() : ride_;
   }
   /**
-   * <code>.routeguide.NewRideDto ride = 1;</code>
+   * <code>.routeguide.RideProto ride = 1;</code>
    */
   @java.lang.Override
-  public generated.NewRideDtoOrBuilder getRideOrBuilder() {
+  public generated.RideProtoOrBuilder getRideOrBuilder() {
     return getRide();
   }
 
@@ -159,10 +159,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof generated.NewRideDto)) {
+    if (!(obj instanceof generated.UpdateNewRideMessage)) {
       return super.equals(obj);
     }
-    generated.NewRideDto other = (generated.NewRideDto) obj;
+    generated.UpdateNewRideMessage other = (generated.UpdateNewRideMessage) obj;
 
     if (hasRide() != other.hasRide()) return false;
     if (hasRide()) {
@@ -189,69 +189,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.NewRideDto parseFrom(byte[] data)
+  public static generated.UpdateNewRideMessage parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.NewRideDto parseFrom(java.io.InputStream input)
+  public static generated.UpdateNewRideMessage parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static generated.NewRideDto parseDelimitedFrom(java.io.InputStream input)
+  public static generated.UpdateNewRideMessage parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static generated.NewRideDto parseDelimitedFrom(
+  public static generated.UpdateNewRideMessage parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static generated.NewRideDto parseFrom(
+  public static generated.UpdateNewRideMessage parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +264,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(generated.NewRideDto prototype) {
+  public static Builder newBuilder(generated.UpdateNewRideMessage prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +280,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code routeguide.NewRideDto}
+   * Protobuf type {@code routeguide.UpdateNewRideMessage}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:routeguide.NewRideDto)
-      generated.NewRideDtoOrBuilder {
+      // @@protoc_insertion_point(builder_implements:routeguide.UpdateNewRideMessage)
+      generated.UpdateNewRideMessageOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return generated.RouteGuideProto.internal_static_routeguide_NewRideDto_descriptor;
+      return generated.RouteGuideProto.internal_static_routeguide_UpdateNewRideMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return generated.RouteGuideProto.internal_static_routeguide_NewRideDto_fieldAccessorTable
+      return generated.RouteGuideProto.internal_static_routeguide_UpdateNewRideMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              generated.NewRideDto.class, generated.NewRideDto.Builder.class);
+              generated.UpdateNewRideMessage.class, generated.UpdateNewRideMessage.Builder.class);
     }
 
-    // Construct using generated.NewRideDto.newBuilder()
+    // Construct using generated.UpdateNewRideMessage.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -329,17 +329,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return generated.RouteGuideProto.internal_static_routeguide_NewRideDto_descriptor;
+      return generated.RouteGuideProto.internal_static_routeguide_UpdateNewRideMessage_descriptor;
     }
 
     @java.lang.Override
-    public generated.NewRideDto getDefaultInstanceForType() {
-      return generated.NewRideDto.getDefaultInstance();
+    public generated.UpdateNewRideMessage getDefaultInstanceForType() {
+      return generated.UpdateNewRideMessage.getDefaultInstance();
     }
 
     @java.lang.Override
-    public generated.NewRideDto build() {
-      generated.NewRideDto result = buildPartial();
+    public generated.UpdateNewRideMessage build() {
+      generated.UpdateNewRideMessage result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -347,8 +347,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public generated.NewRideDto buildPartial() {
-      generated.NewRideDto result = new generated.NewRideDto(this);
+    public generated.UpdateNewRideMessage buildPartial() {
+      generated.UpdateNewRideMessage result = new generated.UpdateNewRideMessage(this);
       if (rideBuilder_ == null) {
         result.ride_ = ride_;
       } else {
@@ -392,16 +392,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof generated.NewRideDto) {
-        return mergeFrom((generated.NewRideDto)other);
+      if (other instanceof generated.UpdateNewRideMessage) {
+        return mergeFrom((generated.UpdateNewRideMessage)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(generated.NewRideDto other) {
-      if (other == generated.NewRideDto.getDefaultInstance()) return this;
+    public Builder mergeFrom(generated.UpdateNewRideMessage other) {
+      if (other == generated.UpdateNewRideMessage.getDefaultInstance()) return this;
       if (other.hasRide()) {
         mergeRide(other.getRide());
       }
@@ -420,11 +420,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      generated.NewRideDto parsedMessage = null;
+      generated.UpdateNewRideMessage parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (generated.NewRideDto) e.getUnfinishedMessage();
+        parsedMessage = (generated.UpdateNewRideMessage) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -434,31 +434,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private generated.NewRideDto ride_;
+    private generated.RideProto ride_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        generated.NewRideDto, generated.NewRideDto.Builder, generated.NewRideDtoOrBuilder> rideBuilder_;
+        generated.RideProto, generated.RideProto.Builder, generated.RideProtoOrBuilder> rideBuilder_;
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      * @return Whether the ride field is set.
      */
     public boolean hasRide() {
       return rideBuilder_ != null || ride_ != null;
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      * @return The ride.
      */
-    public generated.NewRideDto getRide() {
+    public generated.RideProto getRide() {
       if (rideBuilder_ == null) {
-        return ride_ == null ? generated.NewRideDto.getDefaultInstance() : ride_;
+        return ride_ == null ? generated.RideProto.getDefaultInstance() : ride_;
       } else {
         return rideBuilder_.getMessage();
       }
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
-    public Builder setRide(generated.NewRideDto value) {
+    public Builder setRide(generated.RideProto value) {
       if (rideBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -472,10 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
     public Builder setRide(
-        generated.NewRideDto.Builder builderForValue) {
+        generated.RideProto.Builder builderForValue) {
       if (rideBuilder_ == null) {
         ride_ = builderForValue.build();
         onChanged();
@@ -486,13 +486,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
-    public Builder mergeRide(generated.NewRideDto value) {
+    public Builder mergeRide(generated.RideProto value) {
       if (rideBuilder_ == null) {
         if (ride_ != null) {
           ride_ =
-            generated.NewRideDto.newBuilder(ride_).mergeFrom(value).buildPartial();
+            generated.RideProto.newBuilder(ride_).mergeFrom(value).buildPartial();
         } else {
           ride_ = value;
         }
@@ -504,7 +504,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
     public Builder clearRide() {
       if (rideBuilder_ == null) {
@@ -518,33 +518,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
-    public generated.NewRideDto.Builder getRideBuilder() {
+    public generated.RideProto.Builder getRideBuilder() {
       
       onChanged();
       return getRideFieldBuilder().getBuilder();
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
-    public generated.NewRideDtoOrBuilder getRideOrBuilder() {
+    public generated.RideProtoOrBuilder getRideOrBuilder() {
       if (rideBuilder_ != null) {
         return rideBuilder_.getMessageOrBuilder();
       } else {
         return ride_ == null ?
-            generated.NewRideDto.getDefaultInstance() : ride_;
+            generated.RideProto.getDefaultInstance() : ride_;
       }
     }
     /**
-     * <code>.routeguide.NewRideDto ride = 1;</code>
+     * <code>.routeguide.RideProto ride = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        generated.NewRideDto, generated.NewRideDto.Builder, generated.NewRideDtoOrBuilder> 
+        generated.RideProto, generated.RideProto.Builder, generated.RideProtoOrBuilder> 
         getRideFieldBuilder() {
       if (rideBuilder_ == null) {
         rideBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            generated.NewRideDto, generated.NewRideDto.Builder, generated.NewRideDtoOrBuilder>(
+            generated.RideProto, generated.RideProto.Builder, generated.RideProtoOrBuilder>(
                 getRide(),
                 getParentForChildren(),
                 isClean());
@@ -565,41 +565,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:routeguide.NewRideDto)
+    // @@protoc_insertion_point(builder_scope:routeguide.UpdateNewRideMessage)
   }
 
-  // @@protoc_insertion_point(class_scope:routeguide.NewRideDto)
-  private static final generated.NewRideDto DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:routeguide.UpdateNewRideMessage)
+  private static final generated.UpdateNewRideMessage DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new generated.NewRideDto();
+    DEFAULT_INSTANCE = new generated.UpdateNewRideMessage();
   }
 
-  public static generated.NewRideDto getDefaultInstance() {
+  public static generated.UpdateNewRideMessage getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<NewRideDto>
-      PARSER = new com.google.protobuf.AbstractParser<NewRideDto>() {
+  private static final com.google.protobuf.Parser<UpdateNewRideMessage>
+      PARSER = new com.google.protobuf.AbstractParser<UpdateNewRideMessage>() {
     @java.lang.Override
-    public NewRideDto parsePartialFrom(
+    public UpdateNewRideMessage parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new NewRideDto(input, extensionRegistry);
+      return new UpdateNewRideMessage(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<NewRideDto> parser() {
+  public static com.google.protobuf.Parser<UpdateNewRideMessage> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<NewRideDto> getParserForType() {
+  public com.google.protobuf.Parser<UpdateNewRideMessage> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public generated.NewRideDto getDefaultInstanceForType() {
+  public generated.UpdateNewRideMessage getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

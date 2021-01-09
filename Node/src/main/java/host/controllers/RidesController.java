@@ -23,6 +23,7 @@ import repository.LiveMapRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author "IdoGlanzMatanWeks" 01/01/21
@@ -39,13 +40,18 @@ public class RidesController {
     LiveMapRepository liveMapRepository;
     @Autowired
     DepartureRepository departureRepository;
-    @Value("${city}")
-    public String city;
+    @Value("${shard}")
+    public String shard;
 
     @Value(("${server.port}"))
-    public String port;
+    public String restPort;
 
-    @PostMapping(value = "/new_ride")
+    @Value(("${grpc.port}"))
+    public String grpcPort;
+
+// ---------------------------------------------- Handle new ride ------------------------------------------------------
+
+    @PostMapping(value = "/redirected_new_ride")
     public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
 //        System.out.println(rideDto.toString());
 //        //  create city object from the origin of the ride posted
@@ -58,17 +64,24 @@ public class RidesController {
 //        } else {
             // case where I am the leader and thus need to add it to rides repo and update the other servers in shard
             // and also to all leaders of relevant cities (that ride is able to pick up from
+        // If I got here I am the leader of the origin city of the ride
         departureRepository.addNew(rideDto);
         liveMapRepository.addNew(rideDto);
 
         // gRPC method add_ride_in_shard and method post_ride to leaders of other (relevant) cities
-        String target = "localhost:8980";
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-        Sender client = new Sender(channel);
-        // Call server streaming call
-        client.updateFollower(rideDto);
+//        String target = "localhost:8980";
+
+        // todo grab all address of all followers/city servers (from ZK active list)
+        List<String> followers = zkService.getFollowers(shard);
+        for (String target : followers) {
+            String target_grpc = zkService.getZNodeData("/" + shard + "/" + target);
+            ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+            Sender client = new Sender(channel);
+            // Call server streaming call
+            client.updateFollower(rideDto);
+        }
         System.out.println("Waiting");
-        return "ok";
+//        return "ok";
 
             // get shard ports.
 
@@ -120,14 +133,17 @@ public class RidesController {
 //        return ResponseEntity.ok(zkService.getCities());
 //    }
 
+
+// ------------------------------------------------ Book passenger -----------------------------------------------------
+
     @PostMapping("/ride/book/single")
     public ResponseEntity<String> newPassenger(@RequestBody PassengerDto passengerDto) {
         //  create city object from the origin of the ride posted
         var originCity = citiesRepository.getCity(passengerDto.origin);
         // get the leader node of the relevant city
-        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
-
-        if (!leaderNodeData.equals(System.getProperty("server.ip") + ":" + port)) {
+        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name);
+        var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+        if (!leaderNodeData.equals(myFullURI)) {
             // todo redirect to the leader server
         } else {
             // I am the leader, look for relevant ride in LiveMapDatabase
@@ -149,26 +165,27 @@ public class RidesController {
         return ResponseEntity.ok("No available rides, try again later");
     }
 
-
-    @PostMapping("/new_ride_request")
+// ------------------------------------------------ Router/DNS --------------------------------------------------------
+    @PostMapping("/new_ride")
     public ModelAndView redirectPostToPost(HttpServletRequest request) throws IOException {
-        request.setAttribute(
-                View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
         RideDto rideDto = new Gson().fromJson(request.getReader(), RideDto.class);
-        var originCity = citiesRepository.getCity(rideDto.origin);
-            // get the leader node of the relevant city
-        var leaderNodeData = zkService.getLeaderNodeData(originCity.shard);
-        String redirect =  "redirect:http://localhost:"+"8081"+"/new_ride"; // todo redirect follow leader node
+
+        var originCity = citiesRepository.getCity(rideDto.origin);  // transform to city object
+        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the leader node of the relevant city
+        var leaderFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+
+        String redirect =  "redirect:http://" + leaderFullURI + "/redirected_new_ride"; // redirect to leader
         return new ModelAndView(redirect);
     }
 
     @GetMapping("/test")
     public String testing() {
-        String target = "localhost:8980";
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-        Sender client = new Sender(channel);
+//        String target = "localhost:8980";
+//        ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+//        Sender client = new Sender(channel);
         // Call server streaming call
-        client.senderTest1(110, 0);
+//        client.senderTest1(110, 0);
         System.out.println("Waiting");
         return "ok";
     }

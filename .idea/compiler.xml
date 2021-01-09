@@ -11,6 +11,8 @@
         <module name="ZooKeeperPlayground.Node.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="test1" target="15" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -15,6 +15,21 @@ public final class RouteGuideProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_routeguide_RideProto_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_routeguide_RideProto_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_routeguide_UpdateNewRideMessage_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_routeguide_UpdateNewRideMessage_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_routeguide_Id_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_routeguide_Id_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_routeguide_Msg1_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -24,16 +39,6 @@ public final class RouteGuideProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_routeguide_Msg2_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_routeguide_NewRideDto_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_routeguide_NewRideDto_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_routeguide_Id_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_routeguide_Id_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -43,45 +48,56 @@ public final class RouteGuideProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014scheme.proto\022\nrouteguide\"\034\n\004Msg1\022\t\n\001a\030" +
-      "\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030\001 \001(\005\"2\n\nN" +
-      "ewRideDto\022$\n\004ride\030\001 \001(\0132\026.routeguide.New" +
-      "RideDto\"\024\n\002Id\022\016\n\006rideId\030\001 \001(\t2\277\001\n\nRouteG" +
-      "uide\0223\n\013SenderTest1\022\020.routeguide.Msg1\032\020." +
-      "routeguide.Msg2\"\000\022:\n\016UpdateFollower\022\026.ro" +
-      "uteguide.NewRideDto\032\016.routeguide.Id\"\000\022@\n" +
-      "\024UpdateRelevantCities\022\026.routeguide.NewRi" +
-      "deDto\032\016.routeguide.Id\"\000B$\n\tgeneratedB\017Ro" +
-      "uteGuideProtoP\001\242\002\003RTGb\006proto3"
+      "\n\014scheme.proto\022\nrouteguide\"\240\001\n\tRideProto" +
+      "\022\021\n\tfirstName\030\001 \001(\t\022\020\n\010lastName\030\002 \001(\t\022\023\n" +
+      "\013phoneNumber\030\003 \001(\t\022\016\n\006origin\030\004 \001(\t\022\023\n\013de" +
+      "stination\030\005 \001(\t\022\025\n\rdepartureDate\030\006 \001(\t\022\021" +
+      "\n\tvacancies\030\007 \001(\005\022\n\n\002pd\030\010 \001(\002\";\n\024UpdateN" +
+      "ewRideMessage\022#\n\004ride\030\001 \001(\0132\025.routeguide" +
+      ".RideProto\"\024\n\002Id\022\016\n\006rideId\030\001 \001(\t\"\034\n\004Msg1" +
+      "\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030\001 \001(" +
+      "\0052\323\001\n\nRouteGuide\0223\n\013SenderTest1\022\020.routeg" +
+      "uide.Msg1\032\020.routeguide.Msg2\"\000\022D\n\016UpdateF" +
+      "ollower\022 .routeguide.UpdateNewRideMessag" +
+      "e\032\016.routeguide.Id\"\000\022J\n\024UpdateRelevantCit" +
+      "ies\022 .routeguide.UpdateNewRideMessage\032\016." +
+      "routeguide.Id\"\000B$\n\tgeneratedB\017RouteGuide" +
+      "ProtoP\001\242\002\003RTGb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_routeguide_Msg1_descriptor =
+    internal_static_routeguide_RideProto_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_routeguide_RideProto_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_routeguide_RideProto_descriptor,
+        new java.lang.String[] { "FirstName", "LastName", "PhoneNumber", "Origin", "Destination", "DepartureDate", "Vacancies", "Pd", });
+    internal_static_routeguide_UpdateNewRideMessage_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_routeguide_UpdateNewRideMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_routeguide_UpdateNewRideMessage_descriptor,
+        new java.lang.String[] { "Ride", });
+    internal_static_routeguide_Id_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_routeguide_Id_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_routeguide_Id_descriptor,
+        new java.lang.String[] { "RideId", });
+    internal_static_routeguide_Msg1_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_routeguide_Msg1_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_Msg1_descriptor,
         new java.lang.String[] { "A", "B", });
     internal_static_routeguide_Msg2_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_routeguide_Msg2_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_Msg2_descriptor,
         new java.lang.String[] { "C", });
-    internal_static_routeguide_NewRideDto_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_routeguide_NewRideDto_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_routeguide_NewRideDto_descriptor,
-        new java.lang.String[] { "Ride", });
-    internal_static_routeguide_Id_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_routeguide_Id_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_routeguide_Id_descriptor,
-        new java.lang.String[] { "RideId", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

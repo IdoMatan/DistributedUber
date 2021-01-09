@@ -15,26 +15,12 @@ public final class ZkConfig {
     public static final String SHARD_DIR = "/SHARDS";
     public static final String[] SHARDS = new String[] {"/A","/B","/C","/D"} ;
 
-//    @Value(("${server.port}"))
-//    public static String server_port;
-//
-//    public static String getHostPostOfServer() {
-//        String ip;
-//        try {
-//            ip = InetAddress.getLocalHost().getHostAddress();
-//        } catch (UnknownHostException e) {
-//            throw new RuntimeException("failed to fetch Ip!", e);
-//        }
-////        String port = server_port;
-//        int port = Integer.parseInt(System.getProperty("server.port"));
-////        ipPort = ip.concat(":").concat(String.valueOf(port));
-//        return ip.concat(":").concat(server_port);
-//    }
-    private static String ipPort = null;
+    private static String ipPortREST = null;
+    private static String ipPortgRPC = null;
 
-    public static String getHostPostOfServer() {
-        if (ipPort != null) {
-            return ipPort;
+    public static String getHostPostOfRESTServer() {
+        if (ipPortREST != null) {
+            return ipPortREST;
         }
         String ip;
         try {
@@ -42,10 +28,26 @@ public final class ZkConfig {
         } catch (UnknownHostException e) {
             throw new RuntimeException("failed to fetch Ip!", e);
         }
-        int port = Integer.parseInt(System.getProperty("server.port"));
-        ipPort = ip.concat(":").concat(String.valueOf(port));
-        return ipPort;
+        int port = Integer.parseInt(System.getProperty("rest.port"));
+        ipPortREST = ip.concat(":").concat(String.valueOf(port));
+        return ipPortREST;
     }
+
+    public static String getHostPostOfgRPCServer() {
+        if (ipPortgRPC != null) {
+            return ipPortgRPC;
+        }
+        String ip;
+        try {
+            ip = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException("failed to fetch Ip!", e);
+        }
+        int port = Integer.parseInt(System.getProperty("grpc.port"));
+        ipPortgRPC = ip.concat(":").concat(String.valueOf(port));
+        return ipPortgRPC;
+    }
+
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
     }

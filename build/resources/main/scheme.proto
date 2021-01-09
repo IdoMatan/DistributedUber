@@ -21,12 +21,28 @@ option objc_class_prefix = "RTG";
 package routeguide;
 
 service RouteGuide {
-
   rpc SenderTest1(Msg1) returns (Msg2) {}
-  rpc update_follower(NewRideDto) returns(Id){}
-  rpc update_relevant_cities(NewRideDto) returns (Id){}
+  rpc UpdateFollower(UpdateNewRideMessage) returns(Id){}
+  rpc UpdateRelevantCities(UpdateNewRideMessage) returns (Id){}
 }
 
+message RideProto {
+  string firstName = 1;
+  string lastName = 2;
+  string phoneNumber = 3;
+  string origin = 4;
+  string destination = 5;
+  string departureDate = 6;
+  int32 vacancies = 7;
+  float pd = 8;
+}
+
+message UpdateNewRideMessage{
+  RideProto ride = 1;
+}
+message Id{
+  string rideId = 1;
+}
 
 message Msg1 {
   int32 a = 1;
@@ -35,11 +51,4 @@ message Msg1 {
 
 message Msg2 {
   int32 c = 1;
-}
-
-message NewRideDto{
-  NewRideDto ride = 1;
-}
-message Id{
-  string rideId = 1;
 }

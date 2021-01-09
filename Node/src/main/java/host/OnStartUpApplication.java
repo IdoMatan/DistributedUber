@@ -1,7 +1,6 @@
 package host;
 
 import api.ZkService;
-import model.City;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import static util.ZkConfig.getHostPostOfServer;
+import static util.ZkConfig.getHostPostOfRESTServer;
 
 /**
  * @author "IdoGlanzMatanWeks" 01/01/21
@@ -48,10 +47,14 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 
     private ApplicationArguments appArgs;
 
-    @Value("${city}")
-    private String myCityName;
+    @Value("${shard}")
+    private String myShard;
+
     @Value(("${server.port}"))
-    public String port;
+    public String restPort;
+
+    @Value(("${grpc.port}"))
+    public String grpcPort;
 
     public OnStartUpApplication(ApplicationArguments appArgs) {
         this.appArgs = appArgs;
@@ -59,8 +62,10 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        City myCity = citiesRepository.getCity(myCityName);
-        System.setProperty("server.port", port);
+//        City myCity = citiesRepository.getCity(myCityName);
+        System.setProperty("rest.port", restPort);
+        System.setProperty("grpc.port", grpcPort);
+
         String ip;
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
@@ -68,48 +73,33 @@ public class OnStartUpApplication implements ApplicationListener<ContextRefreshe
         } catch (UnknownHostException e) {
             throw new RuntimeException("failed to fetch Ip!", e);
         }
+        System.setProperty("myIP", ip);
+
         try {
-            // Create my_city
             System.out.println("App Args: " + Arrays.asList(appArgs.getSourceArgs()));
-            // todo extract my city
 
-            // create all parent nodes /cities /election, /all_nodes, /live_nodes
-            zkService.createAllParentNodes();
-            // add EPHEMERAL city node
-            zkService.createCityNode(myCity.shard, myCity.name);
+            // create ZK tree structure
+            zkService.createZkTree(myShard);
+            // add city layer of Znodes
+            zkService.createCityNodes(myShard, citiesRepository.getShardCities(myShard));
+            // iterate over cities in shard and see if any need a new leader (and if so propose myself)
+            zkService.electForMaster(myShard);
 
-            // add this server to cluster by creating znode under /all_nodes, with name as "host:port"
-            zkService.addToAllNodes(getHostPostOfServer(), "cluster node");
-
-            // add client to election list to see if a leader needs to be elected
-            if (!zkService.masterExists(myCity.shard)) {
-                zkService.electForMaster(myCity.shard);
-            }
-//            else {
-//                ClusterInfo.getClusterInfo().setMaster(zkService.getLeaderNodeData());
-//            }
-
-            // sync person data from master
             // sync data with master
-            syncDataFromMaster(zkService.getLeaderNodeData(myCity.shard));
+//            syncDataFromMaster(zkService.getLeaderNodeGRPChost(myShard));
 
             // register watchers for leader change
-//            zkService.registerChildrenChangeWatcher(my_city.getShard().concat(ELECTION_NODE), masterChangeListener);
-//            zkService.registerZkSessionStateListener(connectStateChangeListener);
+            zkService.registerChildrenChangeWatcher(myShard, masterChangeListener);
+
         } catch (Exception e) {
             throw new RuntimeException("Startup failed!", e);
         }
     }
 
     private void syncDataFromMaster(String leader) {
-        if (getHostPostOfServer().equals(leader)) {  // I am the master, no need to sync!
+        if (getHostPostOfRESTServer().equals(leader)) {  // I am the master, no need to sync!
             return;
         }
-        String requestUrl;
         // todo ADD HERE gRPC request for list of open rides for relevant city!
-
-//        requestUrl = "http://".concat(leader.concat("/persons"));
-//        List<Person> persons = restTemplate.getForObject(requestUrl, List.class);
-//        DataStorage.getPersonListFromStorage().addAll(persons);
     }
 }
