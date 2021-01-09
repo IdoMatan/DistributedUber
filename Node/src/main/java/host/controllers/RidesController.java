@@ -28,7 +28,6 @@ import service.PdCalculation;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author "IdoGlanzMatanWeks" 01/01/21
@@ -73,15 +72,7 @@ public class RidesController {
             liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
         }
 
-        var pdCityNames = pdCities.stream().map(city -> city.name).collect(Collectors.toList());
-        for (String target : followers) {
-            if (!myFullURI.equals(target)) {
-                String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
-                ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
-                Sender client = new Sender(channel);
-                client.updateFollower(rideDto, rideDto.origin);
-            }
-        }
+        updateCurrentCityFollowers(rideDto);
         pdCitiesService.distributeNewRide(pdCities, rideDto);
 
         return ResponseEntity.ok(LiveMapsDatabase.cityARides.toString());
@@ -105,7 +96,6 @@ public class RidesController {
                     break;
                 }
             }
-
         }
         // booked ride by local driver.
         if (bookedRide != null) {
