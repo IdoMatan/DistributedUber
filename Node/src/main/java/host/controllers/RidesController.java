@@ -63,10 +63,6 @@ public class RidesController {
         var ride = departureRepository.upsertRide(rideDto);
         liveMapRepository.addNew(rideDto, rideDto.origin);
 
-        List<String> followers = zkService.getFollowers(shard);
-        var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
-
-        System.out.println("Waiting");
         var pdCities = (new PdCalculation(ride)).calculate();
         for(City c: pdCities){
             liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
