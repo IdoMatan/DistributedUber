@@ -1,5 +1,6 @@
 package model;
 
+import generated.PassengerProto;
 import host.dto.PassengerDto;
 
 public class Passenger {
@@ -15,5 +16,11 @@ public class Passenger {
         this.origin = dto.origin;
         this.destination = dto.destination;
         this.departureDate = dto.departureDate;
+    }
+
+    public PassengerProto toProto(){
+        return PassengerProto.newBuilder().setFirstName(firstName).setLastName(lastName)
+                .setOrigin(origin).setDestination(destination)
+                .setDepartureDate(departureDate).build();
     }
 }

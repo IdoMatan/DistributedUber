@@ -1,6 +1,8 @@
 package model;
 
 
+import generated.RideProto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Ride {
     public int vacancies;
     public final float pd;
     public List<Passenger> passengerList;
+    public RideProto toProto;
 
     public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd, List<Passenger> passengerList) {
         this.firstName = first;
@@ -38,6 +41,11 @@ public class Ride {
     public void book(Passenger ps) {
         passengerList.add(ps);
         vacancies--;
+    }
+
+    public void unBook(Passenger ps) {
+        passengerList.remove(ps); //
+        vacancies++;
     }
 
     @Override

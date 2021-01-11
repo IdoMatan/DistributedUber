@@ -24,6 +24,23 @@ service RouteGuide {
   rpc SenderTest1(Msg1) returns (Msg2) {}
   rpc UpdateFollower(UpdateNewRideMessage) returns(Id){}
   rpc updatePDRide(UpdateNewRideMessage) returns (Id){}
+  rpc BookRide(BookingRequestMessage) returns (BookResult){}
+  rpc BookTripRide(BookingRequestMessage) returns (BookResult){}
+  rpc UnBookTripRide(BookingRequestMessage) returns (BookResult){}
+  rpc BookTripRideApproval(BookingApprovalMessage) returns (BookResult){}
+}
+
+message PassengerProto{
+  string firstName = 2;
+  string lastName = 3;
+  string origin = 4;
+  string destination = 5;
+  string departureDate = 6;
+}
+
+message BookingRequestMessage{
+  string rideId = 1;
+  PassengerProto passenger = 2;
 }
 
 message RideProto {
@@ -43,6 +60,18 @@ message UpdateNewRideMessage{
 }
 message Id{
   string rideId = 1;
+}
+
+message BookingApprovalMessage{
+  PassengerProto passenger = 1;
+  string rideId = 2;
+  RideProto rideProto = 3;
+}
+
+message BookResult {
+  bool succeededToBook = 1;
+  string rideId = 2;
+  RideProto ride = 3;
 }
 
 message Msg1 {

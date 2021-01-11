@@ -1,6 +1,7 @@
 package host.configuration;
 
 import api.ZkService;
+import external.service.PathPlaningService;
 import external.service.PdCitiesService;
 import host.LocalRideDistributionService;
 import impl.ZkServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
+import repository.PassengersRepository;
 import zkwatchers.AllNodesChangeListener;
 import zkwatchers.ConnectStateChangeListener;
 import zkwatchers.LiveNodeChangeListener;
@@ -27,6 +29,10 @@ public class BeanConfig {
   @Bean(name = "liveMapRepository")
   @Scope("singleton")
   public LiveMapRepository liveMapRepository() { return new LiveMapRepository(); }
+
+  @Bean(name = "passengersRepository")
+  @Scope("singleton")
+  public PassengersRepository passengersRepository() { return new PassengersRepository(); }
 
   @Bean(name = "departureRepository")
   @Scope("singleton")
@@ -68,6 +74,12 @@ public class BeanConfig {
     MasterChangeListener masterChangeListener = new MasterChangeListener();
     masterChangeListener.setZkService(zkService());
     return masterChangeListener;
+  }
+
+  @Bean(name = "pathPlanning")
+  @Scope("singleton")
+  public PathPlaningService pathPlanning() {
+    return new PathPlaningService();
   }
 
 //  @Bean(name = "masterChangeListener")

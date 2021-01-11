@@ -55,6 +55,14 @@ public class DepartureRepository {
 
     }
 
+    public Ride unBook(PassengerDto passengerDto, String rideId){
+        var ps = new Passenger(passengerDto);
+        Ride ride = getCollection(passengerDto.origin).get(rideId);
+//        if (ride.available()) {
+        ride.unBook(ps);
+        return ride;
+    }
+
     private Map<String, Ride> getCollection(String origin) {
         return switch (origin) {
             case "cityA" -> DeparturesDataBase.cityADepartures;

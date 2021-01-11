@@ -2,13 +2,17 @@ package host.controllers;
 
 import api.ZkService;
 import com.google.gson.Gson;
+import external.service.PathPlaningService;
 import external.service.PdCitiesService;
+import generated.BookResult;
 import host.dto.PassengerDto;
+import host.dto.PassengerPathDto;
 import host.dto.RideDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import model.City;
 import model.LiveMapsDatabase;
+import model.Passenger;
 import model.Ride;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +51,12 @@ public class RidesController {
     DepartureRepository departureRepository;
     @Autowired
     PdCitiesService pdCitiesService;
+    @Autowired
+    PathPlaningService pathPlanning;
+
     @Value("${shard}")
     public String shard;
+
 
     @Value(("${server.port}"))
     public String restPort;
@@ -64,7 +72,7 @@ public class RidesController {
         liveMapRepository.addNew(rideDto, rideDto.origin);
 
         var pdCities = (new PdCalculation(ride)).calculate();
-        for(City c: pdCities){
+        for (City c : pdCities) {
             liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
         }
 
@@ -82,13 +90,13 @@ public class RidesController {
         if (optionalRides.isEmpty()) {
             return ResponseEntity.ok("No available rides, try again later\nthanks,\nAvishag");
         }
-
         Ride bookedRide = null;
         for (String rideId : optionalRides) {
             var rideOriginCity = parseOrigin(rideId);
             if (rideOriginCity.equals("myCity")) {
                 bookedRide = departureRepository.book(passengerDto, rideId);
                 if (bookedRide != null) {
+
                     break;
                 }
             }
@@ -97,12 +105,41 @@ public class RidesController {
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
             updateCurrentCityFollowers(dto);
+            return ResponseEntity.ok("You booked local ride");
+
         } else {
-            // avishag todo: handle if no rides with origin = current city.
+            for (String rideId : optionalRides) {
+                var rideOriginCity = parseOrigin(rideId);
+                if (rideOriginCity.equals("myCity")) {
+                    continue;
+                }
+                var city = citiesRepository.getCity(rideOriginCity);
+                var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
+                Sender client = new Sender(channel);
+                BookResult bookResult = client.bookRide(new Passenger(passengerDto), rideId);
+                if (bookResult.getSucceededToBook()) {
+                    return ResponseEntity.ok("You booked a ride originated in " + rideOriginCity);
+                }
+            }
+            // todo: handle if no rides with origin = current city.
         }
 
         return ResponseEntity.ok("No available rides, try again later");
     }
+
+
+    @PostMapping("/redirected_new_passenger/path_planning")
+    public ResponseEntity<String> newPassengerPath(@RequestBody PassengerPathDto passengerPathDto) {
+        // todo: get origin, destination as a list format
+        String booked_path_planing = pathPlanning.bookRides(passengerPathDto);
+        if (booked_path_planing.equals("booked")) {
+            return ResponseEntity.ok("enjoy your trip");
+        } else {
+            return ResponseEntity.ok("No available rides, try again later");
+        }
+    }
+
 
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
     private String parseOrigin(String rideId) {
@@ -140,11 +177,20 @@ public class RidesController {
         return redirectRequest(request, "new_passenger/single");
     }
 
+    @PostMapping("/ride/book/path_planning")
+    public ModelAndView redirectNewPassengerTripPostToPost(HttpServletRequest request) throws IOException {
+        return redirectRequest(request, "new_passenger/path_planning");
+    }
+
     private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws IOException {
         request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-        RideDto rideDto = new Gson().fromJson(request.getReader(), RideDto.class);
-
-        var originCity = citiesRepository.getCity(rideDto.origin);  // transform to city object
+        String origin;
+        if (redirectedRouteSuffix.equals("new_passenger/path_planning")){
+            origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(1);
+        }else {
+            origin = (new Gson().fromJson(request.getReader(), RideDto.class)).origin;
+        }
+        var originCity = citiesRepository.getCity(origin);  // transform to city object
         var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
 
         String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader

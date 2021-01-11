@@ -6,6 +6,7 @@ import io.grpc.ServerBuilder;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+//@Service
 public class Receiver {
 
     private int port;
