@@ -142,7 +142,7 @@ public class RidesController {
 
 
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
-    private String parseOrigin(String rideId) {
+    public String parseOrigin(String rideId) {
         return rideId.split("_")[0];
     }
 

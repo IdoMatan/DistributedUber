@@ -87,7 +87,7 @@ public final class RouteGuideProto {
       "ult\022\027\n\017succeededToBook\030\001 \001(\010\022\016\n\006rideId\030\002" +
       " \001(\t\022#\n\004ride\030\003 \001(\0132\025.routeguide.RideProt" +
       "o\"\034\n\004Msg1\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022" +
-      "\t\n\001c\030\001 \001(\0052\206\004\n\nRouteGuide\0223\n\013SenderTest1" +
+      "\t\n\001c\030\001 \001(\0052\325\004\n\nRouteGuide\0223\n\013SenderTest1" +
       "\022\020.routeguide.Msg1\032\020.routeguide.Msg2\"\000\022D" +
       "\n\016UpdateFollower\022 .routeguide.UpdateNewR" +
       "ideMessage\032\016.routeguide.Id\"\000\022B\n\014updatePD" +
@@ -100,8 +100,10 @@ public final class RouteGuideProto {
       "okingRequestMessage\032\026.routeguide.BookRes" +
       "ult\"\000\022T\n\024BookTripRideApproval\022\".routegui" +
       "de.BookingApprovalMessage\032\026.routeguide.B" +
-      "ookResult\"\000B$\n\tgeneratedB\017RouteGuideProt" +
-      "oP\001\242\002\003RTGb\006proto3"
+      "ookResult\"\000\022M\n\016BookRideInTrip\022!.routegui" +
+      "de.BookingRequestMessage\032\026.routeguide.Bo" +
+      "okResult\"\000B$\n\tgeneratedB\017RouteGuideProto" +
+      "P\001\242\002\003RTGb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

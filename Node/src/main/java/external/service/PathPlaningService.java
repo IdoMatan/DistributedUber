@@ -98,7 +98,6 @@ public class PathPlaningService {
                 if (bookResult.getSucceededToBook()) {
                     bookedRidesID.set(i, bookResult.getRideId());
                     bookedRidesProtoRide.set(i, bookResult.getRide());
-
                 }
             }
         }

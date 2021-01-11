@@ -28,6 +28,8 @@ service RouteGuide {
   rpc BookTripRide(BookingRequestMessage) returns (BookResult){}
   rpc UnBookTripRide(BookingRequestMessage) returns (BookResult){}
   rpc BookTripRideApproval(BookingApprovalMessage) returns (BookResult){}
+  rpc BookRideInTrip(BookingRequestMessage) returns (BookResult){}
+
 }
 
 message PassengerProto{

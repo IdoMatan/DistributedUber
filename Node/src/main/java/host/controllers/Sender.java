@@ -48,6 +48,13 @@ public class Sender {
         return blockingStub.bookTripRide(send_msg);
     }
 
+    public BookResult bookRideInTrip(Passenger ps, String rideId){
+        PassengerProto proto = ps.toProto();
+        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
+        return blockingStub.bookRideInTrip(send_msg);
+    }
+
+
     public BookResult unBookTripRide(Passenger ps, String rideId){
         PassengerProto proto = ps.toProto();
         BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();

@@ -67,6 +67,7 @@ public class DepartureRepository {
         return switch (origin) {
             case "cityA" -> DeparturesDataBase.cityADepartures;
             case "cityB" -> DeparturesDataBase.cityBDepartures;
+            case "cityC" -> DeparturesDataBase.cityCDepartures;
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }

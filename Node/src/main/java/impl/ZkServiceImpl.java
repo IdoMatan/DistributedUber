@@ -27,7 +27,7 @@ public class ZkServiceImpl implements ZkService {
 //    private static final Logger log = Logger.getLogger("zooLog");
 
     public ZkServiceImpl(String hostPort) {
-        zkClient = new ZkClient(hostPort, 12000, 3000, new StringSerializer());
+        zkClient = new ZkClient(hostPort, 1200000000, 3000, new StringSerializer());
     }
 
     public void closeConnection() {

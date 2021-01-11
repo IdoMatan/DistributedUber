@@ -244,6 +244,37 @@ public final class RouteGuideGrpc {
     return getBookTripRideApprovalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<generated.BookingRequestMessage,
+      generated.BookResult> getBookRideInTripMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "BookRideInTrip",
+      requestType = generated.BookingRequestMessage.class,
+      responseType = generated.BookResult.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<generated.BookingRequestMessage,
+      generated.BookResult> getBookRideInTripMethod() {
+    io.grpc.MethodDescriptor<generated.BookingRequestMessage, generated.BookResult> getBookRideInTripMethod;
+    if ((getBookRideInTripMethod = RouteGuideGrpc.getBookRideInTripMethod) == null) {
+      synchronized (RouteGuideGrpc.class) {
+        if ((getBookRideInTripMethod = RouteGuideGrpc.getBookRideInTripMethod) == null) {
+          RouteGuideGrpc.getBookRideInTripMethod = getBookRideInTripMethod =
+              io.grpc.MethodDescriptor.<generated.BookingRequestMessage, generated.BookResult>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "BookRideInTrip"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.BookingRequestMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.BookResult.getDefaultInstance()))
+              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("BookRideInTrip"))
+              .build();
+        }
+      }
+    }
+    return getBookRideInTripMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -341,6 +372,13 @@ public final class RouteGuideGrpc {
       asyncUnimplementedUnaryCall(getBookTripRideApprovalMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void bookRideInTrip(generated.BookingRequestMessage request,
+        io.grpc.stub.StreamObserver<generated.BookResult> responseObserver) {
+      asyncUnimplementedUnaryCall(getBookRideInTripMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -392,6 +430,13 @@ public final class RouteGuideGrpc {
                 generated.BookingApprovalMessage,
                 generated.BookResult>(
                   this, METHODID_BOOK_TRIP_RIDE_APPROVAL)))
+          .addMethod(
+            getBookRideInTripMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                generated.BookingRequestMessage,
+                generated.BookResult>(
+                  this, METHODID_BOOK_RIDE_IN_TRIP)))
           .build();
     }
   }
@@ -465,6 +510,14 @@ public final class RouteGuideGrpc {
       asyncUnaryCall(
           getChannel().newCall(getBookTripRideApprovalMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void bookRideInTrip(generated.BookingRequestMessage request,
+        io.grpc.stub.StreamObserver<generated.BookResult> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getBookRideInTripMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -528,6 +581,13 @@ public final class RouteGuideGrpc {
     public generated.BookResult bookTripRideApproval(generated.BookingApprovalMessage request) {
       return blockingUnaryCall(
           getChannel(), getBookTripRideApprovalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public generated.BookResult bookRideInTrip(generated.BookingRequestMessage request) {
+      return blockingUnaryCall(
+          getChannel(), getBookRideInTripMethod(), getCallOptions(), request);
     }
   }
 
@@ -600,6 +660,14 @@ public final class RouteGuideGrpc {
       return futureUnaryCall(
           getChannel().newCall(getBookTripRideApprovalMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<generated.BookResult> bookRideInTrip(
+        generated.BookingRequestMessage request) {
+      return futureUnaryCall(
+          getChannel().newCall(getBookRideInTripMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SENDER_TEST1 = 0;
@@ -609,6 +677,7 @@ public final class RouteGuideGrpc {
   private static final int METHODID_BOOK_TRIP_RIDE = 4;
   private static final int METHODID_UN_BOOK_TRIP_RIDE = 5;
   private static final int METHODID_BOOK_TRIP_RIDE_APPROVAL = 6;
+  private static final int METHODID_BOOK_RIDE_IN_TRIP = 7;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -653,6 +722,10 @@ public final class RouteGuideGrpc {
           break;
         case METHODID_BOOK_TRIP_RIDE_APPROVAL:
           serviceImpl.bookTripRideApproval((generated.BookingApprovalMessage) request,
+              (io.grpc.stub.StreamObserver<generated.BookResult>) responseObserver);
+          break;
+        case METHODID_BOOK_RIDE_IN_TRIP:
+          serviceImpl.bookRideInTrip((generated.BookingRequestMessage) request,
               (io.grpc.stub.StreamObserver<generated.BookResult>) responseObserver);
           break;
         default:
@@ -723,6 +796,7 @@ public final class RouteGuideGrpc {
               .addMethod(getBookTripRideMethod())
               .addMethod(getUnBookTripRideMethod())
               .addMethod(getBookTripRideApprovalMethod())
+              .addMethod(getBookRideInTripMethod())
               .build();
         }
       }
