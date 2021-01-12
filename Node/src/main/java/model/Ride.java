@@ -13,7 +13,7 @@ public class Ride {
     public final String origin;
     public final String destination;
     public final String departureDate;
-    public int vacancies;
+    public final int vacancies;
     public final float pd;
     public List<Passenger> passengerList;
     public RideProto toProto;
@@ -35,17 +35,15 @@ public class Ride {
     }
 
     public boolean available() {
-        return vacancies > 0;
+        return vacancies - passengerList.size() > 0;
     }
 
     public void book(Passenger ps) {
         passengerList.add(ps);
-        vacancies--;
     }
 
     public void unBook(Passenger ps) {
         passengerList.remove(ps); //
-        vacancies++;
     }
 
     @Override
