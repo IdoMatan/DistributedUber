@@ -96,7 +96,6 @@ public class RidesController {
             if (rideOriginCity.equals(passengerDto.origin)) {
                 bookedRide = departureRepository.book(passengerDto, rideId);
                 if (bookedRide != null) {
-
                     break;
                 }
             }
