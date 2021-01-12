@@ -186,7 +186,7 @@ public class RidesController {
         request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
         String origin;
         if (redirectedRouteSuffix.equals("new_passenger/path_planning")){
-            origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(1);
+            origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
         }else {
             origin = (new Gson().fromJson(request.getReader(), RideDto.class)).origin;
         }

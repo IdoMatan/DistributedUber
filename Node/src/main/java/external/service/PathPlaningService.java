@@ -68,7 +68,7 @@ public class PathPlaningService {
                         bookedRide = departureRepository.book(passengerPathDto.toPassengerDto(i), rideId);
                         if (bookedRide != null) {
                             bookedRidesID.set(i, rideId);
-                            bookedRidesRide.set(i, bookedRide);
+                            bookedRidesProtoRide.set(i, bookedRide.toRideProto());
                             break;
                         }
                     }
@@ -85,7 +85,7 @@ public class PathPlaningService {
                             bookedRide = departureRepository.book(passengerPathDto.toPassengerDto(i), rideId);
                             if (bookedRide != null) {
                                 bookedRidesID.set(i, rideId);
-                                bookedRidesRide.set(i, bookedRide);
+                                bookedRidesProtoRide.set(i, bookedRide.toRideProto());
                                 break;
                             }
                         }
@@ -126,7 +126,7 @@ public class PathPlaningService {
                 if (cancelBooking) { //  cancel ride, not all booked)
                     departureRepository.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
                 } else {
-                    var dto = new RideDto(bookedRidesRide.get(i));
+                    var dto = new RideDto(bookedRidesProtoRide.get(i));
                     updateCurrentCityFollowers(dto);
                 }
             } else {

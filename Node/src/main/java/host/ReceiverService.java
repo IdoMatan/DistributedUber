@@ -135,40 +135,45 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
             BookResult bookResult = BookResult.newBuilder().setSucceededToBook(false).build();
             bookResultStreamObserver.onNext(bookResult);
             bookResultStreamObserver.onCompleted();
+            return;
         }
         Ride bookedRide = null;
         var myFullURI = zkService.getLeaderNodeGRPChost(System.getProperty("shard"), passengerDto.origin);
         for (String rideId : optionalRides) {
             var rideOriginCity = new RidesController().parseOrigin(rideId);
-            if (rideOriginCity.equals("myCity")) {
-                bookedRide = departureRepository.book(passengerDto, rideId);
-                if (bookedRide != null) {
-                    BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true).setRide(bookedRide.toProto).setRideId(rideId).build();
+//            if (rideOriginCity.equals("myCity")) {
+//                bookedRide = departureRepository.book(passengerDto, rideId);
+//                if (bookedRide != null) {
+//                    BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true).setRide(bookedRide.toRideProto()).setRideId(rideId).build();
+//                    bookResultStreamObserver.onNext(bookResult);
+//                    bookResultStreamObserver.onCompleted();
+//                    return;
+//                }
+//            } else {
+            var city = new CityRepository().getCity(rideOriginCity);
+            var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
+            if (!myFullURI.equals(cityLeaderIp)) {
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
+                Sender client = new Sender(channel);
+                BookResult bookResultReceive = client.bookRideInTrip(new Passenger(passengerDto), rideId);
+                if (bookResultReceive.getSucceededToBook()) {
+                    BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true)
+                            .setRide(bookResultReceive.getRide()).setRideId(bookResultReceive.getRideId()).build();
                     bookResultStreamObserver.onNext(bookResult);
                     bookResultStreamObserver.onCompleted();
+                    return;
                 }
             } else {
-                var city = new CityRepository().getCity(rideOriginCity);
-                var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
-                if (!myFullURI.equals(cityLeaderIp)) {
-                    ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
-                    Sender client = new Sender(channel);
-                    BookResult bookResultReceive = client.bookRideInTrip(new Passenger(passengerDto), rideId);
-                    if (bookResultReceive.getSucceededToBook()) {
-                        BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true)
-                                .setRide(bookResultReceive.getRide()).setRideId(bookResultReceive.getRideId()).build();
-                        bookResultStreamObserver.onNext(bookResult);
-                        bookResultStreamObserver.onCompleted();
-                    }
-                }else {
-                    bookedRide = departureRepository.book(passengerDto, rideId);
-                    if (bookedRide != null) {
-                        BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true).setRide(bookedRide.toProto).setRideId(rideId).build();
-                        bookResultStreamObserver.onNext(bookResult);
-                        bookResultStreamObserver.onCompleted();
-                    }}
-
+                bookedRide = departureRepository.book(passengerDto, rideId);
+                if (bookedRide != null) {
+                    BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true)
+                            .setRide(bookedRide.toRideProto()).setRideId(rideId).build();
+                    bookResultStreamObserver.onNext(bookResult);
+                    bookResultStreamObserver.onCompleted();
+                    return;
+                }
             }
+//            }
 //        // booked ride by local driver.
 //        if (bookedRide != null) {
 //
@@ -197,7 +202,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         var r = departureRepository.book(new PassengerDto(passenger), rideId);
         var bookingSucceeded = r != null;
         if (bookingSucceeded) {
-            bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).setRide(r.toProto).setRideId(rideId).build();
+            bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).setRide(r.toRideProto()).setRideId(rideId).build();
         } else {
             bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).build();
         }
@@ -212,7 +217,12 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         var rideId = message.getRideId();
         var passenger = message.getPassenger();
         var r = departureRepository.unBook(new PassengerDto(passenger), rideId);
-        var bookResult = BookResult.newBuilder().setRide(r.toProto).build();
+        BookResult bookResult;
+        if (r != null) {
+            bookResult = BookResult.newBuilder().setRide(r.toRideProto()).build();
+        } else {
+            bookResult = BookResult.newBuilder().build();
+        }
         bookResultStreamObserver.onNext(bookResult);
         bookResultStreamObserver.onCompleted();
     }

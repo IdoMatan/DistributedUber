@@ -62,4 +62,12 @@ public class Ride {
                 ", Passenger_list=" + passengerList.toString() +
                 '}';
     }
+
+    public RideProto toRideProto(){
+        return RideProto.newBuilder().setFirstName(this.firstName)
+                .setLastName(this.lastName).setPhoneNumber(this.phoneNumber)
+                .setOrigin(this.origin).setDestination(this.destination)
+                .setDepartureDate(this.departureDate).setVacancies(this.vacancies)
+                .setPd(this.pd).build();
+    }
 }
