@@ -56,6 +56,7 @@ public class DepartureRepository {
         Ride ride = getCollection(parseOrigin(ridId)).get(ridId);
         if (ride.available()) {
             ride.book(ps);
+            ps.UpdateRideId(ride.buildUniqueKey());
             passengersRepository.addNewPassenger(ps);
             return ride;
         } else return null;

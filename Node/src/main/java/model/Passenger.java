@@ -9,6 +9,7 @@ public class Passenger {
     public  String origin;
     public  String destination;
     public  String departureDate;
+    public String rideId;
 
     public Passenger(PassengerDto dto) {
         this.firstName = dto.firstName;
@@ -16,6 +17,10 @@ public class Passenger {
         this.origin = dto.origin;
         this.destination = dto.destination;
         this.departureDate = dto.departureDate;
+    }
+
+    public void UpdateRideId(String rideId) {
+        this.rideId = rideId;
     }
 
     public PassengerProto toProto(){
