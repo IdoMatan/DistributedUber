@@ -16,7 +16,6 @@ public class Ride {
     public final int vacancies;
     public final float pd;
     public List<Passenger> passengerList;
-    public RideProto toProto;
 
     public Ride(String first, String last, String phone, String origin, String dest, String departureDate, int seats, float pd, List<Passenger> passengerList) {
         this.firstName = first;

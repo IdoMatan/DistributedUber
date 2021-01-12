@@ -5,12 +5,18 @@ import host.dto.RideDto;
 import model.DeparturesDataBase;
 import model.Passenger;
 import model.Ride;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Repository
 public class DepartureRepository {
+    @Autowired
+    PassengersRepository passengersRepository;
+
     public Ride upsertRide(RideDto rideDto) {
         var ride = new Ride(
                 rideDto.firstName,
@@ -50,7 +56,8 @@ public class DepartureRepository {
         Ride ride = getCollection(parseOrigin(ridId)).get(ridId);
         if (ride.available()) {
             ride.book(ps);
-
+            ps.UpdateRideId(ride.buildUniqueKey());
+            passengersRepository.addNewPassenger(ps);
             return ride;
         } else return null;
 
