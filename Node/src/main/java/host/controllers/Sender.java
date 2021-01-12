@@ -3,6 +3,7 @@ package host.controllers;
 import generated.*;
 import host.dto.RideDto;
 import io.grpc.Channel;
+import model.Passenger;
 
 public class Sender {
 
@@ -34,4 +35,37 @@ public class Sender {
         UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo).build();
         return blockingStub.updatePDRide(send_msg);
     }
+
+    public BookResult bookRide(Passenger ps, String rideId){
+        PassengerProto proto = ps.toProto();
+        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
+        return blockingStub.bookRide(send_msg);
+    }
+
+    public BookResult bookTripRide(Passenger ps){
+        PassengerProto proto = ps.toProto();
+        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).build();
+        return blockingStub.bookTripRide(send_msg);
+    }
+
+    public BookResult bookRideInTrip(Passenger ps, String rideId){
+        PassengerProto proto = ps.toProto();
+        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
+        return blockingStub.bookRideInTrip(send_msg);
+    }
+
+
+    public BookResult unBookTripRide(Passenger ps, String rideId){
+        PassengerProto proto = ps.toProto();
+        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
+        return blockingStub.unBookTripRide(send_msg);
+    }
+
+    public BookResult BookTripRideApproval(Passenger ps, String rideId, RideProto rideProto){
+        PassengerProto proto = ps.toProto();
+//        RideProto rideProto = new RideDto(ride).toProto();
+        BookingApprovalMessage send_msg = BookingApprovalMessage.newBuilder().setPassenger(proto).setRideId(rideId).setRideProto(rideProto).build();
+        return blockingStub.bookTripRideApproval(send_msg);
+    }
+
 }

@@ -2,6 +2,7 @@ package host.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import generated.PassengerProto;
 import model.Passenger;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
@@ -20,5 +21,13 @@ public class PassengerDto {
         this.origin = passenger.origin;
         this.destination = passenger.destination;
         this.departureDate = passenger.departureDate;
+    }
+
+    public PassengerDto(PassengerProto passenger) {
+        this.firstName = passenger.getFirstName();
+        this.lastName = passenger.getLastName();
+        this.origin = passenger.getOrigin();
+        this.destination = passenger.getDestination();
+        this.departureDate = passenger.getDepartureDate();
     }
 }
