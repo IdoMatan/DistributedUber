@@ -93,7 +93,7 @@ public class RidesController {
         Ride bookedRide = null;
         for (String rideId : optionalRides) {
             var rideOriginCity = parseOrigin(rideId);
-            if (rideOriginCity.equals("myCity")) {
+            if (rideOriginCity.equals(passengerDto.origin)) {
                 bookedRide = departureRepository.book(passengerDto, rideId);
                 if (bookedRide != null) {
 
@@ -110,7 +110,7 @@ public class RidesController {
         } else {
             for (String rideId : optionalRides) {
                 var rideOriginCity = parseOrigin(rideId);
-                if (rideOriginCity.equals("myCity")) {
+                if (rideOriginCity.equals(passengerDto.origin)) {
                     continue;
                 }
                 var city = citiesRepository.getCity(rideOriginCity);

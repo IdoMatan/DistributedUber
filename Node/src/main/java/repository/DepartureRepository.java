@@ -47,7 +47,7 @@ public class DepartureRepository {
 
     public Ride book(PassengerDto passengerDto, String ridId) {
         var ps = new Passenger(passengerDto);
-        Ride ride = getCollection(passengerDto.origin).get(ridId);
+        Ride ride = getCollection(parseOrigin(ridId)).get(ridId);
         if (ride.available()) {
             ride.book(ps);
             return ride;
@@ -55,10 +55,16 @@ public class DepartureRepository {
 
     }
 
+    private String parseOrigin(String rideId) {
+        return rideId.split("_")[0];
+    }
+
     public Ride unBook(PassengerDto passengerDto, String rideId){
         var ps = new Passenger(passengerDto);
         Ride ride = getCollection(passengerDto.origin).get(rideId);
-//        if (ride.available()) {
+        if (rideId.equals("NA")) {
+            return ride;
+        }
         ride.unBook(ps);
         return ride;
     }
