@@ -36,23 +36,29 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public String getLeaderNodeGRPChost(String shard, String city) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
 
         // get host of REST (the data of the master node)
         String leaderRESThost = zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
-       // get host of gRPC (the data of the server node in live_nodes (i.e. node name is RESThost, data is gRPC IP)
+        // get host of gRPC (the data of the server node in live_nodes (i.e. node name is RESThost, data is gRPC IP)
         return zkClient.readData(SHARD_DIR.concat(shard).concat(LIVE_NODES).concat("/").concat(leaderRESThost), true);
     }
 
     @Override
     public String getLeaderNodeRESThost(String shard, String city) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(ELECTION_MASTER), true);
     }
 
     @Override
     public void electForMaster(String shard) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
         for (String c : cities) {
             if (c.startsWith("city")) {
@@ -73,7 +79,7 @@ public class ZkServiceImpl implements ZkService {
     }
 
     @Override
-    public void singleReElect(String parentPath){
+    public void singleReElect(String parentPath) {
         if (!zkClient.exists(parentPath.concat("/master"))) {
             // a master doesn't exist --> propose myself
             try {
@@ -87,9 +93,12 @@ public class ZkServiceImpl implements ZkService {
             }
         }
     }
+
     @Override
     public boolean masterExists(String shard) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
         for (String c : cities) {
             if (zkClient.exists(SHARD_DIR.concat(shard).concat("/").concat(c).concat(ELECTION_MASTER))) {
@@ -148,7 +157,9 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public void createZkTree(String shard) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
 
         if (!zkClient.exists(SHARD_DIR)) {
             zkClient.create(SHARD_DIR, "all shards are listed here", CreateMode.PERSISTENT);
@@ -183,7 +194,9 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public void createCityNodes(String shard, List<String> cities) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         for (String c : cities) {
             var city = SHARD_DIR.concat(shard).concat("/").concat(c);
             if (!zkClient.exists(city)) {
@@ -192,8 +205,40 @@ public class ZkServiceImpl implements ZkService {
             if (!zkClient.exists(city.concat(ELECTION_NODE))) {
                 zkClient.create(city.concat(ELECTION_NODE), "election_node", CreateMode.PERSISTENT);
             }
+            if (!zkClient.exists(city.concat(LIVE_RIDES))) {
+                zkClient.create(city.concat(LIVE_RIDES), "0", CreateMode.PERSISTENT);
+            }
         }
     }
+
+    @Override
+    public void updateLiveRidesSync(String shard, String city, String nRides) {
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
+        try {
+            zkClient.writeData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(LIVE_RIDES), nRides);
+        } catch (ZkNodeExistsException e) {
+            System.out.println("I'm not sure why ".concat(e.toString()));
+
+        }
+    }
+
+    @Override
+    public String getLiveRidesSync(String shard, String city) {
+        String nRides = "NA";
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
+        try {
+            nRides = zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(LIVE_RIDES));
+        } catch (ZkNodeExistsException e) {
+            System.out.println("I'm not sure why ".concat(e.toString()));
+        }
+        return nRides;
+    }
+
+
 
     @Override
     public String getLeaderNodeData2() {
@@ -222,11 +267,13 @@ public class ZkServiceImpl implements ZkService {
     @Override
     public void registerChildrenChangeWatcher(String shard, IZkChildListener iZkChildListener) {
 
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         List<String> cities = zkClient.getChildren(SHARD_DIR + shard);
         for (String c : cities) {
-            if (c.startsWith("city")){
-                zkClient.subscribeChildChanges(SHARD_DIR+shard+"/"+c+ELECTION_NODE, iZkChildListener);
+            if (c.startsWith("city")) {
+                zkClient.subscribeChildChanges(SHARD_DIR + shard + "/" + c + ELECTION_NODE, iZkChildListener);
             }
         }
     }
@@ -243,13 +290,17 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public List<String> getFollowers(String shard) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         return zkClient.getChildren(SHARD_DIR + shard + LIVE_NODES);
     }
 
     @Override
     public List<String> getShardNodes(String shard) {
-        if (!shard.startsWith("/")){ shard = "/".concat(shard);}
+        if (!shard.startsWith("/")) {
+            shard = "/".concat(shard);
+        }
         return zkClient.getChildren(SHARD_DIR.concat(shard));
     }
 

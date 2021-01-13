@@ -59,9 +59,9 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
             isNewRide = departureRepository.exists(dto);
             departureRepository.upsertRide(dto);
         }
-        var ride = liveMapRepository.addNew(dto, addressedTo);
+        var ride = liveMapRepository.upsert(dto, addressedTo);
         if (!isNewRide) {
-            var pdCities = (new PdCalculation(ride)).calculate();
+            var pdCities = (new PdCalculation(ride)).calculate(); // todo update followers with given pdCities?
             for (City c : pdCities) {
                 liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
             }
@@ -78,7 +78,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         RideProto pdRideToAdd = rideMessage.getRide();
         var dto = new RideDto(pdRideToAdd);
         String addressedTo = rideMessage.getAddressedTo();
-        var ride = liveMapRepository.addNew(dto, addressedTo);
+        var ride = liveMapRepository.upsert(dto, addressedTo);
         Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
 
         String shard = System.getProperty("shard");
@@ -103,13 +103,14 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         var rideId = message.getRideId();
         var passenger = message.getPassenger();
         var r = departureRepository.book(new PassengerDto(passenger), rideId);
+
         var bookingSucceeded = r != null;
         var bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).build();
 
         if (bookingSucceeded) {
             var dto = new RideDto(r);
             String shard = System.getProperty("shard");
-
+            zkService.updateLiveRidesSync(shard, r.origin, String.valueOf(departureRepository.getSize(r.origin)));
             List<String> followers = zkService.getFollowers(shard);
 
             var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
@@ -232,6 +233,8 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         RideDto dto = new RideDto(message.getRideProto());
         String shard = System.getProperty("shard");
         List<String> followers = zkService.getFollowers(shard);
+        zkService.updateLiveRidesSync(shard, dto.origin, String.valueOf(departureRepository.getSize(dto.origin)));
+
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
         for (String target : followers) {
             if (!myFullURI.equals(target)) {

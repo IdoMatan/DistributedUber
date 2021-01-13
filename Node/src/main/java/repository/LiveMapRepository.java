@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class LiveMapRepository {
-    public Ride addNew(RideDto rideDto, String cityToAddTo) {
+    public Ride upsert(RideDto rideDto, String cityToAddTo) {
         var ride = new Ride(
                 rideDto.firstName,
                 rideDto.lastName,
@@ -26,12 +26,12 @@ public class LiveMapRepository {
                 rideDto.passengers == null ? new ArrayList<>() : rideDto.passengers.stream().map(Passenger::new).collect(Collectors.toList())
         );
 
-        getCollection(cityToAddTo).addNewRideId( ride.buildUniqueKey(), ride.destination,ride.departureDate);
+        getCollection(cityToAddTo).upsertRideId( ride.buildUniqueKey(), ride.destination,ride.departureDate);
         return ride;
     }
 
     public void addPDRide(String rideId, String myCity, String dest, String date){
-        getCollection(myCity).addNewRideId( rideId, dest,date);
+        getCollection(myCity).upsertRideId( rideId, dest,date);
     }
 
     public Set<String> rideExists(String origin, String destination, String departureDate) {

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CitiesDataBase {
@@ -15,5 +16,13 @@ public class CitiesDataBase {
 //        em.put("cityE", new City("cityE", "B", 0, 300));
 //        em.put("cityF", new City("cityF", "B", 0, 100));
         return em;
+    }
+
+    public static List<String> getCitiesName(){
+        List<String> cities = null;
+        cities.add("cityA");
+        cities.add("cityB");
+        cities.add("cityC");
+        return cities;
     }
 }

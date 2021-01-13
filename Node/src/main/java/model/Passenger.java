@@ -27,9 +27,7 @@ public class Passenger {
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
                 ", Departure_date=" + departureDate +
-                ", rideId=" + rideIs +
-                ", PD=" + pd +
-                ", Passenger_list=" + passengerList.toString() +
+                ", rideId=" + rideId +
                 '}';
     }
 

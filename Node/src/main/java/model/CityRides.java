@@ -18,12 +18,12 @@ public class CityRides {
 
     }
 
-    public void addNewRideId(String rideId, String destination, String departureDate){
+    public void upsertRideId(String rideId, String destination, String departureDate){
         DestinationRide destinationsRidesResult = (exists(destination)) ?
                 this.ridesByDestination.get(destination) :
                 new DestinationRide();
 
-        destinationsRidesResult.addNewRideId(rideId, departureDate);
+        destinationsRidesResult.upsertRideId(rideId, departureDate);
         this.ridesByDestination.put(destination, destinationsRidesResult);
     }
 

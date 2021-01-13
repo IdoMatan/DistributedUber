@@ -8,6 +8,7 @@ public final class ZkConfig {
 
     public static final String ELECTION_MASTER = "/election/master";
     public static final String ELECTION_NODE = "/election";
+    public static final String LIVE_RIDES = "/live_rides";
     public static final String ELECTION_NODE_2 = "/election2";
     public static final String LIVE_NODES = "/liveNodes";
     public static final String ALL_NODES = "/allNodes";
