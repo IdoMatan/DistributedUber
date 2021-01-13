@@ -17,6 +17,17 @@ public class DepartureRepository {
     @Autowired
     PassengersRepository passengersRepository;
 
+    public String getSnapshot(String currentCity) {
+        StringBuilder snapshot = new StringBuilder("Rides of " + currentCity + " :\n");
+        var rides = getCollection(currentCity).values();
+        var index = 0;
+        if (rides == null){return snapshot.toString();}
+        for(Ride r: rides){
+            snapshot.append(++index).append(". ").append(r.toString()).append("\n");
+        }
+
+        return snapshot.toString();
+    }
     public Ride upsertRide(RideDto rideDto) {
         var ride = new Ride(
                 rideDto.firstName,
@@ -83,6 +94,15 @@ public class DepartureRepository {
             case "cityB" -> DeparturesDataBase.cityBDepartures;
             case "cityC" -> DeparturesDataBase.cityCDepartures;
             default -> throw new IllegalArgumentException("Missing " + origin);
+        };
+    }
+    public int getSize(String origin){
+        return switch (origin) {
+            case "cityA" -> DeparturesDataBase.cityADepartures.size();
+            case "cityB" -> DeparturesDataBase.cityBDepartures.size();
+            case "cityC" -> DeparturesDataBase.cityCDepartures.size();
+            default -> throw new IllegalArgumentException("Missing " + origin);
+
         };
     }
 }

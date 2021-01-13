@@ -1,10 +1,11 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PassengersDatabase {
-    public static List<Passenger> cityAPassengers;
-    public static List<Passenger> cityBPassengers;
-    public static List<Passenger> cityCPassengers;
-    public static List<Passenger> cityDPassengers;
+    public static List<Passenger> cityAPassengers = new ArrayList<>();
+    public static List<Passenger> cityBPassengers = new ArrayList<>();
+    public static List<Passenger> cityCPassengers = new ArrayList<>();
+    public static List<Passenger> cityDPassengers = new ArrayList<>();
 }

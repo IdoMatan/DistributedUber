@@ -22,7 +22,7 @@ public class LocalRideDistributionService {
     private LiveMapRepository liveMapRepository;
 
     public void updatePDRide(RideDto dto, String addressedTo){
-        var ride = liveMapRepository.addNew(dto, addressedTo);
+        var ride = liveMapRepository.upsert(dto, addressedTo);
         String shard = System.getProperty("shard");
 
         List<String> followers = zkService.getFollowers(shard);

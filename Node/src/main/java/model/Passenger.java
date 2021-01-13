@@ -19,6 +19,18 @@ public class Passenger {
         this.departureDate = dto.departureDate;
     }
 
+    @Override
+    public String toString() {
+        return "Passenger{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", origin='" + origin + '\'' +
+                ", destination='" + destination + '\'' +
+                ", Departure_date=" + departureDate +
+                ", rideId=" + rideId +
+                '}';
+    }
+
     public void UpdateRideId(String rideId) {
         this.rideId = rideId;
     }

@@ -44,6 +44,10 @@ public interface ZkService {
 
     void registerZkSessionStateListener(IZkStateListener iZkStateListener);
 
+    void updateLiveRidesSync(String shard, String city, String nRides);
+
+    String getLiveRidesSync(String shard, String city);
+
     List<String> getCities();
 
     List<String> getFollowers(String shard);

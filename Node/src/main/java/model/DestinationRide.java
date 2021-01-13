@@ -17,7 +17,7 @@ public class DestinationRide {
         return ridesByDate.get(date);
     }
 
-    public void addNewRideId(String rideId, String departureDate){
+    public void upsertRideId(String rideId, String departureDate){
         Set<String> ridesResult = (exists(departureDate)) ?
                 this.ridesByDate.get(departureDate) :
                 Sets.newHashSet();

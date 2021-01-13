@@ -27,11 +27,14 @@ import org.springframework.web.servlet.View;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
+import repository.PassengersRepository;
 import service.PdCalculation;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+
+import static model.CitiesDataBase.cities;
 
 /**
  * @author "IdoGlanzMatanWeks" 01/01/21
@@ -53,23 +56,36 @@ public class RidesController {
     PdCitiesService pdCitiesService;
     @Autowired
     PathPlaningService pathPlanning;
+    @Autowired
+    PassengersRepository passengersRepository;
 
     @Value("${shard}")
     public String shard;
-
 
     @Value(("${server.port}"))
     public String restPort;
     @Value(("${grpc.port}"))
     public String grpcPort;
 
+
+
+    @GetMapping(value = "/snapshot")
+    public ResponseEntity<String> snapshot() {
+        StringBuilder dpSnapshot = new StringBuilder("Departure list: \n");
+        StringBuilder psSnapshot = new StringBuilder("Passenger list: \n");
+        for (String city : cities.keySet()){
+            psSnapshot.append(passengersRepository.getSnapshot(city)).append("\n");
+            dpSnapshot.append(departureRepository.getSnapshot(city)).append("\n");
+        }
+        return ResponseEntity.ok(psSnapshot.toString() + "\n" + dpSnapshot.toString());
+    }
 // ---------------------------------------------- Handle new ride ------------------------------------------------------
 
     @PostMapping(value = "/redirected_new_ride")
     public ResponseEntity<String> newRide(@RequestBody RideDto rideDto) {
         System.out.println(rideDto.toString());
         var ride = departureRepository.upsertRide(rideDto);
-        liveMapRepository.addNew(rideDto, rideDto.origin);
+        liveMapRepository.upsert(rideDto, rideDto.origin);
 
         var pdCities = (new PdCalculation(ride)).calculate();
         for (City c : pdCities) {
@@ -104,6 +120,7 @@ public class RidesController {
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
             updateCurrentCityFollowers(dto);
+            zkService.updateLiveRidesSync(shard, passengerDto.origin, String.valueOf(departureRepository.getSize(passengerDto.origin)));
             return ResponseEntity.ok("You booked local ride");
 
         } else {
@@ -138,6 +155,11 @@ public class RidesController {
             return ResponseEntity.ok("No available rides, try again later");
         }
     }
+
+    @PostMapping("/redirected_quick_check/response")
+    public ResponseEntity<String> quick_check_response(@RequestBody PassengerDto passengerPathDto) {
+            return ResponseEntity.ok("No available rides, try again later");
+        }
 
 
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
@@ -181,19 +203,47 @@ public class RidesController {
         return redirectRequest(request, "new_passenger/path_planning");
     }
 
+
     private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws IOException {
         request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
         String origin;
+        String destination = null;
+        String departureDate = null;
         if (redirectedRouteSuffix.equals("new_passenger/path_planning")){
             origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
         }else {
-            origin = (new Gson().fromJson(request.getReader(), RideDto.class)).origin;
+            RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
+            origin = json_request.origin;
+            destination = json_request.destination;
+            departureDate = json_request.departureDate;
         }
+        if (redirectedRouteSuffix.equals("new_passenger/single")){
+            if (!quick_check_available(origin, destination, departureDate)){
+                redirectedRouteSuffix = "quick_check/response";
+                String redirect = "redirect:http://" +  System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+                return new ModelAndView(redirect);
+            }
+        }
+
         var originCity = citiesRepository.getCity(origin);  // transform to city object
         var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
 
         String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
 
         return new ModelAndView(redirect);
+    }
+    private boolean quick_check_available(String origin, String destination, String departureDate){
+        String nRides = zkService.getLiveRidesSync(shard, origin);
+        var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
+        int syncCount = departureRepository.getSize(origin);
+//        int count = 0;
+//        for (String rideId : optionalRides) {
+//            var rideOriginCity = parseOrigin(rideId);
+//            if (rideOriginCity.equals(origin)){count++;}
+//        if (String.valueOf(count).equals(nRides)){return optionalRides != null;}
+        if (String.valueOf(syncCount).equals(nRides)){return optionalRides != null;}
+        return true;
+
+
     }
 }
