@@ -61,9 +61,10 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         }
         var ride = liveMapRepository.upsert(dto, addressedTo);
         if (!isNewRide) {
-            var pdCities = (new PdCalculation(ride)).calculate(); // todo update followers with given pdCities?
+            var pdCities = (new PdCalculation(ride)).calculate();
             for (City c : pdCities) {
                 liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
+
             }
         }
 
@@ -110,7 +111,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         if (bookingSucceeded) {
             var dto = new RideDto(r);
             String shard = System.getProperty("shard");
-            zkService.updateLiveRidesSync(shard, r.origin, String.valueOf(departureRepository.getSize(r.origin)));
+//            zkService.updateLiveRidesSync(shard, r.origin, String.valueOf(departureRepository.getSize(r.origin)));
             List<String> followers = zkService.getFollowers(shard);
 
             var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
@@ -233,7 +234,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         RideDto dto = new RideDto(message.getRideProto());
         String shard = System.getProperty("shard");
         List<String> followers = zkService.getFollowers(shard);
-        zkService.updateLiveRidesSync(shard, dto.origin, String.valueOf(departureRepository.getSize(dto.origin)));
+//        zkService.updateLiveRidesSync(shard, dto.origin, String.valueOf(departureRepository.getSize(dto.origin)));
 
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
         for (String target : followers) {
@@ -247,6 +248,18 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         var bookResult = BookResult.newBuilder().build();
         bookResultStreamObserver.onNext(bookResult);
         bookResultStreamObserver.onCompleted();
+    }
+
+    @Override
+    public void liveMapIsEmpty(LiveMapIsEmptyMessage message, StreamObserver<IsEmptyAgreement> isEmptyAgreementStreamObserver){
+        String origin =  message.getOrigin();
+        String destination =  message.getDestination();
+        String departureDate = message.getDepartureDate();
+
+        var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
+        IsEmptyAgreement isEmptyAgreement = IsEmptyAgreement.newBuilder().setIsEmpty(optionalRides.isEmpty()).build();
+        isEmptyAgreementStreamObserver.onNext(isEmptyAgreement);
+        isEmptyAgreementStreamObserver.onCompleted();
     }
 
 }

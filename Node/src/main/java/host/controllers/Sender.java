@@ -68,4 +68,9 @@ public class Sender {
         return blockingStub.bookTripRideApproval(send_msg);
     }
 
+    public IsEmptyAgreement liveMapIsEmpty(String origin, String destination, String departureDate) {
+        LiveMapIsEmptyMessage send_msg = LiveMapIsEmptyMessage.newBuilder()
+                .setOrigin(origin).setDestination(destination).setDepartureDate(departureDate).build();
+        return blockingStub.liveMapIsEmpty(send_msg);
+    }
 }

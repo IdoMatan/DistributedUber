@@ -275,6 +275,37 @@ public final class RouteGuideGrpc {
     return getBookRideInTripMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<generated.LiveMapIsEmptyMessage,
+      generated.IsEmptyAgreement> getLiveMapIsEmptyMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "LiveMapIsEmpty",
+      requestType = generated.LiveMapIsEmptyMessage.class,
+      responseType = generated.IsEmptyAgreement.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<generated.LiveMapIsEmptyMessage,
+      generated.IsEmptyAgreement> getLiveMapIsEmptyMethod() {
+    io.grpc.MethodDescriptor<generated.LiveMapIsEmptyMessage, generated.IsEmptyAgreement> getLiveMapIsEmptyMethod;
+    if ((getLiveMapIsEmptyMethod = RouteGuideGrpc.getLiveMapIsEmptyMethod) == null) {
+      synchronized (RouteGuideGrpc.class) {
+        if ((getLiveMapIsEmptyMethod = RouteGuideGrpc.getLiveMapIsEmptyMethod) == null) {
+          RouteGuideGrpc.getLiveMapIsEmptyMethod = getLiveMapIsEmptyMethod =
+              io.grpc.MethodDescriptor.<generated.LiveMapIsEmptyMessage, generated.IsEmptyAgreement>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "LiveMapIsEmpty"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.LiveMapIsEmptyMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.IsEmptyAgreement.getDefaultInstance()))
+              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("LiveMapIsEmpty"))
+              .build();
+        }
+      }
+    }
+    return getLiveMapIsEmptyMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -379,6 +410,13 @@ public final class RouteGuideGrpc {
       asyncUnimplementedUnaryCall(getBookRideInTripMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void liveMapIsEmpty(generated.LiveMapIsEmptyMessage request,
+        io.grpc.stub.StreamObserver<generated.IsEmptyAgreement> responseObserver) {
+      asyncUnimplementedUnaryCall(getLiveMapIsEmptyMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -437,6 +475,13 @@ public final class RouteGuideGrpc {
                 generated.BookingRequestMessage,
                 generated.BookResult>(
                   this, METHODID_BOOK_RIDE_IN_TRIP)))
+          .addMethod(
+            getLiveMapIsEmptyMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                generated.LiveMapIsEmptyMessage,
+                generated.IsEmptyAgreement>(
+                  this, METHODID_LIVE_MAP_IS_EMPTY)))
           .build();
     }
   }
@@ -518,6 +563,14 @@ public final class RouteGuideGrpc {
       asyncUnaryCall(
           getChannel().newCall(getBookRideInTripMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void liveMapIsEmpty(generated.LiveMapIsEmptyMessage request,
+        io.grpc.stub.StreamObserver<generated.IsEmptyAgreement> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getLiveMapIsEmptyMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -588,6 +641,13 @@ public final class RouteGuideGrpc {
     public generated.BookResult bookRideInTrip(generated.BookingRequestMessage request) {
       return blockingUnaryCall(
           getChannel(), getBookRideInTripMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public generated.IsEmptyAgreement liveMapIsEmpty(generated.LiveMapIsEmptyMessage request) {
+      return blockingUnaryCall(
+          getChannel(), getLiveMapIsEmptyMethod(), getCallOptions(), request);
     }
   }
 
@@ -668,6 +728,14 @@ public final class RouteGuideGrpc {
       return futureUnaryCall(
           getChannel().newCall(getBookRideInTripMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<generated.IsEmptyAgreement> liveMapIsEmpty(
+        generated.LiveMapIsEmptyMessage request) {
+      return futureUnaryCall(
+          getChannel().newCall(getLiveMapIsEmptyMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SENDER_TEST1 = 0;
@@ -678,6 +746,7 @@ public final class RouteGuideGrpc {
   private static final int METHODID_UN_BOOK_TRIP_RIDE = 5;
   private static final int METHODID_BOOK_TRIP_RIDE_APPROVAL = 6;
   private static final int METHODID_BOOK_RIDE_IN_TRIP = 7;
+  private static final int METHODID_LIVE_MAP_IS_EMPTY = 8;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -727,6 +796,10 @@ public final class RouteGuideGrpc {
         case METHODID_BOOK_RIDE_IN_TRIP:
           serviceImpl.bookRideInTrip((generated.BookingRequestMessage) request,
               (io.grpc.stub.StreamObserver<generated.BookResult>) responseObserver);
+          break;
+        case METHODID_LIVE_MAP_IS_EMPTY:
+          serviceImpl.liveMapIsEmpty((generated.LiveMapIsEmptyMessage) request,
+              (io.grpc.stub.StreamObserver<generated.IsEmptyAgreement>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -797,6 +870,7 @@ public final class RouteGuideGrpc {
               .addMethod(getUnBookTripRideMethod())
               .addMethod(getBookTripRideApprovalMethod())
               .addMethod(getBookRideInTripMethod())
+              .addMethod(getLiveMapIsEmptyMethod())
               .build();
         }
       }

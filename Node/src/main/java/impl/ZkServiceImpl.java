@@ -27,7 +27,7 @@ public class ZkServiceImpl implements ZkService {
 //    private static final Logger log = Logger.getLogger("zooLog");
 
     public ZkServiceImpl(String hostPort) {
-        zkClient = new ZkClient(hostPort, 1200000000, 3000, new StringSerializer());
+        zkClient = new ZkClient(hostPort, 12000, 3000, new StringSerializer());
     }
 
     public void closeConnection() {
@@ -226,16 +226,10 @@ public class ZkServiceImpl implements ZkService {
 
     @Override
     public String getLiveRidesSync(String shard, String city) {
-        String nRides = "NA";
         if (!shard.startsWith("/")) {
             shard = "/".concat(shard);
         }
-        try {
-            nRides = zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(LIVE_RIDES));
-        } catch (ZkNodeExistsException e) {
-            System.out.println("I'm not sure why ".concat(e.toString()));
-        }
-        return nRides;
+        return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(LIVE_RIDES), true);
     }
 
 

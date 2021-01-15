@@ -128,7 +128,7 @@ public class PathPlaningService {
                 } else {
                     var dto = new RideDto(bookedRidesProtoRide.get(i));
                     updateCurrentCityFollowers(dto);
-                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
+//                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
 
                 }
             } else {
@@ -144,7 +144,6 @@ public class PathPlaningService {
         if (cancelBooking) {
             return "No trip for you";
         }
-
         return "booked";
     }
 
