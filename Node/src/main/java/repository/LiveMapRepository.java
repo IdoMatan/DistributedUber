@@ -44,6 +44,8 @@ public class LiveMapRepository {
             case "cityB" -> LiveMapsDatabase.cityBRides;
             case "cityC" -> LiveMapsDatabase.cityCRides;
             case "cityD" -> LiveMapsDatabase.cityDRides;
+            case "cityE" -> LiveMapsDatabase.cityERides;
+            case "cityF" -> LiveMapsDatabase.cityFRides;
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }

@@ -15,9 +15,9 @@ class GenerateJson:
         self.vacancies = 0
         self.pd = 0
         self.origin = ""
-        self.origins = ["cityA", "cityB"] #, "cityC", "cityD"]
+        self.origins = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF"]
         self.destination = ""
-        self.destinations = ["cityA", "cityB", "cityC"]#, "cityD"]
+        self.destinations = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF"]
 
     def new_person(self):
         self.first_name = names.get_first_name()
@@ -80,22 +80,24 @@ def get_snapshot(snapshot_url, host='http://localhost:'):
 
 
 if __name__ == '__main__':
-    n_rides = 10
+    n_rides = 0
     generate_json = GenerateJson()
-    passengers = 2
-    urls = ["8083", "8093"]
+    passengers = 10
+    urls = ["8013", "8023", "8033", "8053", "8063", "8073", "8083", "8093", "8103", "8113"]
+    # urls = ["8013"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
 
-    # for i in range(n_rides):
-    #     j = generate_json.generate_ride_json()
-    #     url = host + random.choice(urls) + '/new_ride'
-    #     start_time = time.time()
-    #     r = requests.post(url, json=j)
-    #     print("Status code: ", r.status_code)
-    #     print("Content: ", r.content)
-    #     print("Generate new ride in: ", time.time() - start_time, " [Sec]")
+    for i in range(n_rides):
+        j = generate_json.generate_ride_json()
+        url = host + random.choice(urls) + '/new_ride'
+        start_time = time.time()
+        r = requests.post(url, json=j)
+        print("Sent to: ", url)
+        print("Status code: ", r.status_code)
+        print("Content: ", r.content)
+        print("Generate new ride in: ", time.time() - start_time, " [Sec]")
 
-    get_snapshot(random.choice(urls), host=host)
+    # get_snapshot(random.choice(urls), host=host)
 
     for i in range(passengers):
         if bool(random.getrandbits(1)):
@@ -112,4 +114,4 @@ if __name__ == '__main__':
             print("Content: ", r.content)
         print("Book response in: ", time.time() - start_time, " [Sec]")
 
-    get_snapshot(random.choice(urls), host=host)
+    # get_snapshot(random.choice(urls), host=host)

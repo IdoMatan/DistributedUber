@@ -41,6 +41,9 @@ public class Ride {
         passengerList.add(ps);
     }
 
+    public boolean passengerExist(Passenger ps){
+        return passengerList.contains(ps);
+    }
     public void unBook(Passenger ps) {
         passengerList.remove(ps); //
     }

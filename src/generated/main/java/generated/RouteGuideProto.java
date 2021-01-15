@@ -50,6 +50,16 @@ public final class RouteGuideProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_routeguide_BookResult_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_routeguide_LiveMapIsEmptyMessage_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_routeguide_LiveMapIsEmptyMessage_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_routeguide_IsEmptyAgreement_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_routeguide_IsEmptyAgreement_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_routeguide_Msg1_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -86,24 +96,29 @@ public final class RouteGuideProto {
       "\030\003 \001(\0132\025.routeguide.RideProto\"Z\n\nBookRes" +
       "ult\022\027\n\017succeededToBook\030\001 \001(\010\022\016\n\006rideId\030\002" +
       " \001(\t\022#\n\004ride\030\003 \001(\0132\025.routeguide.RideProt" +
-      "o\"\034\n\004Msg1\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022" +
-      "\t\n\001c\030\001 \001(\0052\325\004\n\nRouteGuide\0223\n\013SenderTest1" +
-      "\022\020.routeguide.Msg1\032\020.routeguide.Msg2\"\000\022D" +
-      "\n\016UpdateFollower\022 .routeguide.UpdateNewR" +
-      "ideMessage\032\016.routeguide.Id\"\000\022B\n\014updatePD" +
-      "Ride\022 .routeguide.UpdateNewRideMessage\032\016" +
-      ".routeguide.Id\"\000\022G\n\010BookRide\022!.routeguid" +
-      "e.BookingRequestMessage\032\026.routeguide.Boo" +
-      "kResult\"\000\022K\n\014BookTripRide\022!.routeguide.B" +
-      "ookingRequestMessage\032\026.routeguide.BookRe" +
-      "sult\"\000\022M\n\016UnBookTripRide\022!.routeguide.Bo" +
-      "okingRequestMessage\032\026.routeguide.BookRes" +
-      "ult\"\000\022T\n\024BookTripRideApproval\022\".routegui" +
-      "de.BookingApprovalMessage\032\026.routeguide.B" +
-      "ookResult\"\000\022M\n\016BookRideInTrip\022!.routegui" +
-      "de.BookingRequestMessage\032\026.routeguide.Bo" +
-      "okResult\"\000B$\n\tgeneratedB\017RouteGuideProto" +
-      "P\001\242\002\003RTGb\006proto3"
+      "o\"S\n\025LiveMapIsEmptyMessage\022\016\n\006origin\030\001 \001" +
+      "(\t\022\023\n\013destination\030\002 \001(\t\022\025\n\rdepartureDate" +
+      "\030\003 \001(\t\"#\n\020IsEmptyAgreement\022\017\n\007isEmpty\030\001 " +
+      "\001(\010\"\034\n\004Msg1\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg" +
+      "2\022\t\n\001c\030\001 \001(\0052\252\005\n\nRouteGuide\0223\n\013SenderTes" +
+      "t1\022\020.routeguide.Msg1\032\020.routeguide.Msg2\"\000" +
+      "\022D\n\016UpdateFollower\022 .routeguide.UpdateNe" +
+      "wRideMessage\032\016.routeguide.Id\"\000\022B\n\014update" +
+      "PDRide\022 .routeguide.UpdateNewRideMessage" +
+      "\032\016.routeguide.Id\"\000\022G\n\010BookRide\022!.routegu" +
+      "ide.BookingRequestMessage\032\026.routeguide.B" +
+      "ookResult\"\000\022K\n\014BookTripRide\022!.routeguide" +
+      ".BookingRequestMessage\032\026.routeguide.Book" +
+      "Result\"\000\022M\n\016UnBookTripRide\022!.routeguide." +
+      "BookingRequestMessage\032\026.routeguide.BookR" +
+      "esult\"\000\022T\n\024BookTripRideApproval\022\".routeg" +
+      "uide.BookingApprovalMessage\032\026.routeguide" +
+      ".BookResult\"\000\022M\n\016BookRideInTrip\022!.routeg" +
+      "uide.BookingRequestMessage\032\026.routeguide." +
+      "BookResult\"\000\022S\n\016LiveMapIsEmpty\022!.routegu" +
+      "ide.LiveMapIsEmptyMessage\032\034.routeguide.I" +
+      "sEmptyAgreement\"\000B$\n\tgeneratedB\017RouteGui" +
+      "deProtoP\001\242\002\003RTGb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -151,14 +166,26 @@ public final class RouteGuideProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_BookResult_descriptor,
         new java.lang.String[] { "SucceededToBook", "RideId", "Ride", });
-    internal_static_routeguide_Msg1_descriptor =
+    internal_static_routeguide_LiveMapIsEmptyMessage_descriptor =
       getDescriptor().getMessageTypes().get(7);
+    internal_static_routeguide_LiveMapIsEmptyMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_routeguide_LiveMapIsEmptyMessage_descriptor,
+        new java.lang.String[] { "Origin", "Destination", "DepartureDate", });
+    internal_static_routeguide_IsEmptyAgreement_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_routeguide_IsEmptyAgreement_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_routeguide_IsEmptyAgreement_descriptor,
+        new java.lang.String[] { "IsEmpty", });
+    internal_static_routeguide_Msg1_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_routeguide_Msg1_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_Msg1_descriptor,
         new java.lang.String[] { "A", "B", });
     internal_static_routeguide_Msg2_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_routeguide_Msg2_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_Msg2_descriptor,

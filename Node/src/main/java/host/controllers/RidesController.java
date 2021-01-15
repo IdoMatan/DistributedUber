@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import external.service.PathPlaningService;
 import external.service.PdCitiesService;
 import generated.BookResult;
+import generated.IsEmptyAgreement;
 import host.dto.PassengerDto;
 import host.dto.PassengerPathDto;
 import host.dto.RideDto;
@@ -68,12 +69,11 @@ public class RidesController {
     public String grpcPort;
 
 
-
     @GetMapping(value = "/snapshot")
     public ResponseEntity<String> snapshot() {
         StringBuilder dpSnapshot = new StringBuilder("Departure list: \n");
         StringBuilder psSnapshot = new StringBuilder("Passenger list: \n");
-        for (String city : cities.keySet()){
+        for (String city : cities.keySet()) {
             psSnapshot.append(passengersRepository.getSnapshot(city)).append("\n");
             dpSnapshot.append(departureRepository.getSnapshot(city)).append("\n");
         }
@@ -86,6 +86,7 @@ public class RidesController {
         System.out.println(rideDto.toString());
         var ride = departureRepository.upsertRide(rideDto);
         liveMapRepository.upsert(rideDto, rideDto.origin);
+        zkService.updateLiveRidesSync(shard, ride.origin, String.valueOf(departureRepository.getSize(ride.origin)));
 
         var pdCities = (new PdCalculation(ride)).calculate();
         for (City c : pdCities) {
@@ -120,7 +121,6 @@ public class RidesController {
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
             updateCurrentCityFollowers(dto);
-            zkService.updateLiveRidesSync(shard, passengerDto.origin, String.valueOf(departureRepository.getSize(passengerDto.origin)));
             return ResponseEntity.ok("You booked local ride");
 
         } else {
@@ -158,8 +158,8 @@ public class RidesController {
 
     @PostMapping("/redirected_quick_check/response")
     public ResponseEntity<String> quick_check_response(@RequestBody PassengerDto passengerPathDto) {
-            return ResponseEntity.ok("No available rides, try again later");
-        }
+        return ResponseEntity.ok("No available rides, try again later");
+    }
 
 
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
@@ -185,7 +185,9 @@ public class RidesController {
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
     @GetMapping("/test")
     public String testing() {
-        return "test";
+        String syncCount = String.valueOf(departureRepository.getSize("cityA"));
+        String nRides = zkService.getLiveRidesSync(shard, "cityA");
+        return "from ZK: " + nRides + "\n from me: " + syncCount;
     }
 
     @PostMapping("/new_ride")
@@ -209,18 +211,18 @@ public class RidesController {
         String origin;
         String destination = null;
         String departureDate = null;
-        if (redirectedRouteSuffix.equals("new_passenger/path_planning")){
+        if (redirectedRouteSuffix.equals("new_passenger/path_planning")) {
             origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
-        }else {
+        } else {
             RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
             origin = json_request.origin;
             destination = json_request.destination;
             departureDate = json_request.departureDate;
         }
-        if (redirectedRouteSuffix.equals("new_passenger/single")){
-            if (!quick_check_available(origin, destination, departureDate)){
+        if (redirectedRouteSuffix.equals("new_passenger/single")) {
+            if (!quick_check_available(origin, destination, departureDate)) {
                 redirectedRouteSuffix = "quick_check/response";
-                String redirect = "redirect:http://" +  System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+                String redirect = "redirect:http://" + System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
                 return new ModelAndView(redirect);
             }
         }
@@ -232,18 +234,28 @@ public class RidesController {
 
         return new ModelAndView(redirect);
     }
-    private boolean quick_check_available(String origin, String destination, String departureDate){
-        String nRides = zkService.getLiveRidesSync(shard, origin);
+
+    private boolean quick_check_available(String origin, String destination, String departureDate) {
+//        String nRides = zkService.getLiveRidesSync(shard, origin);
         var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
-        int syncCount = departureRepository.getSize(origin);
-//        int count = 0;
-//        for (String rideId : optionalRides) {
-//            var rideOriginCity = parseOrigin(rideId);
-//            if (rideOriginCity.equals(origin)){count++;}
-//        if (String.valueOf(count).equals(nRides)){return optionalRides != null;}
-        if (String.valueOf(syncCount).equals(nRides)){return optionalRides != null;}
+        if (optionalRides.isEmpty()) {
+            // ask my follower friends if they agree with me:
+            List<String> followers = zkService.getFollowers(shard);
+            var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+
+            for (String target : followers) {
+                if (!myFullURI.equals(target)) {
+                    String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                    ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                    Sender client = new Sender(channel);
+                    // Call server streaming call
+                    IsEmptyAgreement isEmpty = client.liveMapIsEmpty(origin, destination, departureDate);
+                    if (!isEmpty.getIsEmpty()){
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
-
-
     }
 }

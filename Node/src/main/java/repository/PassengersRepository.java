@@ -27,6 +27,8 @@ public class PassengersRepository {
             case "cityB" -> PassengersDatabase.cityBPassengers;
             case "cityC" ->  PassengersDatabase.cityCPassengers;
             case "cityD" -> PassengersDatabase.cityDPassengers;
+            case "cityE" -> PassengersDatabase.cityEPassengers;
+            case "cityF" -> PassengersDatabase.cityFPassengers;
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }

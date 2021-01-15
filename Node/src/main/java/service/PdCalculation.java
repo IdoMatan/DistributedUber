@@ -32,7 +32,11 @@ public class PdCalculation {
             if (denominator != 0) {
                 float distance = numerator / denominator;
                 if (distance <= ride.pd) {
-                    pdCities.add(city);
+                    if ((city.x > originX && city.x < destinationX) || (city.x < originX && city.x > destinationX)){
+                        if ((city.y > originY && city.y < destinationY) || (city.y < originY && city.y > destinationY)) {
+                            pdCities.add(city);
+                        }
+                    }
                 }
             }
         }
