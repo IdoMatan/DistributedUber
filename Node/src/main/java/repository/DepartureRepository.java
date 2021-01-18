@@ -68,9 +68,9 @@ public class DepartureRepository {
         var ps = new Passenger(passengerDto);
         Ride ride = getCollection(parseOrigin(ridId)).get(ridId);
         if (ride.available()) {
+            ps.UpdateRideId(ride.buildUniqueKey());
             if (!ride.passengerExist(ps)) {
                 ride.book(ps);
-                ps.UpdateRideId(ride.buildUniqueKey());
                 passengersRepository.addNewPassenger(ps);
                 return ride;
             }
@@ -88,7 +88,9 @@ public class DepartureRepository {
         if (rideId.equals("NA")) {
             return ride;
         }
+        ps.UpdateRideId(rideId);
         ride.unBook(ps);
+        passengersRepository.removePassenger(ps);
         return ride;
     }
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
+import repository.PassengersRepository;
 import service.PdCalculation;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
 
     private DepartureRepository departureRepository = new DepartureRepository();
     private LiveMapRepository liveMapRepository = new LiveMapRepository();
+    private PassengersRepository passengersRepository = new PassengersRepository();
 
     @Override
     public void senderTest1(Msg1 inputs, StreamObserver<Msg2> responseObserver) {
@@ -58,13 +60,20 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         if (addressedTo.equals(dto.origin)) {
             isNewRide = departureRepository.exists(dto);
             departureRepository.upsertRide(dto);
+            try {
+                PassengerProto passengerProto = rideMessage.getPassenger();
+                Passenger ps = new Passenger(new PassengerDto(passengerProto));
+                ps.UpdateRideId(new Ride(dto).buildUniqueKey());
+                passengersRepository.addNewPassenger(ps);
+            } catch (Exception e) {
+//                System.out.println("Updating follower with new ride");
+            }
         }
         var ride = liveMapRepository.upsert(dto, addressedTo);
         if (!isNewRide) {
             var pdCities = (new PdCalculation(ride)).calculate();
             for (City c : pdCities) {
                 liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
-
             }
         }
 
@@ -235,14 +244,14 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         String shard = System.getProperty("shard");
         List<String> followers = zkService.getFollowers(shard);
 //        zkService.updateLiveRidesSync(shard, dto.origin, String.valueOf(departureRepository.getSize(dto.origin)));
-
+        Passenger passenger = new Passenger(new PassengerDto(message.getPassenger()));
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
         for (String target : followers) {
             if (!myFullURI.equals(target)) {
                 String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
-                client.updateFollower(dto, dto.origin);
+                client.updateFollower(dto, dto.origin, passenger);
             }
         }
         var bookResult = BookResult.newBuilder().build();
@@ -274,4 +283,16 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         SyncParamStreamObserver.onCompleted();
     }
 
+    @Override
+    public void updateFollowersPassengerList(BookingRequestMessage message, StreamObserver<Id> IdStreamObserver) {
+        var rideId = message.getRideId();
+        var passengerProto = message.getPassenger();
+        Passenger ps = new Passenger(new PassengerDto(passengerProto));
+        passengersRepository.addNewPassenger(ps);
+
+        Id psId = Id.newBuilder().setRideId(ps.toString()).build();
+        IdStreamObserver.onNext(psId);
+        IdStreamObserver.onCompleted();
+
+    }
 }

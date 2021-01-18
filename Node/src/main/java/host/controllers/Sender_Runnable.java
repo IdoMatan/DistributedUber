@@ -5,11 +5,11 @@ import host.dto.RideDto;
 import io.grpc.Channel;
 import model.Passenger;
 
-public class Sender {
+public class Sender_Runnable implements Runnable {
 
     private final RouteGuideGrpc.RouteGuideBlockingStub blockingStub;
 
-    public Sender(Channel channel) {
+    public Sender_Runnable(Channel channel) {
         blockingStub = RouteGuideGrpc.newBlockingStub(channel);
     }
 
@@ -24,45 +24,38 @@ public class Sender {
         System.out.println(back.getC());
     }
 
-    public void updateFollower(RideDto rideDto, String addressedTo) {
+    public void updateFollower(RideDto rideDto, String addressedTo){
         var proto = rideDto.toProto();
         UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo).build();
         Id back = blockingStub.updateFollower(send_msg);
     }
 
-    public void updateFollower(RideDto rideDto, String addressedTo, Passenger ps) {
-        var proto = rideDto.toProto();
-        UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo)
-                .setPassenger(ps.toProto()).build();
-        Id back = blockingStub.updateFollower(send_msg);
-    }
-
-    public Id updatePDCities(RideDto rideDto, String addressedTo) {
+    public Id updatePDCities(RideDto rideDto, String addressedTo){
         var proto = rideDto.toProto();
         UpdateNewRideMessage send_msg = UpdateNewRideMessage.newBuilder().setRide(proto).setAddressedTo(addressedTo).build();
         return blockingStub.updatePDRide(send_msg);
     }
 
-    public BookResult bookRide(Passenger ps, String rideId) {
+    public BookResult bookRide(Passenger ps, String rideId){
         PassengerProto proto = ps.toProto();
         BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
         return blockingStub.bookRide(send_msg);
     }
 
-    public BookResult bookTripRide(Passenger ps) {
+    public BookResult bookTripRide(Passenger ps){
         PassengerProto proto = ps.toProto();
         BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).build();
         return blockingStub.bookTripRide(send_msg);
     }
 
-    public BookResult bookRideInTrip(Passenger ps, String rideId) {
+    public BookResult bookRideInTrip(Passenger ps, String rideId){
         PassengerProto proto = ps.toProto();
         BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
         return blockingStub.bookRideInTrip(send_msg);
     }
 
 
-    public BookResult unBookTripRide(Passenger ps, String rideId) {
+    public BookResult unBookTripRide(Passenger ps, String rideId){
         PassengerProto proto = ps.toProto();
         BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).setRideId(rideId).build();
         return blockingStub.unBookTripRide(send_msg);
@@ -87,10 +80,8 @@ public class Sender {
         return blockingStub.getSyncParam(send_msg);
     }
 
-    public Id updateFollowersPassengerList(Passenger ps) {
-        PassengerProto proto = ps.toProto();
-        BookingRequestMessage send_msg = BookingRequestMessage.newBuilder().setPassenger(proto).build();
-        return blockingStub.updateFollowersPassengerList(send_msg);
-    }
+    @Override
+    public void run() {
 
+    }
 }

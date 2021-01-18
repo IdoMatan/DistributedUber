@@ -33,4 +33,19 @@ public interface UpdateNewRideMessageOrBuilder extends
    */
   com.google.protobuf.ByteString
       getAddressedToBytes();
+
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   * @return Whether the passenger field is set.
+   */
+  boolean hasPassenger();
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   * @return The passenger.
+   */
+  generated.PassengerProto getPassenger();
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   */
+  generated.PassengerProtoOrBuilder getPassengerOrBuilder();
 }

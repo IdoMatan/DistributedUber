@@ -93,7 +93,7 @@ public class RidesController {
             liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);
         }
 
-        updateCurrentCityFollowers(rideDto);
+        updateCurrentCityFollowers(rideDto, null);
         pdCitiesService.distributeNewRide(pdCities, rideDto);
 
         return ResponseEntity.ok(LiveMapsDatabase.cityARides.toString());
@@ -120,7 +120,7 @@ public class RidesController {
         // booked ride by local driver.
         if (bookedRide != null) {
             var dto = new RideDto(bookedRide);
-            updateCurrentCityFollowers(dto);
+            updateCurrentCityFollowers(dto, new Passenger(passengerDto));
             return ResponseEntity.ok("You booked local ride");
 
         } else {
@@ -137,7 +137,7 @@ public class RidesController {
                     bookedRide = departureRepository.book(passengerDto, rideId);
                     if (bookedRide != null) {
                         var dto = new RideDto(bookedRide);
-                        updateCurrentCityFollowers(dto);
+                        updateCurrentCityFollowers(dto, new Passenger(passengerDto));
                         return ResponseEntity.ok("You booked an in shard ride");
                     }
                 }
@@ -177,7 +177,7 @@ public class RidesController {
         return rideId.split("_")[0];
     }
 
-    private void updateCurrentCityFollowers(RideDto rideDto) {
+    private void updateCurrentCityFollowers(RideDto rideDto, Passenger passenger) {
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
@@ -187,7 +187,10 @@ public class RidesController {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
                 // Call server streaming call
-                client.updateFollower(rideDto, rideDto.origin);
+                if (passenger != null) {client.updateFollower(rideDto, rideDto.origin, passenger);}
+                else {client.updateFollower(rideDto, rideDto.origin);}
+//                client.updateFollowersPassengerList(passenger);
+
             }
         }
     }

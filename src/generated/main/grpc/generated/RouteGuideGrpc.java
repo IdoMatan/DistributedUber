@@ -337,6 +337,37 @@ public final class RouteGuideGrpc {
     return getGetSyncParamMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<generated.BookingRequestMessage,
+      generated.Id> getUpdateFollowersPassengerListMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "UpdateFollowersPassengerList",
+      requestType = generated.BookingRequestMessage.class,
+      responseType = generated.Id.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<generated.BookingRequestMessage,
+      generated.Id> getUpdateFollowersPassengerListMethod() {
+    io.grpc.MethodDescriptor<generated.BookingRequestMessage, generated.Id> getUpdateFollowersPassengerListMethod;
+    if ((getUpdateFollowersPassengerListMethod = RouteGuideGrpc.getUpdateFollowersPassengerListMethod) == null) {
+      synchronized (RouteGuideGrpc.class) {
+        if ((getUpdateFollowersPassengerListMethod = RouteGuideGrpc.getUpdateFollowersPassengerListMethod) == null) {
+          RouteGuideGrpc.getUpdateFollowersPassengerListMethod = getUpdateFollowersPassengerListMethod =
+              io.grpc.MethodDescriptor.<generated.BookingRequestMessage, generated.Id>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UpdateFollowersPassengerList"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.BookingRequestMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.Id.getDefaultInstance()))
+              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("UpdateFollowersPassengerList"))
+              .build();
+        }
+      }
+    }
+    return getUpdateFollowersPassengerListMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -455,6 +486,13 @@ public final class RouteGuideGrpc {
       asyncUnimplementedUnaryCall(getGetSyncParamMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void updateFollowersPassengerList(generated.BookingRequestMessage request,
+        io.grpc.stub.StreamObserver<generated.Id> responseObserver) {
+      asyncUnimplementedUnaryCall(getUpdateFollowersPassengerListMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -527,6 +565,13 @@ public final class RouteGuideGrpc {
                 generated.CityMessage,
                 generated.SyncParam>(
                   this, METHODID_GET_SYNC_PARAM)))
+          .addMethod(
+            getUpdateFollowersPassengerListMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                generated.BookingRequestMessage,
+                generated.Id>(
+                  this, METHODID_UPDATE_FOLLOWERS_PASSENGER_LIST)))
           .build();
     }
   }
@@ -624,6 +669,14 @@ public final class RouteGuideGrpc {
       asyncUnaryCall(
           getChannel().newCall(getGetSyncParamMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void updateFollowersPassengerList(generated.BookingRequestMessage request,
+        io.grpc.stub.StreamObserver<generated.Id> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getUpdateFollowersPassengerListMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -708,6 +761,13 @@ public final class RouteGuideGrpc {
     public generated.SyncParam getSyncParam(generated.CityMessage request) {
       return blockingUnaryCall(
           getChannel(), getGetSyncParamMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public generated.Id updateFollowersPassengerList(generated.BookingRequestMessage request) {
+      return blockingUnaryCall(
+          getChannel(), getUpdateFollowersPassengerListMethod(), getCallOptions(), request);
     }
   }
 
@@ -804,6 +864,14 @@ public final class RouteGuideGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetSyncParamMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<generated.Id> updateFollowersPassengerList(
+        generated.BookingRequestMessage request) {
+      return futureUnaryCall(
+          getChannel().newCall(getUpdateFollowersPassengerListMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SENDER_TEST1 = 0;
@@ -816,6 +884,7 @@ public final class RouteGuideGrpc {
   private static final int METHODID_BOOK_RIDE_IN_TRIP = 7;
   private static final int METHODID_LIVE_MAP_IS_EMPTY = 8;
   private static final int METHODID_GET_SYNC_PARAM = 9;
+  private static final int METHODID_UPDATE_FOLLOWERS_PASSENGER_LIST = 10;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -873,6 +942,10 @@ public final class RouteGuideGrpc {
         case METHODID_GET_SYNC_PARAM:
           serviceImpl.getSyncParam((generated.CityMessage) request,
               (io.grpc.stub.StreamObserver<generated.SyncParam>) responseObserver);
+          break;
+        case METHODID_UPDATE_FOLLOWERS_PASSENGER_LIST:
+          serviceImpl.updateFollowersPassengerList((generated.BookingRequestMessage) request,
+              (io.grpc.stub.StreamObserver<generated.Id>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -945,6 +1018,7 @@ public final class RouteGuideGrpc {
               .addMethod(getBookRideInTripMethod())
               .addMethod(getLiveMapIsEmptyMethod())
               .addMethod(getGetSyncParamMethod())
+              .addMethod(getUpdateFollowersPassengerListMethod())
               .build();
         }
       }

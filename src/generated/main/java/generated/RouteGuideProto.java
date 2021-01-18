@@ -97,41 +97,45 @@ public final class RouteGuideProto {
       "oto\022\021\n\tfirstName\030\001 \001(\t\022\020\n\010lastName\030\002 \001(\t" +
       "\022\023\n\013phoneNumber\030\003 \001(\t\022\016\n\006origin\030\004 \001(\t\022\023\n" +
       "\013destination\030\005 \001(\t\022\026\n\016departure_date\030\006 \001" +
-      "(\t\022\021\n\tvacancies\030\007 \001(\005\022\n\n\002pd\030\010 \001(\002\"P\n\024Upd" +
+      "(\t\022\021\n\tvacancies\030\007 \001(\005\022\n\n\002pd\030\010 \001(\002\"\177\n\024Upd" +
       "ateNewRideMessage\022#\n\004ride\030\001 \001(\0132\025.routeg" +
-      "uide.RideProto\022\023\n\013AddressedTo\030\002 \001(\t\"\024\n\002I" +
-      "d\022\016\n\006rideId\030\001 \001(\t\"\201\001\n\026BookingApprovalMes" +
-      "sage\022-\n\tpassenger\030\001 \001(\0132\032.routeguide.Pas" +
-      "sengerProto\022\016\n\006rideId\030\002 \001(\t\022(\n\trideProto" +
-      "\030\003 \001(\0132\025.routeguide.RideProto\"Z\n\nBookRes" +
-      "ult\022\027\n\017succeededToBook\030\001 \001(\010\022\016\n\006rideId\030\002" +
-      " \001(\t\022#\n\004ride\030\003 \001(\0132\025.routeguide.RideProt" +
-      "o\"S\n\025LiveMapIsEmptyMessage\022\016\n\006origin\030\001 \001" +
-      "(\t\022\023\n\013destination\030\002 \001(\t\022\025\n\rdepartureDate" +
-      "\030\003 \001(\t\"#\n\020IsEmptyAgreement\022\017\n\007isEmpty\030\001 " +
-      "\001(\010\"\033\n\013CityMessage\022\014\n\004city\030\001 \001(\t\"#\n\tSync" +
-      "Param\022\026\n\016syncParamProto\030\001 \001(\t\"\034\n\004Msg1\022\t\n" +
-      "\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030\001 \001(\0052\354" +
-      "\005\n\nRouteGuide\0223\n\013SenderTest1\022\020.routeguid" +
-      "e.Msg1\032\020.routeguide.Msg2\"\000\022D\n\016UpdateFoll" +
-      "ower\022 .routeguide.UpdateNewRideMessage\032\016" +
-      ".routeguide.Id\"\000\022B\n\014updatePDRide\022 .route" +
-      "guide.UpdateNewRideMessage\032\016.routeguide." +
-      "Id\"\000\022G\n\010BookRide\022!.routeguide.BookingReq" +
-      "uestMessage\032\026.routeguide.BookResult\"\000\022K\n" +
-      "\014BookTripRide\022!.routeguide.BookingReques" +
-      "tMessage\032\026.routeguide.BookResult\"\000\022M\n\016Un" +
-      "BookTripRide\022!.routeguide.BookingRequest" +
-      "Message\032\026.routeguide.BookResult\"\000\022T\n\024Boo" +
-      "kTripRideApproval\022\".routeguide.BookingAp" +
-      "provalMessage\032\026.routeguide.BookResult\"\000\022" +
-      "M\n\016BookRideInTrip\022!.routeguide.BookingRe" +
-      "questMessage\032\026.routeguide.BookResult\"\000\022S" +
-      "\n\016LiveMapIsEmpty\022!.routeguide.LiveMapIsE" +
-      "mptyMessage\032\034.routeguide.IsEmptyAgreemen" +
-      "t\"\000\022@\n\014GetSyncParam\022\027.routeguide.CityMes" +
-      "sage\032\025.routeguide.SyncParam\"\000B$\n\tgenerat" +
-      "edB\017RouteGuideProtoP\001\242\002\003RTGb\006proto3"
+      "uide.RideProto\022\023\n\013AddressedTo\030\002 \001(\t\022-\n\tp" +
+      "assenger\030\003 \001(\0132\032.routeguide.PassengerPro" +
+      "to\"\024\n\002Id\022\016\n\006rideId\030\001 \001(\t\"\201\001\n\026BookingAppr" +
+      "ovalMessage\022-\n\tpassenger\030\001 \001(\0132\032.routegu" +
+      "ide.PassengerProto\022\016\n\006rideId\030\002 \001(\t\022(\n\tri" +
+      "deProto\030\003 \001(\0132\025.routeguide.RideProto\"Z\n\n" +
+      "BookResult\022\027\n\017succeededToBook\030\001 \001(\010\022\016\n\006r" +
+      "ideId\030\002 \001(\t\022#\n\004ride\030\003 \001(\0132\025.routeguide.R" +
+      "ideProto\"S\n\025LiveMapIsEmptyMessage\022\016\n\006ori" +
+      "gin\030\001 \001(\t\022\023\n\013destination\030\002 \001(\t\022\025\n\rdepart" +
+      "ureDate\030\003 \001(\t\"#\n\020IsEmptyAgreement\022\017\n\007isE" +
+      "mpty\030\001 \001(\010\"\033\n\013CityMessage\022\014\n\004city\030\001 \001(\t\"" +
+      "#\n\tSyncParam\022\026\n\016syncParamProto\030\001 \001(\t\"\034\n\004" +
+      "Msg1\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"\021\n\004Msg2\022\t\n\001c\030" +
+      "\001 \001(\0052\301\006\n\nRouteGuide\0223\n\013SenderTest1\022\020.ro" +
+      "uteguide.Msg1\032\020.routeguide.Msg2\"\000\022D\n\016Upd" +
+      "ateFollower\022 .routeguide.UpdateNewRideMe" +
+      "ssage\032\016.routeguide.Id\"\000\022B\n\014updatePDRide\022" +
+      " .routeguide.UpdateNewRideMessage\032\016.rout" +
+      "eguide.Id\"\000\022G\n\010BookRide\022!.routeguide.Boo" +
+      "kingRequestMessage\032\026.routeguide.BookResu" +
+      "lt\"\000\022K\n\014BookTripRide\022!.routeguide.Bookin" +
+      "gRequestMessage\032\026.routeguide.BookResult\"" +
+      "\000\022M\n\016UnBookTripRide\022!.routeguide.Booking" +
+      "RequestMessage\032\026.routeguide.BookResult\"\000" +
+      "\022T\n\024BookTripRideApproval\022\".routeguide.Bo" +
+      "okingApprovalMessage\032\026.routeguide.BookRe" +
+      "sult\"\000\022M\n\016BookRideInTrip\022!.routeguide.Bo" +
+      "okingRequestMessage\032\026.routeguide.BookRes" +
+      "ult\"\000\022S\n\016LiveMapIsEmpty\022!.routeguide.Liv" +
+      "eMapIsEmptyMessage\032\034.routeguide.IsEmptyA" +
+      "greement\"\000\022@\n\014GetSyncParam\022\027.routeguide." +
+      "CityMessage\032\025.routeguide.SyncParam\"\000\022S\n\034" +
+      "UpdateFollowersPassengerList\022!.routeguid" +
+      "e.BookingRequestMessage\032\016.routeguide.Id\"" +
+      "\000B$\n\tgeneratedB\017RouteGuideProtoP\001\242\002\003RTGb" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -160,7 +164,7 @@ public final class RouteGuideProto {
     internal_static_routeguide_UpdateNewRideMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_routeguide_UpdateNewRideMessage_descriptor,
-        new java.lang.String[] { "Ride", "AddressedTo", });
+        new java.lang.String[] { "Ride", "AddressedTo", "Passenger", });
     internal_static_routeguide_Id_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_routeguide_Id_fieldAccessorTable = new

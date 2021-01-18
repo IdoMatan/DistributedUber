@@ -83,7 +83,7 @@ def get_snapshot(snapshot_url, host='http://localhost:'):
 
 
 if __name__ == '__main__':
-    n_rides = 10
+    n_rides = 100
     generate_json = GenerateJson()
     passengers = 10
     urls = ["8013", "8023", "8033", "8053", "8063", "8073"]#, "8083", "8093", "8103", "8113"]
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         # print("Content: ", r.content)
         # print("Generate new ride in: ", time.time() - start_time, " [Sec]")
 
-    # get_snapshot(random.choice(urls), host=host)
+    get_snapshot(random.choice(urls), host=host)
 
     for i in range(passengers):
         if bool(random.getrandbits(1)):
