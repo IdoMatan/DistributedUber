@@ -68,6 +68,19 @@ private static final long serialVersionUID = 0L;
             addressedTo_ = s;
             break;
           }
+          case 26: {
+            generated.PassengerProto.Builder subBuilder = null;
+            if (passenger_ != null) {
+              subBuilder = passenger_.toBuilder();
+            }
+            passenger_ = input.readMessage(generated.PassengerProto.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(passenger_);
+              passenger_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -164,6 +177,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int PASSENGER_FIELD_NUMBER = 3;
+  private generated.PassengerProto passenger_;
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   * @return Whether the passenger field is set.
+   */
+  @java.lang.Override
+  public boolean hasPassenger() {
+    return passenger_ != null;
+  }
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   * @return The passenger.
+   */
+  @java.lang.Override
+  public generated.PassengerProto getPassenger() {
+    return passenger_ == null ? generated.PassengerProto.getDefaultInstance() : passenger_;
+  }
+  /**
+   * <code>.routeguide.PassengerProto passenger = 3;</code>
+   */
+  @java.lang.Override
+  public generated.PassengerProtoOrBuilder getPassengerOrBuilder() {
+    return getPassenger();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -184,6 +223,9 @@ private static final long serialVersionUID = 0L;
     if (!getAddressedToBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, addressedTo_);
     }
+    if (passenger_ != null) {
+      output.writeMessage(3, getPassenger());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -199,6 +241,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!getAddressedToBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, addressedTo_);
+    }
+    if (passenger_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getPassenger());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -222,6 +268,11 @@ private static final long serialVersionUID = 0L;
     }
     if (!getAddressedTo()
         .equals(other.getAddressedTo())) return false;
+    if (hasPassenger() != other.hasPassenger()) return false;
+    if (hasPassenger()) {
+      if (!getPassenger()
+          .equals(other.getPassenger())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -239,6 +290,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + ADDRESSEDTO_FIELD_NUMBER;
     hash = (53 * hash) + getAddressedTo().hashCode();
+    if (hasPassenger()) {
+      hash = (37 * hash) + PASSENGER_FIELD_NUMBER;
+      hash = (53 * hash) + getPassenger().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -380,6 +435,12 @@ private static final long serialVersionUID = 0L;
       }
       addressedTo_ = "";
 
+      if (passengerBuilder_ == null) {
+        passenger_ = null;
+      } else {
+        passenger_ = null;
+        passengerBuilder_ = null;
+      }
       return this;
     }
 
@@ -412,6 +473,11 @@ private static final long serialVersionUID = 0L;
         result.ride_ = rideBuilder_.build();
       }
       result.addressedTo_ = addressedTo_;
+      if (passengerBuilder_ == null) {
+        result.passenger_ = passenger_;
+      } else {
+        result.passenger_ = passengerBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -466,6 +532,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getAddressedTo().isEmpty()) {
         addressedTo_ = other.addressedTo_;
         onChanged();
+      }
+      if (other.hasPassenger()) {
+        mergePassenger(other.getPassenger());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -689,6 +758,125 @@ private static final long serialVersionUID = 0L;
       addressedTo_ = value;
       onChanged();
       return this;
+    }
+
+    private generated.PassengerProto passenger_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        generated.PassengerProto, generated.PassengerProto.Builder, generated.PassengerProtoOrBuilder> passengerBuilder_;
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     * @return Whether the passenger field is set.
+     */
+    public boolean hasPassenger() {
+      return passengerBuilder_ != null || passenger_ != null;
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     * @return The passenger.
+     */
+    public generated.PassengerProto getPassenger() {
+      if (passengerBuilder_ == null) {
+        return passenger_ == null ? generated.PassengerProto.getDefaultInstance() : passenger_;
+      } else {
+        return passengerBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public Builder setPassenger(generated.PassengerProto value) {
+      if (passengerBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        passenger_ = value;
+        onChanged();
+      } else {
+        passengerBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public Builder setPassenger(
+        generated.PassengerProto.Builder builderForValue) {
+      if (passengerBuilder_ == null) {
+        passenger_ = builderForValue.build();
+        onChanged();
+      } else {
+        passengerBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public Builder mergePassenger(generated.PassengerProto value) {
+      if (passengerBuilder_ == null) {
+        if (passenger_ != null) {
+          passenger_ =
+            generated.PassengerProto.newBuilder(passenger_).mergeFrom(value).buildPartial();
+        } else {
+          passenger_ = value;
+        }
+        onChanged();
+      } else {
+        passengerBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public Builder clearPassenger() {
+      if (passengerBuilder_ == null) {
+        passenger_ = null;
+        onChanged();
+      } else {
+        passenger_ = null;
+        passengerBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public generated.PassengerProto.Builder getPassengerBuilder() {
+      
+      onChanged();
+      return getPassengerFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    public generated.PassengerProtoOrBuilder getPassengerOrBuilder() {
+      if (passengerBuilder_ != null) {
+        return passengerBuilder_.getMessageOrBuilder();
+      } else {
+        return passenger_ == null ?
+            generated.PassengerProto.getDefaultInstance() : passenger_;
+      }
+    }
+    /**
+     * <code>.routeguide.PassengerProto passenger = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        generated.PassengerProto, generated.PassengerProto.Builder, generated.PassengerProtoOrBuilder> 
+        getPassengerFieldBuilder() {
+      if (passengerBuilder_ == null) {
+        passengerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            generated.PassengerProto, generated.PassengerProto.Builder, generated.PassengerProtoOrBuilder>(
+                getPassenger(),
+                getParentForChildren(),
+                isClean());
+        passenger_ = null;
+      }
+      return passengerBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

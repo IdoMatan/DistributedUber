@@ -127,7 +127,7 @@ public class PathPlaningService {
                     departureRepository.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
                 } else {
                     var dto = new RideDto(bookedRidesProtoRide.get(i));
-                    updateCurrentCityFollowers(dto);
+                    updateCurrentCityFollowers(dto, new Passenger(passengerPathDto.toPassengerDto(i)));
 //                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
 
                 }
@@ -152,7 +152,7 @@ public class PathPlaningService {
         return rideId.split("_")[0];
     }
 
-    private void updateCurrentCityFollowers(RideDto rideDto) {
+    private void updateCurrentCityFollowers(RideDto rideDto, Passenger passenger) {
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
@@ -162,7 +162,7 @@ public class PathPlaningService {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
                 // Call server streaming call
-                client.updateFollower(rideDto, rideDto.origin);
+                client.updateFollower(rideDto, rideDto.origin, passenger);
             }
         }
     }

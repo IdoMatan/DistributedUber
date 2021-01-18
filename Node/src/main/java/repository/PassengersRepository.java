@@ -11,6 +11,11 @@ public class PassengersRepository {
     public void addNewPassenger(Passenger ps) {
         getCollection(ps.origin).add(ps);
     }
+
+    public void removePassenger(Passenger ps) {
+        getCollection(ps.origin).remove(ps);
+    }
+
     public String getSnapshot(String currentCity) {
         StringBuilder snapshot = new StringBuilder("Passengers of " + currentCity + " :\n");
         var passengers = getCollection(currentCity);
