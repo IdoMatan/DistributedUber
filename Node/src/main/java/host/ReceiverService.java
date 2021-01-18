@@ -251,7 +251,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     }
 
     @Override
-    public void liveMapIsEmpty(LiveMapIsEmptyMessage message, StreamObserver<IsEmptyAgreement> isEmptyAgreementStreamObserver){
+    public void liveMapIsEmpty(LiveMapIsEmptyMessage message, StreamObserver<IsEmptyAgreement> isEmptyAgreementStreamObserver) {
         String origin =  message.getOrigin();
         String destination =  message.getDestination();
         String departureDate = message.getDepartureDate();
@@ -260,6 +260,18 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         IsEmptyAgreement isEmptyAgreement = IsEmptyAgreement.newBuilder().setIsEmpty(optionalRides.isEmpty()).build();
         isEmptyAgreementStreamObserver.onNext(isEmptyAgreement);
         isEmptyAgreementStreamObserver.onCompleted();
+    }
+
+
+    @Override
+    public void getSyncParam(CityMessage cityMessage, StreamObserver<SyncParam> SyncParamStreamObserver){
+        String city =  cityMessage.getCity();
+
+        String SyncParamInt = String.valueOf(departureRepository.getSize(city));
+
+        SyncParam syncParam = SyncParam.newBuilder().setSyncParamProto(SyncParamInt).build();
+        SyncParamStreamObserver.onNext(syncParam);
+        SyncParamStreamObserver.onCompleted();
     }
 
 }

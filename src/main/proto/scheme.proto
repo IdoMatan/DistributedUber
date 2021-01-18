@@ -30,9 +30,9 @@ service RouteGuide {
   rpc BookTripRideApproval(BookingApprovalMessage) returns (BookResult){}
   rpc BookRideInTrip(BookingRequestMessage) returns (BookResult){}
   rpc LiveMapIsEmpty(LiveMapIsEmptyMessage) returns (IsEmptyAgreement){}
+  rpc GetSyncParam(CityMessage) returns (SyncParam){}
 
 }
-
 
 message PassengerProto{
   string firstName = 2;
@@ -86,6 +86,14 @@ message LiveMapIsEmptyMessage{
 
 message IsEmptyAgreement{
   bool isEmpty = 1;
+}
+
+message CityMessage{
+  string city = 1;
+}
+
+message SyncParam{
+  string syncParamProto = 1;
 }
 
 

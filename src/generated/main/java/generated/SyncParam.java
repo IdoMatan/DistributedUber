@@ -4,25 +4,26 @@
 package generated;
 
 /**
- * Protobuf type {@code routeguide.isEmptyAgreement}
+ * Protobuf type {@code routeguide.SyncParam}
  */
-public final class isEmptyAgreement extends
+public final class SyncParam extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:routeguide.isEmptyAgreement)
-    isEmptyAgreementOrBuilder {
+    // @@protoc_insertion_point(message_implements:routeguide.SyncParam)
+    SyncParamOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use isEmptyAgreement.newBuilder() to construct.
-  private isEmptyAgreement(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use SyncParam.newBuilder() to construct.
+  private SyncParam(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private isEmptyAgreement() {
+  private SyncParam() {
+    syncParamProto_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new isEmptyAgreement();
+    return new SyncParam();
   }
 
   @java.lang.Override
@@ -30,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private isEmptyAgreement(
+  private SyncParam(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -48,9 +49,10 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 8: {
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
 
-            isEmpty_ = input.readBool();
+            syncParamProto_ = s;
             break;
           }
           default: {
@@ -74,26 +76,53 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return generated.RouteGuideProto.internal_static_routeguide_isEmptyAgreement_descriptor;
+    return generated.RouteGuideProto.internal_static_routeguide_SyncParam_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return generated.RouteGuideProto.internal_static_routeguide_isEmptyAgreement_fieldAccessorTable
+    return generated.RouteGuideProto.internal_static_routeguide_SyncParam_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            generated.isEmptyAgreement.class, generated.isEmptyAgreement.Builder.class);
+            generated.SyncParam.class, generated.SyncParam.Builder.class);
   }
 
-  public static final int ISEMPTY_FIELD_NUMBER = 1;
-  private boolean isEmpty_;
+  public static final int SYNCPARAMPROTO_FIELD_NUMBER = 1;
+  private volatile java.lang.Object syncParamProto_;
   /**
-   * <code>bool isEmpty = 1;</code>
-   * @return The isEmpty.
+   * <code>string syncParamProto = 1;</code>
+   * @return The syncParamProto.
    */
   @java.lang.Override
-  public boolean getIsEmpty() {
-    return isEmpty_;
+  public java.lang.String getSyncParamProto() {
+    java.lang.Object ref = syncParamProto_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      syncParamProto_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string syncParamProto = 1;</code>
+   * @return The bytes for syncParamProto.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getSyncParamProtoBytes() {
+    java.lang.Object ref = syncParamProto_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      syncParamProto_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -110,8 +139,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (isEmpty_ != false) {
-      output.writeBool(1, isEmpty_);
+    if (!getSyncParamProtoBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, syncParamProto_);
     }
     unknownFields.writeTo(output);
   }
@@ -122,9 +151,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (isEmpty_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(1, isEmpty_);
+    if (!getSyncParamProtoBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, syncParamProto_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -136,13 +164,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof generated.isEmptyAgreement)) {
+    if (!(obj instanceof generated.SyncParam)) {
       return super.equals(obj);
     }
-    generated.isEmptyAgreement other = (generated.isEmptyAgreement) obj;
+    generated.SyncParam other = (generated.SyncParam) obj;
 
-    if (getIsEmpty()
-        != other.getIsEmpty()) return false;
+    if (!getSyncParamProto()
+        .equals(other.getSyncParamProto())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -154,77 +182,76 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ISEMPTY_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getIsEmpty());
+    hash = (37 * hash) + SYNCPARAMPROTO_FIELD_NUMBER;
+    hash = (53 * hash) + getSyncParamProto().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.isEmptyAgreement parseFrom(byte[] data)
+  public static generated.SyncParam parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static generated.isEmptyAgreement parseFrom(java.io.InputStream input)
+  public static generated.SyncParam parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static generated.isEmptyAgreement parseDelimitedFrom(java.io.InputStream input)
+  public static generated.SyncParam parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static generated.isEmptyAgreement parseDelimitedFrom(
+  public static generated.SyncParam parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static generated.isEmptyAgreement parseFrom(
+  public static generated.SyncParam parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -237,7 +264,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(generated.isEmptyAgreement prototype) {
+  public static Builder newBuilder(generated.SyncParam prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -253,26 +280,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code routeguide.isEmptyAgreement}
+   * Protobuf type {@code routeguide.SyncParam}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:routeguide.isEmptyAgreement)
-      generated.isEmptyAgreementOrBuilder {
+      // @@protoc_insertion_point(builder_implements:routeguide.SyncParam)
+      generated.SyncParamOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return generated.RouteGuideProto.internal_static_routeguide_isEmptyAgreement_descriptor;
+      return generated.RouteGuideProto.internal_static_routeguide_SyncParam_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return generated.RouteGuideProto.internal_static_routeguide_isEmptyAgreement_fieldAccessorTable
+      return generated.RouteGuideProto.internal_static_routeguide_SyncParam_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              generated.isEmptyAgreement.class, generated.isEmptyAgreement.Builder.class);
+              generated.SyncParam.class, generated.SyncParam.Builder.class);
     }
 
-    // Construct using generated.isEmptyAgreement.newBuilder()
+    // Construct using generated.SyncParam.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -290,7 +317,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      isEmpty_ = false;
+      syncParamProto_ = "";
 
       return this;
     }
@@ -298,17 +325,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return generated.RouteGuideProto.internal_static_routeguide_isEmptyAgreement_descriptor;
+      return generated.RouteGuideProto.internal_static_routeguide_SyncParam_descriptor;
     }
 
     @java.lang.Override
-    public generated.isEmptyAgreement getDefaultInstanceForType() {
-      return generated.isEmptyAgreement.getDefaultInstance();
+    public generated.SyncParam getDefaultInstanceForType() {
+      return generated.SyncParam.getDefaultInstance();
     }
 
     @java.lang.Override
-    public generated.isEmptyAgreement build() {
-      generated.isEmptyAgreement result = buildPartial();
+    public generated.SyncParam build() {
+      generated.SyncParam result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -316,9 +343,9 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public generated.isEmptyAgreement buildPartial() {
-      generated.isEmptyAgreement result = new generated.isEmptyAgreement(this);
-      result.isEmpty_ = isEmpty_;
+    public generated.SyncParam buildPartial() {
+      generated.SyncParam result = new generated.SyncParam(this);
+      result.syncParamProto_ = syncParamProto_;
       onBuilt();
       return result;
     }
@@ -357,18 +384,19 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof generated.isEmptyAgreement) {
-        return mergeFrom((generated.isEmptyAgreement)other);
+      if (other instanceof generated.SyncParam) {
+        return mergeFrom((generated.SyncParam)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(generated.isEmptyAgreement other) {
-      if (other == generated.isEmptyAgreement.getDefaultInstance()) return this;
-      if (other.getIsEmpty() != false) {
-        setIsEmpty(other.getIsEmpty());
+    public Builder mergeFrom(generated.SyncParam other) {
+      if (other == generated.SyncParam.getDefaultInstance()) return this;
+      if (!other.getSyncParamProto().isEmpty()) {
+        syncParamProto_ = other.syncParamProto_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -385,11 +413,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      generated.isEmptyAgreement parsedMessage = null;
+      generated.SyncParam parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (generated.isEmptyAgreement) e.getUnfinishedMessage();
+        parsedMessage = (generated.SyncParam) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -399,33 +427,78 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private boolean isEmpty_ ;
+    private java.lang.Object syncParamProto_ = "";
     /**
-     * <code>bool isEmpty = 1;</code>
-     * @return The isEmpty.
+     * <code>string syncParamProto = 1;</code>
+     * @return The syncParamProto.
      */
-    @java.lang.Override
-    public boolean getIsEmpty() {
-      return isEmpty_;
+    public java.lang.String getSyncParamProto() {
+      java.lang.Object ref = syncParamProto_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        syncParamProto_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
-     * <code>bool isEmpty = 1;</code>
-     * @param value The isEmpty to set.
+     * <code>string syncParamProto = 1;</code>
+     * @return The bytes for syncParamProto.
+     */
+    public com.google.protobuf.ByteString
+        getSyncParamProtoBytes() {
+      java.lang.Object ref = syncParamProto_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        syncParamProto_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string syncParamProto = 1;</code>
+     * @param value The syncParamProto to set.
      * @return This builder for chaining.
      */
-    public Builder setIsEmpty(boolean value) {
-      
-      isEmpty_ = value;
+    public Builder setSyncParamProto(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      syncParamProto_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>bool isEmpty = 1;</code>
+     * <code>string syncParamProto = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearIsEmpty() {
+    public Builder clearSyncParamProto() {
       
-      isEmpty_ = false;
+      syncParamProto_ = getDefaultInstance().getSyncParamProto();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string syncParamProto = 1;</code>
+     * @param value The bytes for syncParamProto to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSyncParamProtoBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      syncParamProto_ = value;
       onChanged();
       return this;
     }
@@ -442,41 +515,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:routeguide.isEmptyAgreement)
+    // @@protoc_insertion_point(builder_scope:routeguide.SyncParam)
   }
 
-  // @@protoc_insertion_point(class_scope:routeguide.isEmptyAgreement)
-  private static final generated.isEmptyAgreement DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:routeguide.SyncParam)
+  private static final generated.SyncParam DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new generated.isEmptyAgreement();
+    DEFAULT_INSTANCE = new generated.SyncParam();
   }
 
-  public static generated.isEmptyAgreement getDefaultInstance() {
+  public static generated.SyncParam getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<isEmptyAgreement>
-      PARSER = new com.google.protobuf.AbstractParser<isEmptyAgreement>() {
+  private static final com.google.protobuf.Parser<SyncParam>
+      PARSER = new com.google.protobuf.AbstractParser<SyncParam>() {
     @java.lang.Override
-    public isEmptyAgreement parsePartialFrom(
+    public SyncParam parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new isEmptyAgreement(input, extensionRegistry);
+      return new SyncParam(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<isEmptyAgreement> parser() {
+  public static com.google.protobuf.Parser<SyncParam> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<isEmptyAgreement> getParserForType() {
+  public com.google.protobuf.Parser<SyncParam> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public generated.isEmptyAgreement getDefaultInstanceForType() {
+  public generated.SyncParam getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

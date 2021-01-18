@@ -24,8 +24,11 @@ class GenerateJson:
         self.last_name = names.get_last_name()
 
     def new_ride(self):
-        self.day = str(random.randint(1, 30))
-        self.month = str(random.randint(1, 12))
+        # self.day = str(random.randint(1, 30))
+        # self.month = str(random.randint(1, 12))
+
+        self.day = str(random.randint(1, 2))
+        self.month = str(random.randint(1, 2))
         self.origin = random.choice(self.origins)
         self.destination = random.choice(self.destinations)
         while self.destination == self.origin:
@@ -52,7 +55,7 @@ class GenerateJson:
                                "destination": self.destination, "departure_date": "2021-" + self.month + "-" + self.day}
         return random_json_message
 
-    def generate_passenger_trip_json(self, trips=2):
+    def generate_passenger_trip_json(self, trips=4):
         self.new_person()
         origins, destinations, departure_dates = self.trip_generation(trips)
         random_json_message = {"first_name": self.first_name, "last_name": self.last_name, "origin": origins,
@@ -80,10 +83,11 @@ def get_snapshot(snapshot_url, host='http://localhost:'):
 
 
 if __name__ == '__main__':
-    n_rides = 0
+    n_rides = 10
     generate_json = GenerateJson()
     passengers = 10
-    urls = ["8013", "8023", "8033", "8053", "8063", "8073", "8083", "8093", "8103", "8113"]
+    urls = ["8013", "8023", "8033", "8053", "8063", "8073"]#, "8083", "8093", "8103", "8113"]
+    urls = ["8013", "8023", "8033",  "8073"]#, "8083", "8093", "8103", "8113"]
     # urls = ["8013"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
 
@@ -92,10 +96,11 @@ if __name__ == '__main__':
         url = host + random.choice(urls) + '/new_ride'
         start_time = time.time()
         r = requests.post(url, json=j)
-        print("Sent to: ", url)
-        print("Status code: ", r.status_code)
-        print("Content: ", r.content)
-        print("Generate new ride in: ", time.time() - start_time, " [Sec]")
+        # print("Sent to: ", url)
+        if r.status_code == 500:
+            print("Status code: ", r.status_code)
+        # print("Content: ", r.content)
+        # print("Generate new ride in: ", time.time() - start_time, " [Sec]")
 
     # get_snapshot(random.choice(urls), host=host)
 

@@ -124,6 +124,8 @@ public class RidesController {
             return ResponseEntity.ok("You booked local ride");
 
         } else {
+            var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("grpc.port");
+
             for (String rideId : optionalRides) {
                 var rideOriginCity = parseOrigin(rideId);
                 if (rideOriginCity.equals(passengerDto.origin)) {
@@ -131,6 +133,14 @@ public class RidesController {
                 }
                 var city = citiesRepository.getCity(rideOriginCity);
                 var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
+                if (cityLeaderIp.equals(myFullURI)) {  // Im also the leader of that city
+                    bookedRide = departureRepository.book(passengerDto, rideId);
+                    if (bookedRide != null) {
+                        var dto = new RideDto(bookedRide);
+                        updateCurrentCityFollowers(dto);
+                        return ResponseEntity.ok("You booked an in shard ride");
+                    }
+                }
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
                 Sender client = new Sender(channel);
                 BookResult bookResult = client.bookRide(new Passenger(passengerDto), rideId);
@@ -184,78 +194,101 @@ public class RidesController {
 
     // ------------------------------------------------ Router/DNS --------------------------------------------------------
     @GetMapping("/test")
-    public String testing() {
-        String syncCount = String.valueOf(departureRepository.getSize("cityA"));
-        String nRides = zkService.getLiveRidesSync(shard, "cityA");
-        return "from ZK: " + nRides + "\n from me: " + syncCount;
-    }
+    public String testing() throws InterruptedException {
+//        String syncCount = String.valueOf(departureRepository.getSize("cityA"));
+//        String nRides = zkService.getLiveRidesSync(shard, "cityA");
+//        return "from ZK: " + nRides + "\n from me: " + syncCount;
 
-    @PostMapping("/new_ride")
-    public ModelAndView redirectNewRidePostToPost(HttpServletRequest request) throws IOException {
-        return redirectRequest(request, "new_ride");
-    }
+        int counter = 0;
+        List<String> followers = zkService.getFollowers(shard);
+        var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
-    @PostMapping("/ride/book/single")
-    public ModelAndView redirectNewPassengerPostToPost(HttpServletRequest request) throws IOException {
-        return redirectRequest(request, "new_passenger/single");
-    }
+        for (String target : followers) {
+            if (!myFullURI.equals(target)) {
+                String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                Sender client = new Sender(channel);
+                IsEmptyAgreement isEmpty = client.liveMapIsEmpty("cityA", "cityB", "2021-1-1");
 
-    @PostMapping("/ride/book/path_planning")
-    public ModelAndView redirectNewPassengerTripPostToPost(HttpServletRequest request) throws IOException {
-        return redirectRequest(request, "new_passenger/path_planning");
-    }
-
-
-    private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws IOException {
-        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-        String origin;
-        String destination = null;
-        String departureDate = null;
-        if (redirectedRouteSuffix.equals("new_passenger/path_planning")) {
-            origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
-        } else {
-            RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
-            origin = json_request.origin;
-            destination = json_request.destination;
-            departureDate = json_request.departureDate;
-        }
-        if (redirectedRouteSuffix.equals("new_passenger/single")) {
-            if (!quick_check_available(origin, destination, departureDate)) {
-                redirectedRouteSuffix = "quick_check/response";
-                String redirect = "redirect:http://" + System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
-                return new ModelAndView(redirect);
+                if (!isEmpty.getIsEmpty()) {
+                    counter++;
+                    System.out.println(target_grpc);
+                }
             }
+            System.out.println(counter);
         }
-
-        var originCity = citiesRepository.getCity(origin);  // transform to city object
-        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
-
-        String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
-
-        return new ModelAndView(redirect);
+        System.out.println(counter);
+        return "1";
     }
 
-    private boolean quick_check_available(String origin, String destination, String departureDate) {
-//        String nRides = zkService.getLiveRidesSync(shard, origin);
-        var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
-        if (optionalRides.isEmpty()) {
-            // ask my follower friends if they agree with me:
-            List<String> followers = zkService.getFollowers(shard);
-            var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+        @PostMapping("/new_ride")
+        public ModelAndView redirectNewRidePostToPost (HttpServletRequest request) throws IOException {
+            return redirectRequest(request, "new_ride");
+        }
 
-            for (String target : followers) {
-                if (!myFullURI.equals(target)) {
-                    String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
-                    ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
-                    Sender client = new Sender(channel);
-                    // Call server streaming call
-                    IsEmptyAgreement isEmpty = client.liveMapIsEmpty(origin, destination, departureDate);
-                    if (!isEmpty.getIsEmpty()){
-                        return false;
+        @PostMapping("/ride/book/single")
+        public ModelAndView redirectNewPassengerPostToPost (HttpServletRequest request) throws IOException {
+            return redirectRequest(request, "new_passenger/single");
+        }
+
+        @PostMapping("/ride/book/path_planning")
+        public ModelAndView redirectNewPassengerTripPostToPost (HttpServletRequest request) throws IOException {
+            return redirectRequest(request, "new_passenger/path_planning");
+        }
+
+
+        private ModelAndView redirectRequest (HttpServletRequest request, String redirectedRouteSuffix) throws
+        IOException {
+            request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+            String origin;
+            String destination = null;
+            String departureDate = null;
+            if (redirectedRouteSuffix.equals("new_passenger/path_planning")) {
+                origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
+            } else {
+                RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
+                origin = json_request.origin;
+                destination = json_request.destination;
+                departureDate = json_request.departureDate;
+            }
+//            if (redirectedRouteSuffix.equals("new_passenger/single") && shard.equals(citiesRepository.getCity(origin).shard)) {
+//                if (!quick_check_available(origin, destination, departureDate)) {
+//                    redirectedRouteSuffix = "quick_check/response";
+//                    String redirect = "redirect:http://" + System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+//                    return new ModelAndView(redirect);
+//                }
+//            }
+
+            var originCity = citiesRepository.getCity(origin);  // transform to city object
+            var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
+
+            String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+
+            return new ModelAndView(redirect);
+        }
+
+        private boolean quick_check_available (String origin, String destination, String departureDate){
+//        String nRides = zkService.getLiveRidesSync(shard, origin);
+            var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
+            if (optionalRides.isEmpty()) {
+                // ask my follower friends if they agree with me:
+                List<String> followers = zkService.getFollowers(shard);
+                var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+
+                for (String target : followers) {
+                    if (!myFullURI.equals(target)) {
+                        String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                        ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                        Sender client = new Sender(channel);
+                        // Call server streaming call
+
+                        IsEmptyAgreement isEmpty = client.liveMapIsEmpty(origin, destination, departureDate);
+                        if (!isEmpty.getIsEmpty()) {
+                            return false;
+                        }
                     }
                 }
             }
+            return true;
         }
-        return true;
     }
-}

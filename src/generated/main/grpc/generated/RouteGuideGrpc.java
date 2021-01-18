@@ -306,6 +306,37 @@ public final class RouteGuideGrpc {
     return getLiveMapIsEmptyMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<generated.CityMessage,
+      generated.SyncParam> getGetSyncParamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetSyncParam",
+      requestType = generated.CityMessage.class,
+      responseType = generated.SyncParam.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<generated.CityMessage,
+      generated.SyncParam> getGetSyncParamMethod() {
+    io.grpc.MethodDescriptor<generated.CityMessage, generated.SyncParam> getGetSyncParamMethod;
+    if ((getGetSyncParamMethod = RouteGuideGrpc.getGetSyncParamMethod) == null) {
+      synchronized (RouteGuideGrpc.class) {
+        if ((getGetSyncParamMethod = RouteGuideGrpc.getGetSyncParamMethod) == null) {
+          RouteGuideGrpc.getGetSyncParamMethod = getGetSyncParamMethod =
+              io.grpc.MethodDescriptor.<generated.CityMessage, generated.SyncParam>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetSyncParam"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.CityMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  generated.SyncParam.getDefaultInstance()))
+              .setSchemaDescriptor(new RouteGuideMethodDescriptorSupplier("GetSyncParam"))
+              .build();
+        }
+      }
+    }
+    return getGetSyncParamMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -417,6 +448,13 @@ public final class RouteGuideGrpc {
       asyncUnimplementedUnaryCall(getLiveMapIsEmptyMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getSyncParam(generated.CityMessage request,
+        io.grpc.stub.StreamObserver<generated.SyncParam> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetSyncParamMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -482,6 +520,13 @@ public final class RouteGuideGrpc {
                 generated.LiveMapIsEmptyMessage,
                 generated.IsEmptyAgreement>(
                   this, METHODID_LIVE_MAP_IS_EMPTY)))
+          .addMethod(
+            getGetSyncParamMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                generated.CityMessage,
+                generated.SyncParam>(
+                  this, METHODID_GET_SYNC_PARAM)))
           .build();
     }
   }
@@ -571,6 +616,14 @@ public final class RouteGuideGrpc {
       asyncUnaryCall(
           getChannel().newCall(getLiveMapIsEmptyMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getSyncParam(generated.CityMessage request,
+        io.grpc.stub.StreamObserver<generated.SyncParam> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetSyncParamMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -648,6 +701,13 @@ public final class RouteGuideGrpc {
     public generated.IsEmptyAgreement liveMapIsEmpty(generated.LiveMapIsEmptyMessage request) {
       return blockingUnaryCall(
           getChannel(), getLiveMapIsEmptyMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public generated.SyncParam getSyncParam(generated.CityMessage request) {
+      return blockingUnaryCall(
+          getChannel(), getGetSyncParamMethod(), getCallOptions(), request);
     }
   }
 
@@ -736,6 +796,14 @@ public final class RouteGuideGrpc {
       return futureUnaryCall(
           getChannel().newCall(getLiveMapIsEmptyMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<generated.SyncParam> getSyncParam(
+        generated.CityMessage request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetSyncParamMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SENDER_TEST1 = 0;
@@ -747,6 +815,7 @@ public final class RouteGuideGrpc {
   private static final int METHODID_BOOK_TRIP_RIDE_APPROVAL = 6;
   private static final int METHODID_BOOK_RIDE_IN_TRIP = 7;
   private static final int METHODID_LIVE_MAP_IS_EMPTY = 8;
+  private static final int METHODID_GET_SYNC_PARAM = 9;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -800,6 +869,10 @@ public final class RouteGuideGrpc {
         case METHODID_LIVE_MAP_IS_EMPTY:
           serviceImpl.liveMapIsEmpty((generated.LiveMapIsEmptyMessage) request,
               (io.grpc.stub.StreamObserver<generated.IsEmptyAgreement>) responseObserver);
+          break;
+        case METHODID_GET_SYNC_PARAM:
+          serviceImpl.getSyncParam((generated.CityMessage) request,
+              (io.grpc.stub.StreamObserver<generated.SyncParam>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -871,6 +944,7 @@ public final class RouteGuideGrpc {
               .addMethod(getBookTripRideApprovalMethod())
               .addMethod(getBookRideInTripMethod())
               .addMethod(getLiveMapIsEmptyMethod())
+              .addMethod(getGetSyncParamMethod())
               .build();
         }
       }

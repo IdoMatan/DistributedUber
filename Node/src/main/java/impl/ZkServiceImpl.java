@@ -232,7 +232,13 @@ public class ZkServiceImpl implements ZkService {
         return zkClient.readData(SHARD_DIR.concat(shard).concat("/").concat(city).concat(LIVE_RIDES), true);
     }
 
-
+    @Override
+    public void updateMaster(String parentPath, String target) {
+        try {
+            zkClient.writeData(parentPath.concat("/master"), target);
+        } catch (ZkNodeExistsException e) {
+        }
+    }
 
     @Override
     public String getLeaderNodeData2() {

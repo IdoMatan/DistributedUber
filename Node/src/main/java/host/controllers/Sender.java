@@ -71,6 +71,13 @@ public class Sender {
     public IsEmptyAgreement liveMapIsEmpty(String origin, String destination, String departureDate) {
         LiveMapIsEmptyMessage send_msg = LiveMapIsEmptyMessage.newBuilder()
                 .setOrigin(origin).setDestination(destination).setDepartureDate(departureDate).build();
+
         return blockingStub.liveMapIsEmpty(send_msg);
     }
+
+    public SyncParam getSyncParam(String city) {
+        CityMessage send_msg = CityMessage.newBuilder().setCity(city).build();
+        return blockingStub.getSyncParam(send_msg);
+    }
+
 }

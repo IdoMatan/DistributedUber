@@ -46,6 +46,8 @@ public interface ZkService {
 
     void updateLiveRidesSync(String shard, String city, String nRides);
 
+    void updateMaster(String parentPath, String target);
+
     String getLiveRidesSync(String shard, String city);
 
     List<String> getCities();
