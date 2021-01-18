@@ -61,7 +61,7 @@ public class Sender {
         return blockingStub.unBookTripRide(send_msg);
     }
 
-    public BookResult BookTripRideApproval(Passenger ps, String rideId, RideProto rideProto){
+    public BookResult BookTripRideApproval(Passenger ps, String rideId, RideProto rideProto) {
         PassengerProto proto = ps.toProto();
 //        RideProto rideProto = new RideDto(ride).toProto();
         BookingApprovalMessage send_msg = BookingApprovalMessage.newBuilder().setPassenger(proto).setRideId(rideId).setRideProto(rideProto).build();
@@ -71,6 +71,13 @@ public class Sender {
     public IsEmptyAgreement liveMapIsEmpty(String origin, String destination, String departureDate) {
         LiveMapIsEmptyMessage send_msg = LiveMapIsEmptyMessage.newBuilder()
                 .setOrigin(origin).setDestination(destination).setDepartureDate(departureDate).build();
+
         return blockingStub.liveMapIsEmpty(send_msg);
     }
+
+    public SyncParam getSyncParam(String city) {
+        CityMessage send_msg = CityMessage.newBuilder().setCity(city).build();
+        return blockingStub.getSyncParam(send_msg);
+    }
+
 }
