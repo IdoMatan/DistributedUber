@@ -1,6 +1,7 @@
 package external.service;
 
 import api.ZkService;
+import generated.Id;
 import host.LocalRideDistributionService;
 import host.controllers.Sender;
 import host.dto.RideDto;
@@ -28,10 +29,14 @@ public class PdCitiesService {
                 localRideDistributionService.updatePDRide(ride, city.name);
                 continue;
                 }
-            ManagedChannel channel = ManagedChannelBuilder.forTarget(pdCityLeaderIp).usePlaintext().build();
-            Sender client = new Sender(channel);
-            // Call server streaming call
-            client.updatePDCities(ride, city.name);
+            Id rideID = null;
+            while (rideID == null) {
+                pdCityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
+                ManagedChannel channel = ManagedChannelBuilder.forTarget(pdCityLeaderIp).usePlaintext().build();
+                Sender client = new Sender(channel);
+                // Call server streaming call
+                rideID = client.updatePDCities(ride, city.name);
+            }
         }
     }
 }

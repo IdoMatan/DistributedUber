@@ -61,7 +61,7 @@ public class Sender {
         return blockingStub.unBookTripRide(send_msg);
     }
 
-    public BookResult BookTripRideApproval(Passenger ps, String rideId, RideProto rideProto){
+    public BookResult BookTripRideApproval(Passenger ps, String rideId, RideProto rideProto) {
         PassengerProto proto = ps.toProto();
 //        RideProto rideProto = new RideDto(ride).toProto();
         BookingApprovalMessage send_msg = BookingApprovalMessage.newBuilder().setPassenger(proto).setRideId(rideId).setRideProto(rideProto).build();

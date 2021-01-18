@@ -81,6 +81,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         String addressedTo = rideMessage.getAddressedTo();
         var ride = liveMapRepository.upsert(dto, addressedTo);
         Id rideId = Id.newBuilder().setRideId(ride.buildUniqueKey()).build();
+        id.onNext(rideId);
 
         String shard = System.getProperty("shard");
         List<String> followers = zkService.getFollowers(shard);
@@ -95,7 +96,6 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
             }
         }
 
-        id.onNext(rideId);
         id.onCompleted();
     }
 
