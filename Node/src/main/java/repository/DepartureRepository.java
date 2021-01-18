@@ -88,8 +88,9 @@ public class DepartureRepository {
         if (rideId.equals("NA")) {
             return ride;
         }
+        ps.UpdateRideId(rideId);
         ride.unBook(ps);
-        passengersRepository.removePassenger(ps);  // todo remove from list....
+        passengersRepository.removePassenger(ps);
         return ride;
     }
 

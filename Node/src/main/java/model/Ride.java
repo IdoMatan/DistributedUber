@@ -79,7 +79,7 @@ public class Ride {
                 ", Departure_date=" + departureDate +
                 ", Vacancies=" + vacancies +
                 ", PD=" + pd +
-                ", Passenger_list=" + passengerList.toString() +
+                ", Passenger_list=" + passengerListString +
                 '}';
     }
 
