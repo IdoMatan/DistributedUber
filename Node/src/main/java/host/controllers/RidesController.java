@@ -144,6 +144,8 @@ public class RidesController {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
                 Sender client = new Sender(channel);
                 BookResult bookResult = client.bookRide(new Passenger(passengerDto), rideId);
+                channel.shutdown();
+
                 if (bookResult.getSucceededToBook()) {
                     return ResponseEntity.ok("You booked a ride originated in " + rideOriginCity);
                 }
@@ -190,6 +192,7 @@ public class RidesController {
                 if (passenger != null) {client.updateFollower(rideDto, rideDto.origin, passenger);}
                 else {client.updateFollower(rideDto, rideDto.origin);}
 //                client.updateFollowersPassengerList(passenger);
+                channel.shutdown();
 
             }
         }

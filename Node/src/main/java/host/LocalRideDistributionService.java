@@ -34,6 +34,8 @@ public class LocalRideDistributionService {
                 Sender client = new Sender(channel);
                 // Call server streaming call
                 client.updateFollower(dto, addressedTo);
+                channel.shutdown();
+
             }
         }
     }

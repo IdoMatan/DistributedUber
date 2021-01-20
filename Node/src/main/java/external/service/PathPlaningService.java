@@ -58,7 +58,9 @@ public class PathPlaningService {
                 var optionalRides = liveMapRepository.rideExists(passengerPathDto.origin.get(i),
                         passengerPathDto.destination.get(i), passengerPathDto.departureDate.get(i));
                 if (optionalRides.isEmpty()) {
-                    if (i==0) { return "No available ride";}
+                    if (i == 0) {
+                        return "No available ride";
+                    }
                     break;
                 }
                 Ride bookedRide = null;
@@ -81,7 +83,7 @@ public class PathPlaningService {
                         }
                         city = citiesRepository.getCity(rideOriginCity);
                         cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
-                        if (cityLeaderIp.equals(myFullURI)){
+                        if (cityLeaderIp.equals(myFullURI)) {
                             bookedRide = departureRepository.book(passengerPathDto.toPassengerDto(i), rideId);
                             if (bookedRide != null) {
                                 bookedRidesID.set(i, rideId);
@@ -93,6 +95,8 @@ public class PathPlaningService {
                         Sender client = new Sender(channel);
 //                        BookResult bookResult = client.bookRide(new Passenger(passengerPathDto.toPassengerDto(i)), rideId);
                         BookResult bookResult = client.bookTripRide(new Passenger(passengerPathDto.toPassengerDto(i)));
+                        channel.shutdown();
+
                         if (bookResult.getSucceededToBook()) {
 //                            return "You booked a ride originated in " + rideOriginCity;
                             bookedRidesID.set(i, rideId);
@@ -108,6 +112,8 @@ public class PathPlaningService {
                     ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
                     Sender client = new Sender(channel);
                     BookResult bookResult = client.bookTripRide(new Passenger(passengerPathDto.toPassengerDto(i)));
+                    channel.shutdown();
+
                     if (bookResult.getSucceededToBook()) {
                         bookedRidesID.set(i, bookResult.getRideId());
                         bookedRidesProtoRide.set(i, bookResult.getRide());
@@ -119,25 +125,28 @@ public class PathPlaningService {
         boolean cancelBooking = bookedRidesID.contains("NA");
         for (int i = 0; i < passengerPathDto.origin.size(); i++) {
             var rideOriginCity = parseOrigin(bookedRidesID.get(i));
-            var city = citiesRepository.getCity(passengerPathDto.origin.get(i)); //todo check if "passengerPathDto.origin.get(i)" is the right format to get the City city
-            var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
+            if (!bookedRidesID.get(i).equals("NA")) {
+                var city = citiesRepository.getCity(passengerPathDto.origin.get(i)); //todo check if "passengerPathDto.origin.get(i)" is the right format to get the City city
+                var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
 
-            if (rideOriginCity.equals(passengerPathDto.origin.get(i)) || myFullURI.equals(cityLeaderIp)) {
-                if (cancelBooking) { //  cancel ride, not all booked)
-                    departureRepository.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
-                } else {
-                    var dto = new RideDto(bookedRidesProtoRide.get(i));
-                    updateCurrentCityFollowers(dto, new Passenger(passengerPathDto.toPassengerDto(i)));
+                if (rideOriginCity.equals(passengerPathDto.origin.get(0)) || myFullURI.equals(cityLeaderIp)) {
+                    if (cancelBooking && (!bookedRidesID.get(i).equals("NA"))) { //  cancel ride, not all booked)
+                        departureRepository.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
+                    } else {
+                        var dto = new RideDto(bookedRidesProtoRide.get(i));
+                        updateCurrentCityFollowers(dto, new Passenger(passengerPathDto.toPassengerDto(i)));
 //                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
 
-                }
-            } else {
-                ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
-                Sender client = new Sender(channel);
-                if (cancelBooking) {
-                    client.unBookTripRide(new Passenger(passengerPathDto.toPassengerDto(i)), bookedRidesID.get(i));
+                    }
                 } else {
-                    client.BookTripRideApproval(new Passenger(passengerPathDto.toPassengerDto(i)), bookedRidesID.get(i), bookedRidesProtoRide.get(i));
+                    ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
+                    Sender client = new Sender(channel);
+                    if (cancelBooking && (!bookedRidesID.get(i).equals("NA"))) {
+                        client.unBookTripRide(new Passenger(passengerPathDto.toPassengerDto(i)), bookedRidesID.get(i));
+                    } else {
+                        client.BookTripRideApproval(new Passenger(passengerPathDto.toPassengerDto(i)), bookedRidesID.get(i), bookedRidesProtoRide.get(i));
+                    }
+                    channel.shutdown();
                 }
             }
         }
@@ -163,6 +172,8 @@ public class PathPlaningService {
                 Sender client = new Sender(channel);
                 // Call server streaming call
                 client.updateFollower(rideDto, rideDto.origin, passenger);
+                channel.shutdown();
+
             }
         }
     }

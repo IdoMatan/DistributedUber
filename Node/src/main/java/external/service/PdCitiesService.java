@@ -36,6 +36,8 @@ public class PdCitiesService {
                 Sender client = new Sender(channel);
                 // Call server streaming call
                 rideID = client.updatePDCities(ride, city.name);
+                channel.shutdown();
+
             }
         }
     }

@@ -102,6 +102,8 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
                 Sender client = new Sender(channel);
                 // Call server streaming call
                 client.updateFollower(dto, addressedTo);
+                channel.shutdown();
+
             }
         }
 
@@ -131,6 +133,8 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
                     ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                     Sender client = new Sender(channel);
                     client.updateFollower(dto, dto.origin);
+                    channel.shutdown();
+
                 }
             }
         }
@@ -167,6 +171,8 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
                 Sender client = new Sender(channel);
                 BookResult bookResultReceive = client.bookRideInTrip(new Passenger(passengerDto), rideId);
+                channel.shutdown();
+
                 if (bookResultReceive.getSucceededToBook()) {
                     BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true)
                             .setRide(bookResultReceive.getRide()).setRideId(bookResultReceive.getRideId()).build();
@@ -252,6 +258,8 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
                 client.updateFollower(dto, dto.origin, passenger);
+                channel.shutdown();
+
             }
         }
         var bookResult = BookResult.newBuilder().build();

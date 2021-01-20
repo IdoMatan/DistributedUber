@@ -57,6 +57,7 @@ public class MasterChangeListener implements IZkChildListener {
                             ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                             Sender client = new Sender(channel);
                             SyncParam syncParamProto = client.getSyncParam(city);
+
                             int syncParamInt = Integer.parseInt(syncParamProto.getSyncParamProto());
 
                             if (syncParamInt > bestSyncParamInt) {

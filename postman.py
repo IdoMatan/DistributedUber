@@ -70,7 +70,7 @@ class GenerateJson:
             destinations.append(self.destination)
             departure_dates.append("2021-" + self.month + "-" + self.day)
 
-            return origins, destinations, departure_dates
+        return origins, destinations, departure_dates
 
 
 def get_snapshot(snapshot_url, host='http://localhost:'):
@@ -85,10 +85,11 @@ def get_snapshot(snapshot_url, host='http://localhost:'):
 if __name__ == '__main__':
     n_rides = 100
     generate_json = GenerateJson()
-    passengers = 10
-    urls = ["8013", "8023", "8033", "8053", "8063", "8073"]#, "8083", "8093", "8103", "8113"]
-    urls = ["8013", "8023", "8033",  "8073"]#, "8083", "8093", "8103", "8113"]
-    # urls = ["8013"] # , "8023", "8033", "8053"]
+    passengers = 100
+    urls = ["8013", "8023", "8033", "8053", "8063", "8073"]  # , "8083", "8093", "8103", "8113"]
+    urls = ["8013", "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
+    # urls = [ "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
+    urls = ["8013",  "8073"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
 
     for i in range(n_rides):
@@ -99,13 +100,16 @@ if __name__ == '__main__':
         # print("Sent to: ", url)
         if r.status_code == 500:
             print("Status code: ", r.status_code)
+            print("url: ", url, "Json: ", j)
+
         # print("Content: ", r.content)
         # print("Generate new ride in: ", time.time() - start_time, " [Sec]")
 
-    get_snapshot(random.choice(urls), host=host)
+    # get_snapshot(random.choice(urls), host=host)
 
     for i in range(passengers):
         if bool(random.getrandbits(1)):
+        # if True:
             j = generate_json.generate_passenger_trip_json()
             url = host + random.choice(urls) + '/ride/book/path_planning'
         else:
@@ -114,9 +118,14 @@ if __name__ == '__main__':
 
         start_time = time.time()
         r = requests.post(url, json=j)
-        print(r.status_code)
-        if r.status_code == 200:
-            print("Content: ", r.content)
-        print("Book response in: ", time.time() - start_time, " [Sec]")
+        # print(r.status_code)
+        print("Content: ", r.content)
+        if r.status_code == 500:
+            # print("Content: ", r.content)
+            print("Status_code: ", r.status_code)
+            print("url: ", url, "Json: ", j)
+
+
+        # print("Book response in: ", time.time() - start_time, " [Sec]")
 
     # get_snapshot(random.choice(urls), host=host)

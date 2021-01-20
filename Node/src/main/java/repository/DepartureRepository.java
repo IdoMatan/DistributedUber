@@ -71,7 +71,10 @@ public class DepartureRepository {
             ps.UpdateRideId(ride.buildUniqueKey());
             if (!ride.passengerExist(ps)) {
                 ride.book(ps);
-                passengersRepository.addNewPassenger(ps);
+                if (passengersRepository != null){
+                    passengersRepository.addNewPassenger(ps);  // todo This is the fucking problem !!!
+                }
+//
                 return ride;
             }
         }
@@ -90,7 +93,9 @@ public class DepartureRepository {
         }
         ps.UpdateRideId(rideId);
         ride.unBook(ps);
-        passengersRepository.removePassenger(ps);
+        if (passengersRepository != null) {
+            passengersRepository.removePassenger(ps);  // todo This is also a fucking problem !!!
+        }
         return ride;
     }
 

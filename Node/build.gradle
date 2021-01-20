@@ -39,3 +39,18 @@ dependencies {
 configurations.all {
     exclude module: 'slf4j-log4j12'
 }
+
+
+jar {
+    manifest {
+        attributes "Main-Class": "ZooKeeperPlayground.Node.main.host.Application"
+    }
+    from {
+        configurations.compile.collect{it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+ext {
+    mainClassName = "ZooKeeperPlayground.Node.main.host.Application"
+}
+
