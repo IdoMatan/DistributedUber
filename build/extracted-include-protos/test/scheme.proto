@@ -24,6 +24,28 @@ service RouteGuide {
   rpc SenderTest1(Msg1) returns (Msg2) {}
   rpc UpdateFollower(UpdateNewRideMessage) returns(Id){}
   rpc updatePDRide(UpdateNewRideMessage) returns (Id){}
+  rpc BookRide(BookingRequestMessage) returns (BookResult){}
+  rpc BookTripRide(BookingRequestMessage) returns (BookResult){}
+  rpc UnBookTripRide(BookingRequestMessage) returns (BookResult){}
+  rpc BookTripRideApproval(BookingApprovalMessage) returns (BookResult){}
+  rpc BookRideInTrip(BookingRequestMessage) returns (BookResult){}
+  rpc LiveMapIsEmpty(LiveMapIsEmptyMessage) returns (IsEmptyAgreement){}
+  rpc GetSyncParam(CityMessage) returns (SyncParam){}
+  rpc UpdateFollowersPassengerList(BookingRequestMessage) returns (Id){}
+
+}
+
+message PassengerProto{
+  string firstName = 2;
+  string lastName = 3;
+  string origin = 4;
+  string destination = 5;
+  string departureDate = 6;
+}
+
+message BookingRequestMessage{
+  string rideId = 1;
+  PassengerProto passenger = 2;
 }
 
 message RideProto {
@@ -40,10 +62,43 @@ message RideProto {
 message UpdateNewRideMessage{
   RideProto ride = 1;
   string AddressedTo = 2;
+  PassengerProto passenger = 3;
+
 }
 message Id{
   string rideId = 1;
 }
+
+message BookingApprovalMessage{
+  PassengerProto passenger = 1;
+  string rideId = 2;
+  RideProto rideProto = 3;
+}
+
+message BookResult {
+  bool succeededToBook = 1;
+  string rideId = 2;
+  RideProto ride = 3;
+}
+
+message LiveMapIsEmptyMessage{
+  string origin = 1;
+  string destination = 2;
+  string departureDate = 3;
+}
+
+message IsEmptyAgreement{
+  bool isEmpty = 1;
+}
+
+message CityMessage{
+  string city = 1;
+}
+
+message SyncParam{
+  string syncParamProto = 1;
+}
+
 
 message Msg1 {
   int32 a = 1;

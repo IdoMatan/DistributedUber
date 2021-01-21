@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
+import service.BookingService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,8 @@ public class PathPlaningService {
     private ZkService zkService;
     @Autowired
     private CityRepository citiesRepository;
+    @Autowired
+    private BookingService bookingService;
     @Autowired
     LiveMapRepository liveMapRepository;
     @Autowired
@@ -67,7 +70,7 @@ public class PathPlaningService {
                 for (String rideId : optionalRides) { //
                     var rideOriginCity = parseOrigin(rideId);
                     if (rideOriginCity.equals(passengerPathDto.origin.get(i))) {
-                        bookedRide = departureRepository.book(passengerPathDto.toPassengerDto(i), rideId);
+                        bookedRide = bookingService.book(passengerPathDto.toPassengerDto(i), rideId);
                         if (bookedRide != null) {
                             bookedRidesID.set(i, rideId);
                             bookedRidesProtoRide.set(i, bookedRide.toRideProto());
@@ -84,7 +87,7 @@ public class PathPlaningService {
                         city = citiesRepository.getCity(rideOriginCity);
                         cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
                         if (cityLeaderIp.equals(myFullURI)) {
-                            bookedRide = departureRepository.book(passengerPathDto.toPassengerDto(i), rideId);
+                            bookedRide = bookingService.book(passengerPathDto.toPassengerDto(i), rideId);
                             if (bookedRide != null) {
                                 bookedRidesID.set(i, rideId);
                                 bookedRidesProtoRide.set(i, bookedRide.toRideProto());
@@ -131,9 +134,14 @@ public class PathPlaningService {
 
                 if (rideOriginCity.equals(passengerPathDto.origin.get(0)) || myFullURI.equals(cityLeaderIp)) {
                     if (cancelBooking && (!bookedRidesID.get(i).equals("NA"))) { //  cancel ride, not all booked)
-                        departureRepository.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
+                        bookingService.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
                     } else {
                         var dto = new RideDto(bookedRidesProtoRide.get(i));
+                        if (!rideOriginCity.equals(passengerPathDto.origin.get(0))){
+                            Passenger ps = new Passenger(passengerPathDto.toPassengerDto(i));
+                            ps.UpdateRideId(bookedRidesID.get(i));
+                            bookingService.book(ps);
+                        }
                         updateCurrentCityFollowers(dto, new Passenger(passengerPathDto.toPassengerDto(i)));
 //                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
 

@@ -1,11 +1,9 @@
 package repository;
 
-import host.dto.PassengerDto;
 import host.dto.RideDto;
 import model.DeparturesDataBase;
 import model.Passenger;
 import model.Ride;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,9 +12,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class DepartureRepository {
-    @Autowired
-    PassengersRepository passengersRepository;
-
     public String getSnapshot(String currentCity) {
         StringBuilder snapshot = new StringBuilder("Rides of " + currentCity + " :\n");
         var rides = getCollection(currentCity).values();
@@ -64,17 +59,12 @@ public class DepartureRepository {
         return getCollection(ride.origin).containsKey(ride.buildUniqueKey());
     }
 
-    public Ride book(PassengerDto passengerDto, String ridId) {
-        var ps = new Passenger(passengerDto);
+    public Ride book(Passenger ps, String ridId) {
         Ride ride = getCollection(parseOrigin(ridId)).get(ridId);
         if (ride.available()) {
             ps.UpdateRideId(ride.buildUniqueKey());
             if (!ride.passengerExist(ps)) {
                 ride.book(ps);
-                if (passengersRepository != null){
-                    passengersRepository.addNewPassenger(ps);  // todo This is the fucking problem !!!
-                }
-//
                 return ride;
             }
         }
@@ -85,17 +75,13 @@ public class DepartureRepository {
         return rideId.split("_")[0];
     }
 
-    public Ride unBook(PassengerDto passengerDto, String rideId) {
-        var ps = new Passenger(passengerDto);
-        Ride ride = getCollection(passengerDto.origin).get(rideId);
-        if (rideId.equals("NA")) {
+    public Ride unBook(Passenger ps, String rideId) {
+        Ride ride = getCollection(ps.origin).get(rideId);
+        if (rideId.equals("NA")|| ride == null)  {
             return ride;
         }
         ps.UpdateRideId(rideId);
         ride.unBook(ps);
-        if (passengersRepository != null) {
-            passengersRepository.removePassenger(ps);  // todo This is also a fucking problem !!!
-        }
         return ride;
     }
 

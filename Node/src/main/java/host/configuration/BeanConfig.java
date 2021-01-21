@@ -14,6 +14,7 @@ import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
 import repository.PassengersRepository;
+import service.BookingService;
 import zkwatchers.AllNodesChangeListener;
 import zkwatchers.ConnectStateChangeListener;
 import zkwatchers.LiveNodeChangeListener;
@@ -47,6 +48,14 @@ public class BeanConfig {
   public PdCitiesService pdCities() {
     return new PdCitiesService();
   }
+
+  @Bean(name = "bookingService")
+  @Scope("singleton")
+  public BookingService bookingService() {
+    return new BookingService();
+  }
+
+
 
   @Bean(name = "zkService")
   @Scope("singleton")

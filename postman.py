@@ -27,8 +27,8 @@ class GenerateJson:
         # self.day = str(random.randint(1, 30))
         # self.month = str(random.randint(1, 12))
 
-        self.day = str(random.randint(1, 2))
-        self.month = str(random.randint(1, 2))
+        self.day = str(random.randint(1, 1))
+        self.month = str(random.randint(1, 1))
         self.origin = random.choice(self.origins)
         self.destination = random.choice(self.destinations)
         while self.destination == self.origin:
@@ -86,10 +86,10 @@ if __name__ == '__main__':
     n_rides = 100
     generate_json = GenerateJson()
     passengers = 100
-    urls = ["8013", "8023", "8033", "8053", "8063", "8073"]  # , "8083", "8093", "8103", "8113"]
-    urls = ["8013", "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
+    # urls = ["8013", "8023", "8033",  "8073", "8083", "8093"]  # , "8083", "8093", "8103", "8113"]
+    urls = ["8013", "8023", "8083",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
     # urls = [ "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
-    urls = ["8013",  "8073"] # , "8023", "8033", "8053"]
+    # urls = ["8013",  "8073"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
 
     for i in range(n_rides):
