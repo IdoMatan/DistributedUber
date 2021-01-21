@@ -9,6 +9,7 @@ import generated.IsEmptyAgreement;
 import host.dto.PassengerDto;
 import host.dto.PassengerPathDto;
 import host.dto.RideDto;
+import host.dto.RideJsonDto;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import model.City;
@@ -29,10 +30,12 @@ import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
 import repository.PassengersRepository;
+import service.BookingService;
 import service.PdCalculation;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static model.CitiesDataBase.cities;
@@ -59,6 +62,8 @@ public class RidesController {
     PathPlaningService pathPlanning;
     @Autowired
     PassengersRepository passengersRepository;
+    @Autowired
+    BookingService bookingService;
 
     @Value("${shard}")
     public String shard;
@@ -111,7 +116,7 @@ public class RidesController {
         for (String rideId : optionalRides) {
             var rideOriginCity = parseOrigin(rideId);
             if (rideOriginCity.equals(passengerDto.origin)) {
-                bookedRide = departureRepository.book(passengerDto, rideId);
+                bookedRide = bookingService.book(passengerDto, rideId);
                 if (bookedRide != null) {
                     break;
                 }
@@ -134,8 +139,11 @@ public class RidesController {
                 var city = citiesRepository.getCity(rideOriginCity);
                 var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
                 if (cityLeaderIp.equals(myFullURI)) {  // Im also the leader of that city
-                    bookedRide = departureRepository.book(passengerDto, rideId);
+                    bookedRide = bookingService.book(passengerDto, rideId);
                     if (bookedRide != null) {
+                        Passenger ps = new Passenger(passengerDto);
+                        ps.UpdateRideId(bookedRide.buildUniqueKey());
+                        bookingService.book(ps);
                         var dto = new RideDto(bookedRide);
                         updateCurrentCityFollowers(dto, new Passenger(passengerDto));
                         return ResponseEntity.ok("You booked an in shard ride");
@@ -147,6 +155,9 @@ public class RidesController {
                 channel.shutdown();
 
                 if (bookResult.getSucceededToBook()) {
+                    Passenger ps = new Passenger(passengerDto);
+                    ps.UpdateRideId(rideId);
+                    bookingService.book(ps);
                     return ResponseEntity.ok("You booked a ride originated in " + rideOriginCity);
                 }
             }
@@ -189,8 +200,11 @@ public class RidesController {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
                 // Call server streaming call
-                if (passenger != null) {client.updateFollower(rideDto, rideDto.origin, passenger);}
-                else {client.updateFollower(rideDto, rideDto.origin);}
+                if (passenger != null) {
+                    client.updateFollower(rideDto, rideDto.origin, passenger);
+                } else {
+                    client.updateFollower(rideDto, rideDto.origin);
+                }
 //                client.updateFollowersPassengerList(passenger);
                 channel.shutdown();
 
@@ -227,74 +241,75 @@ public class RidesController {
         return "1";
     }
 
-        @PostMapping("/new_ride")
-        public ModelAndView redirectNewRidePostToPost (HttpServletRequest request) throws IOException {
-            return redirectRequest(request, "new_ride");
+    @PostMapping("/new_ride")
+    public ModelAndView redirectNewRidePostToPost(HttpServletRequest request) throws IOException {
+        return redirectRequest(request, "new_ride");
+    }
+
+    @PostMapping("/ride/book/single")
+    public ModelAndView redirectNewPassengerPostToPost(HttpServletRequest request) throws IOException {
+        return redirectRequest(request, "new_passenger/single");
+    }
+
+    @PostMapping("/ride/book/path_planning")
+    public ModelAndView redirectNewPassengerTripPostToPost(HttpServletRequest request) throws IOException {
+        return redirectRequest(request, "new_passenger/path_planning");
+    }
+
+
+    private ModelAndView redirectRequest(HttpServletRequest request, String redirectedRouteSuffix) throws
+            IOException {
+        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        String origin;
+        String destination = null;
+        String departureDate = null;
+        if (redirectedRouteSuffix.equals("new_passenger/path_planning")) {
+            origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
+        } else {
+//            RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
+            RideJsonDto json_request = (new Gson().fromJson(request.getReader(), (Type) RideJsonDto.class));
+            origin = json_request.origin;
+            destination = json_request.destination;
+            departureDate = json_request.departure_date;
         }
-
-        @PostMapping("/ride/book/single")
-        public ModelAndView redirectNewPassengerPostToPost (HttpServletRequest request) throws IOException {
-            return redirectRequest(request, "new_passenger/single");
-        }
-
-        @PostMapping("/ride/book/path_planning")
-        public ModelAndView redirectNewPassengerTripPostToPost (HttpServletRequest request) throws IOException {
-            return redirectRequest(request, "new_passenger/path_planning");
-        }
-
-
-        private ModelAndView redirectRequest (HttpServletRequest request, String redirectedRouteSuffix) throws
-        IOException {
-            request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-            String origin;
-            String destination = null;
-            String departureDate = null;
-            if (redirectedRouteSuffix.equals("new_passenger/path_planning")) {
-                origin = (new Gson().fromJson(request.getReader(), PassengerPathDto.class)).origin.get(0);
-            } else {
-                RideDto json_request = (new Gson().fromJson(request.getReader(), RideDto.class));
-                origin = json_request.origin;
-                destination = json_request.destination;
-                departureDate = json_request.departureDate;
+            if (redirectedRouteSuffix.equals("new_passenger/single") && shard.equals(citiesRepository.getCity(origin).shard)) {
+                if (!quick_check_available(origin, destination, departureDate)) {
+                    redirectedRouteSuffix = "quick_check/response";
+                    String redirect = "redirect:http://" + System.getProperty("myIP") + ":" +request.getLocalPort()+ "/redirected_" + redirectedRouteSuffix;
+                    return new ModelAndView(redirect);
+                }
             }
-//            if (redirectedRouteSuffix.equals("new_passenger/single") && shard.equals(citiesRepository.getCity(origin).shard)) {
-//                if (!quick_check_available(origin, destination, departureDate)) {
-//                    redirectedRouteSuffix = "quick_check/response";
-//                    String redirect = "redirect:http://" + System.getProperty("myIP") + "/redirected_" + redirectedRouteSuffix; // redirect to leader
-//                    return new ModelAndView(redirect);
-//                }
-//            }
 
-            var originCity = citiesRepository.getCity(origin);  // transform to city object
-            var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
+        var originCity = citiesRepository.getCity(origin);  // transform to city object
+        var leaderNodeData = zkService.getLeaderNodeRESThost(originCity.shard, originCity.name); // get the REST ip of leader node of the relevant city
 
-            String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
+        String redirect = "redirect:http://" + leaderNodeData + "/redirected_" + redirectedRouteSuffix; // redirect to leader
 
-            return new ModelAndView(redirect);
-        }
+        return new ModelAndView(redirect);
+    }
 
-        private boolean quick_check_available (String origin, String destination, String departureDate){
+    private boolean quick_check_available(String origin, String destination, String departureDate) {
 //        String nRides = zkService.getLiveRidesSync(shard, origin);
-            var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
-            if (optionalRides.isEmpty()) {
-                // ask my follower friends if they agree with me:
-                List<String> followers = zkService.getFollowers(shard);
-                var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+        var optionalRides = liveMapRepository.rideExists(origin, destination, departureDate);
+        if (optionalRides.isEmpty()) {
+            // ask my follower friends if they agree with me:
+            List<String> followers = zkService.getFollowers(shard);
+            var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
-                for (String target : followers) {
-                    if (!myFullURI.equals(target)) {
-                        String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
-                        ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
-                        Sender client = new Sender(channel);
-                        // Call server streaming call
+            for (String target : followers) {
+                if (!myFullURI.equals(target)) {
+                    String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);
+                    ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
+                    Sender client = new Sender(channel);
+                    // Call server streaming call
 
-                        IsEmptyAgreement isEmpty = client.liveMapIsEmpty(origin, destination, departureDate);
-                        if (!isEmpty.getIsEmpty()) {
-                            return false;
-                        }
+                    IsEmptyAgreement isEmpty = client.liveMapIsEmpty(origin, destination, departureDate);
+                    if (isEmpty.getIsEmpty()) {
+                        return false;
                     }
                 }
             }
-            return true;
         }
+        return true;
     }
+}

@@ -13,30 +13,22 @@ import io.grpc.stub.StreamObserver;
 import model.City;
 import model.Passenger;
 import model.Ride;
-import org.springframework.stereotype.Service;
 import repository.CityRepository;
 import repository.DepartureRepository;
 import repository.LiveMapRepository;
 import repository.PassengersRepository;
+import service.BookingService;
 import service.PdCalculation;
 
 import java.util.List;
 
-@Service
 public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
 
     public ZkService zkService = new ZkServiceImpl("localhost:2181");
-
-
-//    private final int input;
-
-//    public ReceiverService() {
-//        this.input = 5;
-//    }
-
     private DepartureRepository departureRepository = new DepartureRepository();
     private LiveMapRepository liveMapRepository = new LiveMapRepository();
     private PassengersRepository passengersRepository = new PassengersRepository();
+    private BookingService bookingService = new BookingService(passengersRepository, departureRepository);
 
     @Override
     public void senderTest1(Msg1 inputs, StreamObserver<Msg2> responseObserver) {
@@ -114,7 +106,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     public void bookRide(BookingRequestMessage message, StreamObserver<BookResult> bookResultStreamObserver) {
         var rideId = message.getRideId();
         var passenger = message.getPassenger();
-        var r = departureRepository.book(new PassengerDto(passenger), rideId);
+        var r = bookingService.book(new PassengerDto(passenger), rideId);
 
         var bookingSucceeded = r != null;
         var bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).build();
@@ -181,7 +173,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
                     return;
                 }
             } else {
-                bookedRide = departureRepository.book(passengerDto, rideId);
+                bookedRide = bookingService.book(passengerDto, rideId);
                 if (bookedRide != null) {
                     BookResult bookResult = BookResult.newBuilder().setSucceededToBook(true)
                             .setRide(bookedRide.toRideProto()).setRideId(rideId).build();
@@ -216,7 +208,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
         BookResult bookResult;
         var rideId = message.getRideId();
         var passenger = message.getPassenger();
-        var r = departureRepository.book(new PassengerDto(passenger), rideId);
+        var r = bookingService.book(new PassengerDto(passenger), rideId);
         var bookingSucceeded = r != null;
         if (bookingSucceeded) {
             bookResult = BookResult.newBuilder().setSucceededToBook(bookingSucceeded).setRide(r.toRideProto()).setRideId(rideId).build();
@@ -233,7 +225,7 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
     public void unBookTripRide(BookingRequestMessage message, StreamObserver<BookResult> bookResultStreamObserver) {
         var rideId = message.getRideId();
         var passenger = message.getPassenger();
-        var r = departureRepository.unBook(new PassengerDto(passenger), rideId);
+        var r = bookingService.unBook(new PassengerDto(passenger), rideId);
         BookResult bookResult;
         if (r != null) {
             bookResult = BookResult.newBuilder().setRide(r.toRideProto()).build();
@@ -252,6 +244,9 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
 //        zkService.updateLiveRidesSync(shard, dto.origin, String.valueOf(departureRepository.getSize(dto.origin)));
         Passenger passenger = new Passenger(new PassengerDto(message.getPassenger()));
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
+
+        passenger.UpdateRideId(new Ride(dto).buildUniqueKey());
+        bookingService.book(passenger);
         for (String target : followers) {
             if (!myFullURI.equals(target)) {
                 String target_grpc = zkService.getZNodeData("/SHARDS/" + shard + "/liveNodes/" + target);

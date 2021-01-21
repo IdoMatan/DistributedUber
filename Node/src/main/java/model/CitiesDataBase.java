@@ -11,10 +11,12 @@ public class CitiesDataBase {
         var em = new HashMap<String, City>();
         em.put("cityA", new City("cityA", "A", 0, 0));
         em.put("cityB", new City("cityB", "A", 1, 2));
-        em.put("cityC", new City("cityC", "A", 30, 30));
+        em.put("cityC", new City("cityC", "B", 30, 30));
         em.put("cityD", new City("cityD", "B", 100, 60));
-        em.put("cityE", new City("cityE", "B", 300, 300));
-        em.put("cityF", new City("cityF", "B", 100, 100));
+        em.put("cityE", new City("cityE", "C", 300, 300));
+        em.put("cityF", new City("cityF", "C", 100, 100));
+        em.put("cityG", new City("cityG", "D", 400, 180));
+        em.put("cityH", new City("cityH", "D", 900, 500));
         return em;
     }
 
@@ -26,6 +28,8 @@ public class CitiesDataBase {
         cities.add("cityD");
         cities.add("cityE");
         cities.add("cityF");
+        cities.add("cityG");
+        cities.add("cityH");
         return cities;
     }
 }
