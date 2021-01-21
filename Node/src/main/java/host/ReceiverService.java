@@ -62,7 +62,9 @@ public class ReceiverService extends RouteGuideGrpc.RouteGuideImplBase {
             }
         }
         var ride = liveMapRepository.upsert(dto, addressedTo);
+
         if (!isNewRide) {
+            ride = new Ride(dto);
             var pdCities = (new PdCalculation(ride)).calculate();
             for (City c : pdCities) {
                 liveMapRepository.addPDRide(ride.buildUniqueKey(), ride.origin, c.name, ride.departureDate);

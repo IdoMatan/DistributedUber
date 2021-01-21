@@ -5,6 +5,8 @@ import random
 import names
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 class GenerateJson:
     def __init__(self):
         self.first_name = ""
@@ -15,20 +17,20 @@ class GenerateJson:
         self.vacancies = 0
         self.pd = 0
         self.origin = ""
-        self.origins = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF", "cityG", "cityH"]
+        self.origins = ["cityA", "cityB", "cityC", "cityD"] #, "cityE", "cityF", "cityG", "cityH"]
         self.destination = ""
-        self.destinations = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF", "cityG", "cityH"]
+        self.destinations = ["cityA", "cityB", "cityC", "cityD"] #, "cityE", "cityF", "cityG", "cityH"]
 
     def new_person(self):
         self.first_name = names.get_first_name()
         self.last_name = names.get_last_name()
 
     def new_ride(self):
-        # self.day = str(random.randint(1, 30))
-        # self.month = str(random.randint(1, 12))
+        self.day = str(random.randint(1, 30))
+        self.month = str(random.randint(1, 12))
 
-        self.day = str(random.randint(1, 1))
-        self.month = str(random.randint(1, 1))
+        # self.day = str(random.randint(1, 1))
+        # self.month = str(random.randint(1, 1))
         self.origin = random.choice(self.origins)
         self.destination = random.choice(self.destinations)
         while self.destination == self.origin:
@@ -86,15 +88,70 @@ if __name__ == '__main__':
     n_rides = 100
     generate_json = GenerateJson()
     passengers = 100
+    combined = 0
     urls = ["8013", "8023", "8033",  "8053", "8063", "8073", "8083", "8093", "8103", "8113", "8123", "8133"]
-    # urls = ["8013", "8023", "8083",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
-    # urls = [ "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
-    # urls = ["8013",  "8073"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
 
     ride_creation = []
     book_creation = []
     trip_creation = []
+
+    for i in range(combined):
+        j = generate_json.generate_ride_json()
+        url = host + random.choice(urls) + '/new_ride'
+        start_time = time.time()
+        r = requests.post(url, json=j)
+        ride_creation.append(time.time() - start_time)
+
+        if r.status_code == 500:
+            print("Status code: ", r.status_code)
+            print("url: ", url, "Json: ", j)
+
+        j = generate_json.generate_passenger_trip_json()
+        url = host + random.choice(urls) + '/ride/book/path_planning'
+        start_time = time.time()
+        r = requests.post(url, json=j)
+
+        j = generate_json.generate_passenger_trip_json()
+        url = host + random.choice(urls) + '/ride/book/path_planning'
+        start_time = time.time()
+        r = requests.post(url, json=j)
+        trip_creation.append(time.time() - start_time)
+
+        j = generate_json.generate_passenger_json()
+        url = host + random.choice(urls) + '/ride/book/single'
+        start_time = time.time()
+        r = requests.post(url, json=j)
+        trip_creation.append(time.time() - start_time)
+        book_creation.append(time.time() - start_time)
+
+    trip_creation = np.array(trip_creation)
+    ride_creation = np.array(ride_creation)
+    book_creation = np.array(book_creation)
+
+    plt.plot(ride_creation)
+    plt.xlabel("Number of rides")
+    plt.ylabel("Time to create a ride [Sec]")
+    plt.title("Time to create a ride VS Number of saved rides")
+    plt.show()
+
+    plt.plot(trip_creation)
+    plt.xlabel("Number of rides")
+    plt.ylabel("Time to book a trip [Sec]")
+    plt.title("Time to book a trip VS Number of saved rides")
+    plt.show()
+
+    plt.plot(book_creation)
+    plt.xlabel("Number of rides")
+    plt.ylabel("Time to book a single [Sec]")
+    plt.title("Time to book a single ride VS Number of saved rides")
+    plt.show()
+
+    np.save("ride_creation", ride_creation)
+    np.save("trip_creation", trip_creation)
+    np.save("book_creation", book_creation)
+
+
 
     for i in range(n_rides):
         j = generate_json.generate_ride_json()
@@ -142,5 +199,6 @@ if __name__ == '__main__':
 
     book_creation = np.array(book_creation)
     print("book creation mean: ", book_creation.mean(), "book creation std: ", book_creation.std())
+
 
     # get_snapshot(random.choice(urls), host=host)
