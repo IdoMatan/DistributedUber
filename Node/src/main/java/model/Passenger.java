@@ -31,6 +31,17 @@ public class Passenger {
                 '}';
     }
 
+    public String toUID(){
+        return "Passenger{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+//                ", origin='" + origin + '\'' +
+//                ", destination='" + destination + '\'' +
+//                ", Departure_date=" + departureDate +
+                ", rideId=" + rideId +
+                '}';
+    }
+
     public void UpdateRideId(String rideId) {
         this.rideId = rideId;
     }

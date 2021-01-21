@@ -54,18 +54,18 @@ public class Ride {
     public void book(Passenger ps) {
         this.vacancies--;
         passengerList.add(ps);
-        passengerListString.add(ps.toString());
+        passengerListString.add(ps.toUID());
     }
 
     public boolean passengerExist(Passenger ps){
-        return passengerListString.contains(ps.toString());
+        return passengerListString.contains(ps.toUID());
 //        return passengerList.contains(ps);
     }
 
     public void unBook(Passenger ps) {
         this.vacancies++;
         passengerList.remove(ps); //
-        passengerListString.remove(ps.toString());
+        passengerListString.remove(ps.toUID());
     }
 
     @Override

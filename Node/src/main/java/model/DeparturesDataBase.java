@@ -10,4 +10,6 @@ public class DeparturesDataBase {
         public static Map<String, Ride> cityDDepartures = new HashMap<>();
         public static Map<String, Ride> cityEDepartures = new HashMap<>();
         public static Map<String, Ride> cityFDepartures = new HashMap<>();
+        public static Map<String, Ride> cityGDepartures = new HashMap<>();
+        public static Map<String, Ride> cityHDepartures = new HashMap<>();
 }

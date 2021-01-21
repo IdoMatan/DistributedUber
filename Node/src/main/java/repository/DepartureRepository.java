@@ -93,6 +93,8 @@ public class DepartureRepository {
             case "cityD" -> DeparturesDataBase.cityDDepartures;
             case "cityE" -> DeparturesDataBase.cityEDepartures;
             case "cityF" -> DeparturesDataBase.cityFDepartures;
+            case "cityG" -> DeparturesDataBase.cityGDepartures;
+            case "cityH" -> DeparturesDataBase.cityHDepartures;
             default -> throw new IllegalArgumentException("Missing " + origin);
         };
     }
@@ -105,6 +107,8 @@ public class DepartureRepository {
             case "cityD" -> DeparturesDataBase.cityDDepartures.size();
             case "cityE" -> DeparturesDataBase.cityEDepartures.size();
             case "cityF" -> DeparturesDataBase.cityFDepartures.size();
+            case "cityG" -> DeparturesDataBase.cityGDepartures.size();
+            case "cityH" -> DeparturesDataBase.cityHDepartures.size();
             default -> throw new IllegalArgumentException("Missing " + origin);
 
         };

@@ -3,7 +3,7 @@ import time
 import random
 
 import names
-
+import numpy as np
 
 class GenerateJson:
     def __init__(self):
@@ -15,9 +15,9 @@ class GenerateJson:
         self.vacancies = 0
         self.pd = 0
         self.origin = ""
-        self.origins = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF"]
+        self.origins = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF", "cityG", "cityH"]
         self.destination = ""
-        self.destinations = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF"]
+        self.destinations = ["cityA", "cityB", "cityC", "cityD", "cityE", "cityF", "cityG", "cityH"]
 
     def new_person(self):
         self.first_name = names.get_first_name()
@@ -86,11 +86,15 @@ if __name__ == '__main__':
     n_rides = 100
     generate_json = GenerateJson()
     passengers = 100
-    # urls = ["8013", "8023", "8033",  "8073", "8083", "8093"]  # , "8083", "8093", "8103", "8113"]
-    urls = ["8013", "8023", "8083",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
+    urls = ["8013", "8023", "8033",  "8053", "8063", "8073", "8083", "8093", "8103", "8113", "8123", "8133"]
+    # urls = ["8013", "8023", "8083",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
     # urls = [ "8023", "8033",  "8073"] # , "8083", "8093"]  # , "8103", "8113"]
     # urls = ["8013",  "8073"] # , "8023", "8033", "8053"]
     host = 'http://localhost:'
+
+    ride_creation = []
+    book_creation = []
+    trip_creation = []
 
     for i in range(n_rides):
         j = generate_json.generate_ride_json()
@@ -104,28 +108,39 @@ if __name__ == '__main__':
 
         # print("Content: ", r.content)
         # print("Generate new ride in: ", time.time() - start_time, " [Sec]")
-
+        ride_creation.append(time.time() - start_time)
+    ride_creation = np.array(ride_creation)
+    print("ride creation mean: ", ride_creation.mean(), "ride creation std: ", ride_creation.std())
     # get_snapshot(random.choice(urls), host=host)
 
+
     for i in range(passengers):
+
         if bool(random.getrandbits(1)):
-        # if True:
             j = generate_json.generate_passenger_trip_json()
             url = host + random.choice(urls) + '/ride/book/path_planning'
+            trip = True
         else:
             j = generate_json.generate_passenger_json()
             url = host + random.choice(urls) + '/ride/book/single'
+            trip = False
 
         start_time = time.time()
         r = requests.post(url, json=j)
         # print(r.status_code)
-        print("Content: ", r.content)
+        # print("Content: ", r.content)
         if r.status_code == 500:
             # print("Content: ", r.content)
             print("Status_code: ", r.status_code)
-            print("url: ", url, "Json: ", j)
-
-
+            # print("url: ", url, "Json: ", j)
+        if trip: trip_creation.append(time.time() - start_time)
+        else: book_creation.append(time.time() - start_time)
         # print("Book response in: ", time.time() - start_time, " [Sec]")
+
+    trip_creation = np.array(trip_creation)
+    print("trip creation mean: ", trip_creation.mean(), "trip creation std: ", trip_creation.std())
+
+    book_creation = np.array(book_creation)
+    print("book creation mean: ", book_creation.mean(), "book creation std: ", book_creation.std())
 
     # get_snapshot(random.choice(urls), host=host)

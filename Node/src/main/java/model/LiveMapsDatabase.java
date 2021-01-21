@@ -11,5 +11,7 @@ public class LiveMapsDatabase {
     public static CityRides cityDRides = new CityRides();
     public static CityRides cityERides = new CityRides();
     public static CityRides cityFRides = new CityRides();
+    public static CityRides cityGRides = new CityRides();
+    public static CityRides cityHRides = new CityRides();
 }
 

@@ -25,15 +25,17 @@ public class BookingService {
         var ride = departuresRepository.book(ps, rideId);
         if ((ride != null) && (ride.passengerExist(ps)) && (ride.origin.equals(ps.origin))) {
             passengersRepository.addNewPassenger(ps);
-            if (!ride.origin.equals(ps.origin)){
-                System.out.println("Ride: " + ride.origin + "ps: " + ps.origin);
-            }
         }
         return ride;
     }
 
     public Passenger book(Passenger passenger) {
         passengersRepository.addNewPassenger(passenger);
+        return passenger;
+    }
+
+    public Passenger removeBookedDuplicates(Passenger passenger) {
+        passengersRepository.removePassenger(passenger);
         return passenger;
     }
 
@@ -46,4 +48,5 @@ public class BookingService {
         }
         return ride;
     }
+
 }

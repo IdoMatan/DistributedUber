@@ -132,19 +132,22 @@ public class PathPlaningService {
                 var city = citiesRepository.getCity(passengerPathDto.origin.get(i)); //todo check if "passengerPathDto.origin.get(i)" is the right format to get the City city
                 var cityLeaderIp = zkService.getLeaderNodeGRPChost(city.shard, city.name);
 
+                Passenger ps = new Passenger(passengerPathDto.toPassengerDto(i));
                 if (rideOriginCity.equals(passengerPathDto.origin.get(0)) || myFullURI.equals(cityLeaderIp)) {
                     if (cancelBooking && (!bookedRidesID.get(i).equals("NA"))) { //  cancel ride, not all booked)
                         bookingService.unBook(passengerPathDto.toPassengerDto(i), bookedRidesID.get(i));
                     } else {
                         var dto = new RideDto(bookedRidesProtoRide.get(i));
-                        if (!rideOriginCity.equals(passengerPathDto.origin.get(0))){
-                            Passenger ps = new Passenger(passengerPathDto.toPassengerDto(i));
-                            ps.UpdateRideId(bookedRidesID.get(i));
+                        ps.UpdateRideId(bookedRidesID.get(i));
+                        bookingService.removeBookedDuplicates(ps);
+//                        if (myFullURI.equals(cityLeaderIp)) {
+                        ps.UpdateRideId(bookedRidesID.toString());
+                        updateCurrentCityFollowers(dto, ps, i);
+                        if (i == 0) {
                             bookingService.book(ps);
                         }
-                        updateCurrentCityFollowers(dto, new Passenger(passengerPathDto.toPassengerDto(i)));
+//                        }
 //                    zkService.updateLiveRidesSync(shard, rideOriginCity, String.valueOf(departureRepository.getSize(rideOriginCity)));
-
                     }
                 } else {
                     ManagedChannel channel = ManagedChannelBuilder.forTarget(cityLeaderIp).usePlaintext().build();
@@ -169,7 +172,7 @@ public class PathPlaningService {
         return rideId.split("_")[0];
     }
 
-    private void updateCurrentCityFollowers(RideDto rideDto, Passenger passenger) {
+    private void updateCurrentCityFollowers(RideDto rideDto, Passenger passenger, int i) {
         List<String> followers = zkService.getFollowers(shard);
         var myFullURI = System.getProperty("myIP") + ":" + System.getProperty("rest.port");
 
@@ -179,11 +182,12 @@ public class PathPlaningService {
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(target_grpc).usePlaintext().build();
                 Sender client = new Sender(channel);
                 // Call server streaming call
-                client.updateFollower(rideDto, rideDto.origin, passenger);
+                if (i == 0){ client.updateFollower(rideDto, rideDto.origin, passenger);}
+                else {client.updateFollower(rideDto, rideDto.origin);}
                 channel.shutdown();
-
             }
         }
     }
+
 
 }
